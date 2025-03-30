@@ -1,6 +1,14 @@
 import { ArrowRight, Calendar, Mail, MapPin, Phone } from "lucide-react";
+import {
+  Baby,
+  Bone,
+  Brain,
+  Heart,
+  Microscope,
+  Stethoscope,
+} from "lucide-react";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
@@ -33,10 +41,7 @@ function Home() {
               <div className="mt-2 flex flex-col flex-wrap gap-2 md:flex-row">
                 <Button className="group" size="lg">
                   Learn More{" "}
-                  <ArrowRight
-                    size={18}
-                    className="transition-transform group-hover:translate-x-1"
-                  />
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
                 <Button variant="outline" size="lg">
                   <Calendar size={18} /> Book Appointment
@@ -120,6 +125,150 @@ function Home() {
         <div className="absolute inset-0 overflow-hidden">
           <div className="bg-secondary/10 absolute -top-72 -right-72 h-[800px] w-[800px] rounded-full blur-3xl"></div>
           <div className="bg-primary/10 absolute -bottom-72 -left-72 h-[600px] w-[600px] rounded-full blur-3xl"></div>
+        </div>
+      </section>
+
+      <section className="container py-14 md:py-20 lg:py-28">
+        <div className="mb-16 text-center">
+          <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-3 py-1 text-sm font-medium">
+            Services
+          </span>
+          <h2 className="mb-6 text-3xl font-bold text-balance md:text-4xl">
+            Empowering Health, One Care at a Time
+          </h2>
+          <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
+            We provide a wide range of medical services to meet all your
+            healthcare needs with the highest standards of quality and care.
+          </p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-rose-50 p-4">
+              <Heart className="h-6 w-6 text-rose-500" />
+            </div>
+            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
+              Cardiology
+            </h3>
+            <p className="text-muted-foreground">
+              Comprehensive care for heart conditions with advanced diagnostic
+              and treatment options.
+            </p>
+            <Link
+              to="/"
+              className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
+            >
+              <span>Learn more</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+
+          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-violet-50 p-4">
+              <Brain className="h-6 w-6 text-violet-500" />
+            </div>
+            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
+              Neurology
+            </h3>
+            <p className="text-muted-foreground">
+              Expert diagnosis and treatment of disorders of the nervous system,
+              brain, and spinal cord.
+            </p>
+            <Link
+              to="/"
+              className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
+            >
+              <span>Learn more</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+
+          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-amber-50 p-4">
+              <Bone className="h-6 w-6 text-amber-500" />
+            </div>
+            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
+              Orthopedics
+            </h3>
+            <p className="text-muted-foreground">
+              Specialized care for musculoskeletal issues, including joint
+              replacements and sports injuries.
+            </p>
+            <Link
+              to="/"
+              className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
+            >
+              <span>Learn more</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+
+          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-sky-50 p-4">
+              <Baby className="h-6 w-6 text-sky-500" />
+            </div>
+            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
+              Pediatrics
+            </h3>
+            <p className="text-muted-foreground">
+              Compassionate healthcare for infants, children, and adolescents to
+              ensure healthy development.
+            </p>
+            <Link
+              to="/"
+              className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
+            >
+              <span>Learn more</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+
+          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-emerald-50 p-4">
+              <Stethoscope className="h-6 w-6 text-emerald-500" />
+            </div>
+            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
+              Primary Care
+            </h3>
+            <p className="text-muted-foreground">
+              Comprehensive primary healthcare services for patients of all
+              ages, focusing on prevention.
+            </p>
+            <Link
+              to="/"
+              className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
+            >
+              <span>Learn more</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+
+          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-indigo-50 p-4">
+              <Microscope className="h-6 w-6 text-indigo-500" />
+            </div>
+            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
+              Laboratory
+            </h3>
+            <p className="text-muted-foreground">
+              Advanced diagnostic testing with quick and accurate results to
+              guide your treatment plan.
+            </p>
+            <Link
+              to="/"
+              className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
+            >
+              <span>Learn more</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-12 text-center">
+          <Button variant="outline" size="lg" className="group">
+            View All Services{" "}
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
         </div>
       </section>
     </main>
