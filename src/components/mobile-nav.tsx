@@ -6,6 +6,8 @@ import { useState } from "react";
 
 import { Link } from "@tanstack/react-router";
 
+import { Logo } from "./icons/logo";
+
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -29,7 +31,9 @@ export function MobileNav() {
       </SheetTrigger>
       <SheetContent side="left">
         <SheetHeader>
-          <SheetTitle>Meridian</SheetTitle>
+          <SheetTitle>
+            <Logo className="h-10" />
+          </SheetTitle>
         </SheetHeader>
 
         <ul className="flex flex-col gap-2 px-4">
