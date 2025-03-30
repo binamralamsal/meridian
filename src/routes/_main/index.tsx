@@ -13,6 +13,7 @@ import {
   MapPin,
   Microscope,
   Phone,
+  Share2,
   Stethoscope,
   Twitter,
   User,
@@ -52,6 +53,42 @@ const doctors = [
     specialty: "Orthopedic Surgeon",
     image:
       "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=300&h=400&auto=format&fit=crop",
+  },
+];
+
+const blogPosts = [
+  {
+    id: 1,
+    title: "Understanding Preventive Healthcare: Why Regular Check-ups Matter",
+    excerpt:
+      "Regular health check-ups can detect potential health issues before they become serious problems. Learn about the recommended screenings for every age.",
+    image:
+      "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=400&auto=format&fit=crop",
+    date: "May 15, 2024",
+    author: "Dr. Prem Khadga",
+    category: "Preventive Care",
+  },
+  {
+    id: 2,
+    title: "Mindfulness and Mental Health: Techniques for Daily Wellness",
+    excerpt:
+      "Discover simple mindfulness techniques that can help manage stress, anxiety, and improve your overall mental wellbeing in just a few minutes a day.",
+    image:
+      "https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=400&auto=format&fit=crop",
+    date: "May 10, 2024",
+    author: "Dr. Saroj Prasad Ojha",
+    category: "Mental Health",
+  },
+  {
+    id: 3,
+    title: "Nutrition Myths Debunked: What Science Actually Says About Diet",
+    excerpt:
+      "With so much conflicting information about nutrition, it's hard to know what to believe. We examine common food myths and what research really shows.",
+    image:
+      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=400&auto=format&fit=crop",
+    date: "May 5, 2024",
+    author: "Dr. Roshan Bhandari",
+    category: "Nutrition",
   },
 ];
 
@@ -472,6 +509,38 @@ function Home() {
           <div className="bg-secondary/10 absolute -bottom-72 -left-72 h-[600px] w-[600px] rounded-full blur-3xl"></div>
         </div>
       </section>
+
+      <section className="container py-14 md:py-20 lg:py-28">
+        <div className="mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+          <div className="grid gap-3">
+            <h2 className="text-3xl font-bold text-balance md:text-4xl">
+              Latest <span className="text-secondary">Health Insights</span>
+            </h2>
+            <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
+              Explore our latest articles and stay informed about health topics
+              that matter to you.
+            </p>
+          </div>
+          <Button variant="outline" className="group" size="lg">
+            <span>View all articles</span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {blogPosts.map((post, index) => (
+            <BlogCard
+              key={post.id}
+              title={post.title}
+              excerpt={post.excerpt}
+              image={post.image}
+              date={post.date}
+              author={post.author}
+              category={post.category}
+            />
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
@@ -510,7 +579,7 @@ function StatsCounter({ number, label, icon }: StatsCounterProps) {
     };
   }, []);
 
-  const animateCount = () => {
+  function animateCount() {
     const duration = 2000;
     const frameDuration = 1000 / 60;
     const totalFrames = Math.round(duration / frameDuration);
@@ -531,9 +600,9 @@ function StatsCounter({ number, label, icon }: StatsCounterProps) {
         setCount(currentCount);
       }
     }, frameDuration);
-  };
+  }
 
-  const getIcon = (iconName: string) => {
+  function getIcon(iconName: string) {
     switch (iconName) {
       case "user-md":
         return <User className="h-10 w-10" />;
@@ -546,20 +615,86 @@ function StatsCounter({ number, label, icon }: StatsCounterProps) {
       default:
         return <User className="h-10 w-10" />;
     }
-  };
+  }
 
-  const formatNumber = (num: number) => {
+  function formatNumber(num: number) {
     if (num >= 1000) {
       return `${(num / 1000).toFixed(0)}K+`;
     }
     return num.toString();
-  };
+  }
 
   return (
     <div className="flex flex-col items-center" ref={countRef}>
       <div className="mb-4 rounded-full bg-sky-600 p-4">{getIcon(icon)}</div>
       <div className="mb-2 text-4xl font-bold">{formatNumber(count)}</div>
       <div className="text-sky-100">{label}</div>
+    </div>
+  );
+}
+
+function BlogCard({
+  title,
+  excerpt,
+  image,
+  date,
+  author,
+  category,
+}: {
+  title: string;
+  excerpt: string;
+  image: string;
+  date: string;
+  author: string;
+  category: string;
+}) {
+  return (
+    <div className="group rounded-md border shadow-slate-100 transition-all duration-300 hover:shadow-lg">
+      <div className="relative overflow-hidden">
+        <a href="#">
+          <img
+            src={image}
+            alt={title}
+            className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </a>
+        <div className="bg-secondary/90 text-secondary-foreground absolute top-4 left-4 rounded-full px-3 py-1 text-sm font-medium">
+          {category}
+        </div>
+        <button className="text-primary bg-background absolute top-4 right-4 rounded-full p-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <Share2 size={16} />
+        </button>
+      </div>
+      <div className="grid gap-3 p-6">
+        <div className="text-muted-foreground flex items-center gap-4 text-sm">
+          <div className="flex items-center">
+            <Calendar size={14} className="mr-1" />
+            {date}
+          </div>
+          <div className="flex items-center">
+            <User size={14} className="mr-1" />
+            {author}
+          </div>
+        </div>
+        <a href="#">
+          <h3 className="text-primary line-clamp-2 text-xl font-bold">
+            {title}
+          </h3>
+        </a>
+        <p className="text-foreground/80 line-clamp-3 leading-relaxed">
+          {excerpt}
+        </p>
+        <a
+          href="#blog"
+          className="text-primary group/link flex items-center font-medium underline-offset-6 hover:underline"
+        >
+          Read more
+          <ArrowRight
+            size={16}
+            className="ml-2 transition-transform group-hover/link:translate-x-1"
+          />
+        </a>
+      </div>
     </div>
   );
 }
