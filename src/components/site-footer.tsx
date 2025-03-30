@@ -156,7 +156,7 @@ export function SiteFooter() {
               <li className="flex">
                 <Mail className="text-primary-foreground mr-3 h-5 w-5 flex-shrink-0" />
                 <span className="text-primary-foreground/80">
-                  info@visionwisdom.com
+                  meridian.sewa@gmail.com
                 </span>
               </li>
             </ul>
