@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 import { SiteHeader } from "@/components/site-header";
 
@@ -10,6 +10,7 @@ function RouteComponent() {
   return (
     <>
       <SiteHeader />
+      <Outlet />
     </>
   );
 }
