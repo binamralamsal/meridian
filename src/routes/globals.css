@@ -112,6 +112,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  --font-sans: "Inter", "sans-serif";
   --animate-headerSticky: headerSticky var(--duration, 0.5s) ease-in-out;
   @keyframes headerSticky {
     0% {
@@ -121,6 +122,22 @@
       transform: translateY(0);
     }
   }
+
+  --animate-float: float var(--duration, 3s) ease-in-out infinite;
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
 }
 
 @layer base {
