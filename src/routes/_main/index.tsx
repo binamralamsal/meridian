@@ -2,6 +2,8 @@ import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 
+import { Button } from "@/components/ui/button";
+
 export const Route = createFileRoute("/_main/")({
   component: Home,
   loader: async ({ context }) => {
@@ -23,14 +25,13 @@ function Home() {
   return (
     <div>
       <p>Value: {valueQuery.data.value}</p>
-      <button
+      <Button
         onClick={async () => {
           await queryClient.invalidateQueries({ queryKey: ["value"] });
         }}
-        className="rounded-sm bg-blue-600 px-2 py-1 text-white"
       >
         Refetch
-      </button>
+      </Button>
     </div>
   );
 }
