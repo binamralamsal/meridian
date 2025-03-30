@@ -541,6 +541,35 @@ function Home() {
           ))}
         </div>
       </section>
+
+      <section className="bg-primary text-primary-foreground w-full py-14 md:py-20 lg:py-28">
+        <div className="container">
+          <div className="grid place-items-center gap-4 text-center">
+            <div className="space-y-2">
+              <h2 className="max-w-[25ch] text-3xl leading-tight font-bold tracking-tighter text-balance sm:text-4xl md:text-5xl">
+                Ready to Take Control of Your Health?
+              </h2>
+              <p className="mx-auto max-w-[50ch] text-balance md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed">
+                Schedule an appointment today and take the first step towards a
+                healthier life with ProHealth's expert medical team.
+              </p>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <Button size="lg" variant="secondary" asChild>
+                <Link to="/">Book Appointment</Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="hover:text-foreground border-white bg-transparent text-white hover:bg-white"
+                asChild
+              >
+                <Link to="/contact">Contact Us</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
