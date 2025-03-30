@@ -5,6 +5,7 @@ import {
   Bone,
   Brain,
   Calendar,
+  CheckCircle2Icon,
   Heart,
   Mail,
   MapPin,
@@ -280,7 +281,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="bg-primary py-14 text-white md:py-20 lg:py-28">
+      <section className="bg-primary py-14 text-white">
         <div className="container">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <StatsCounter number={870} label="Expert Doctors" icon="user-md" />
@@ -295,6 +296,84 @@ function Home() {
               label="Years Experience"
               icon="calendar"
             />
+          </div>
+        </div>
+      </section>
+
+      <section className="container py-14 md:py-20 lg:py-28">
+        <div className="grid items-center gap-8 md:gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="relative">
+            <div className="rounded-lg shadow-xl">
+              <img
+                src="/medical-team.jpeg"
+                alt="Medical team"
+                className="h-auto w-full"
+              />
+            </div>
+
+            <div className="p animate-float bg-primary/80 absolute right-4 bottom-4 rounded-lg p-6 text-white shadow-lg backdrop-blur-md lg:-right-6 lg:-bottom-6">
+              <div className="text-4xl font-bold">30+</div>
+              <div className="text-sm">Years of Experience</div>
+            </div>
+
+            <div className="bg-secondary absolute -top-6 -left-6 h-20 w-20 rounded-lg opacity-20"></div>
+          </div>
+
+          <div className="space-y-4">
+            <span className="bg-primary/10 text-primary inline-block rounded-full px-3 py-1 text-sm font-medium">
+              About Us
+            </span>
+            <h2 className="text-3xl font-bold text-balance md:text-4xl">
+              Meridian is a team of experienced medical professionals
+            </h2>
+            <p className="text-foreground/80 leading-relaxed">
+              Dedicated to providing top-quality healthcare services. We believe
+              in a holistic approach to healthcare that focuses on treating the
+              whole person, not just the illness or symptoms.
+            </p>
+            <p className="text-foreground/80 leading-relaxed">
+              The organization formerly known as Meridian Health Care Center
+              Pvt. Ltd. has undergone a remarkable transformation and has been
+              established under a new name as Meridian Multi Speciality
+              Polyclinic Pvt. Ltd. in 2024 A.D. with an amazing management team
+              and the same specialists' team of doctors who have been serving
+              the community since 2002 A.D.
+            </p>
+
+            <div className="grid gap-3">
+              <div className="flex items-center gap-3">
+                <CheckCircle2Icon className="text-secondary h-5 w-5" />
+                <p className="text-foreground/80">
+                  30+ Years of Excellence in Healthcare
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <CheckCircle2Icon className="text-secondary h-5 w-5" />
+                <p className="text-foreground/80">
+                  Team of 50+ Experienced Specialists
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <CheckCircle2Icon className="text-secondary h-5 w-5" />
+                <p className="text-foreground/80">
+                  Modern Facilities & Advanced Equipment
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <CheckCircle2Icon className="text-secondary h-5 w-5" />
+                <p className="text-foreground/80">
+                  Patient-Centered Approach to Care
+                </p>
+              </div>
+            </div>
+
+            <Button className="group mt-2" size="lg">
+              <span>Meet Our Doctors</span>
+              <ArrowRight
+                size={18}
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </Button>
           </div>
         </div>
       </section>
