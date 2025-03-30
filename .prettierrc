@@ -7,14 +7,12 @@
   "tailwindAttributes": ["classNames", "toastOptions"],
 
   "importOrder": [
-    "server-only",
-    "use client",
     "^react",
-    "^next",
+    "^@tanstack",
     "^[./].*(?<!\\.(c|le|sc)ss)$",
     "\\.(c|le|sc)ss$",
     "^@/components",
-    "^@?\\w",
+    "~@?\\w",
     "^@/(.*)$",
     "^[./]"
   ],
