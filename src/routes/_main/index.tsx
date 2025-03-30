@@ -6,12 +6,15 @@ import {
   Brain,
   Calendar,
   CheckCircle2Icon,
+  Facebook,
   Heart,
+  Linkedin,
   Mail,
   MapPin,
   Microscope,
   Phone,
   Stethoscope,
+  Twitter,
   User,
 } from "lucide-react";
 
@@ -24,6 +27,33 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/_main/")({
   component: Home,
 });
+
+const doctors = [
+  {
+    name: "Dr. Sarah Johnson",
+    specialty: "Cardiologist",
+    image:
+      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
+  },
+  {
+    name: "Dr. Michael Chen",
+    specialty: "Neurologist",
+    image:
+      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=300&h=400&auto=format&fit=crop",
+  },
+  {
+    name: "Dr. Amanda Rodriguez",
+    specialty: "Pediatrician",
+    image:
+      "https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=300&h=400&auto=format&fit=crop",
+  },
+  {
+    name: "Dr. James Wilson",
+    specialty: "Orthopedic Surgeon",
+    image:
+      "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=300&h=400&auto=format&fit=crop",
+  },
+];
 
 function Home() {
   return (
@@ -375,6 +405,71 @@ function Home() {
               />
             </Button>
           </div>
+        </div>
+      </section>
+
+      <section className="bg-muted relative py-14 md:py-20 lg:py-28">
+        <div className="relative z-10 container">
+          <div className="mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+            <div className="grid gap-3">
+              <h2 className="text-3xl font-bold text-balance md:text-4xl">
+                Meet Our Expert <span className="text-secondary">Doctors</span>
+              </h2>
+              <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
+                Our team of highly qualified medical professionals are here to
+                provide exceptional care tailored to your individual needs.
+              </p>
+            </div>
+            <Button variant="outline" className="group" size="lg">
+              <span>View all doctors</span>
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </div>
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {doctors.map((doctor, index) => (
+              <div key={index} className="group">
+                <div className="relative mb-4 overflow-hidden rounded-xl shadow-sm">
+                  <img
+                    src={doctor.image}
+                    alt={doctor.name}
+                    className="h-[350px] w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="from-primary/70 absolute inset-0 flex items-end justify-center bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="mb-6 flex space-x-4">
+                      <a
+                        href="#"
+                        className="hover:bg-primary rounded-full bg-white p-2 transition-all hover:text-white"
+                      >
+                        <Facebook className="h-4 w-4" />
+                      </a>
+                      <a
+                        href="#"
+                        className="hover:bg-primary rounded-full bg-white p-2 transition-all hover:text-white"
+                      >
+                        <Twitter className="h-4 w-4" />
+                      </a>
+                      <a
+                        href="#"
+                        className="hover:bg-primary rounded-full bg-white p-2 transition-all hover:text-white"
+                      >
+                        <Linkedin className="h-4 w-4" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <h3 className="text-primary text-xl font-semibold">
+                  {doctor.name}
+                </h3>
+                <p className="text-foreground/80">{doctor.specialty}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="bg-primary/10 absolute -top-72 -right-72 h-[800px] w-[800px] rounded-full blur-3xl"></div>
+          <div className="bg-secondary/10 absolute -bottom-72 -left-72 h-[600px] w-[600px] rounded-full blur-3xl"></div>
         </div>
       </section>
     </main>
