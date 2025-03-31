@@ -1,7 +1,8 @@
 // app.config.ts
-import { defineConfig } from "@tanstack/react-start/config";
 import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
+
+import { defineConfig } from "@tanstack/react-start/config";
 
 export default defineConfig({
   tsr: {
@@ -14,5 +15,11 @@ export default defineConfig({
         projects: ["./tsconfig.json"],
       }),
     ],
+  },
+  server: {
+    prerender: {
+      routes: ["/", "/about", "/blogs", "/contact", "/services"],
+      crawlLinks: true,
+    },
   },
 });
