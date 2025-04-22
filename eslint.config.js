@@ -27,4 +27,14 @@ export default defineConfig([
       "react/react-in-jsx-scope": "off",
     },
   },
+  {
+    overrides: [
+      {
+        files: ["migrations/**/*.{ts,tsx}"],
+        rules: {
+          "@typescript-eslint/no-explicit-any": "off",
+        },
+      },
+    ],
+  },
 ]);
