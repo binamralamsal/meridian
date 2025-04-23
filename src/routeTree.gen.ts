@@ -12,8 +12,10 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as MainRouteImport } from './routes/_main/route'
+import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as MainIndexImport } from './routes/_main/index'
 import { Route as MainServicesImport } from './routes/_main/services'
+import { Route as MainLoginImport } from './routes/_main/login'
 import { Route as MainContactImport } from './routes/_main/contact'
 import { Route as MainBlogsImport } from './routes/_main/blogs'
 import { Route as MainAboutImport } from './routes/_main/about'
@@ -22,6 +24,12 @@ import { Route as MainAboutImport } from './routes/_main/about'
 
 const MainRouteRoute = MainRouteImport.update({
   id: '/_main',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminIndexRoute = AdminIndexImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -34,6 +42,12 @@ const MainIndexRoute = MainIndexImport.update({
 const MainServicesRoute = MainServicesImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+
+const MainLoginRoute = MainLoginImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => MainRouteRoute,
 } as any)
 
@@ -87,6 +101,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainContactImport
       parentRoute: typeof MainRouteImport
     }
+    '/_main/login': {
+      id: '/_main/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof MainLoginImport
+      parentRoute: typeof MainRouteImport
+    }
     '/_main/services': {
       id: '/_main/services'
       path: '/services'
@@ -101,6 +122,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainIndexImport
       parentRoute: typeof MainRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -110,6 +138,7 @@ interface MainRouteRouteChildren {
   MainAboutRoute: typeof MainAboutRoute
   MainBlogsRoute: typeof MainBlogsRoute
   MainContactRoute: typeof MainContactRoute
+  MainLoginRoute: typeof MainLoginRoute
   MainServicesRoute: typeof MainServicesRoute
   MainIndexRoute: typeof MainIndexRoute
 }
@@ -118,6 +147,7 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainAboutRoute: MainAboutRoute,
   MainBlogsRoute: MainBlogsRoute,
   MainContactRoute: MainContactRoute,
+  MainLoginRoute: MainLoginRoute,
   MainServicesRoute: MainServicesRoute,
   MainIndexRoute: MainIndexRoute,
 }
@@ -131,16 +161,20 @@ export interface FileRoutesByFullPath {
   '/about': typeof MainAboutRoute
   '/blogs': typeof MainBlogsRoute
   '/contact': typeof MainContactRoute
+  '/login': typeof MainLoginRoute
   '/services': typeof MainServicesRoute
   '/': typeof MainIndexRoute
+  '/admin': typeof AdminIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/about': typeof MainAboutRoute
   '/blogs': typeof MainBlogsRoute
   '/contact': typeof MainContactRoute
+  '/login': typeof MainLoginRoute
   '/services': typeof MainServicesRoute
   '/': typeof MainIndexRoute
+  '/admin': typeof AdminIndexRoute
 }
 
 export interface FileRoutesById {
@@ -149,32 +183,46 @@ export interface FileRoutesById {
   '/_main/about': typeof MainAboutRoute
   '/_main/blogs': typeof MainBlogsRoute
   '/_main/contact': typeof MainContactRoute
+  '/_main/login': typeof MainLoginRoute
   '/_main/services': typeof MainServicesRoute
   '/_main/': typeof MainIndexRoute
+  '/admin/': typeof AdminIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/about' | '/blogs' | '/contact' | '/services' | '/'
+  fullPaths:
+    | ''
+    | '/about'
+    | '/blogs'
+    | '/contact'
+    | '/login'
+    | '/services'
+    | '/'
+    | '/admin'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/blogs' | '/contact' | '/services' | '/'
+  to: '/about' | '/blogs' | '/contact' | '/login' | '/services' | '/' | '/admin'
   id:
     | '__root__'
     | '/_main'
     | '/_main/about'
     | '/_main/blogs'
     | '/_main/contact'
+    | '/_main/login'
     | '/_main/services'
     | '/_main/'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   MainRouteRoute: typeof MainRouteRouteWithChildren
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   MainRouteRoute: MainRouteRouteWithChildren,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -187,7 +235,8 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_main"
+        "/_main",
+        "/admin/"
       ]
     },
     "/_main": {
@@ -196,6 +245,7 @@ export const routeTree = rootRoute
         "/_main/about",
         "/_main/blogs",
         "/_main/contact",
+        "/_main/login",
         "/_main/services",
         "/_main/"
       ]
@@ -212,6 +262,10 @@ export const routeTree = rootRoute
       "filePath": "_main/contact.tsx",
       "parent": "/_main"
     },
+    "/_main/login": {
+      "filePath": "_main/login.tsx",
+      "parent": "/_main"
+    },
     "/_main/services": {
       "filePath": "_main/services.tsx",
       "parent": "/_main"
@@ -219,6 +273,9 @@ export const routeTree = rootRoute
     "/_main/": {
       "filePath": "_main/index.tsx",
       "parent": "/_main"
+    },
+    "/admin/": {
+      "filePath": "admin/index.tsx"
     }
   }
 }

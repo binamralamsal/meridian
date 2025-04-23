@@ -19,7 +19,7 @@ export function SiteFooter() {
         <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="mb-6 flex items-center space-x-2">
-              <Logo className="h-10" mono />
+              <Logo className="h-10" />
             </div>
             <p className="text-primary-foreground/80 mb-6 leading-relaxed">
               Dedicated to providing top-quality healthcare services with a

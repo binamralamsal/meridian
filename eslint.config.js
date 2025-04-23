@@ -1,6 +1,6 @@
 import js from "@eslint/js";
 import pluginReact from "eslint-plugin-react";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -25,16 +25,8 @@ export default defineConfig([
   {
     rules: {
       "react/react-in-jsx-scope": "off",
+      "react/no-children-prop": "off",
     },
   },
-  {
-    overrides: [
-      {
-        files: ["migrations/**/*.{ts,tsx}"],
-        rules: {
-          "@typescript-eslint/no-explicit-any": "off",
-        },
-      },
-    ],
-  },
+  globalIgnores(["migrations/*"]),
 ]);
