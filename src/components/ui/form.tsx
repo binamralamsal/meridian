@@ -59,7 +59,7 @@ function useFieldContext() {
   const { id } = useContext(FormItemContext);
   const { name, store, getMeta, ...fieldContext } = _useFieldContext();
 
-  const { isTouched } = getMeta();
+  const { isBlurred } = getMeta();
 
   const errors = useStore(store, (state) => state.meta.errors);
   if (!fieldContext) {
@@ -75,7 +75,7 @@ function useFieldContext() {
     errors,
     store,
     getMeta,
-    shouldShowError: isTouched && !!errors.length,
+    shouldShowError: isBlurred && !!errors.length,
     ...fieldContext,
   };
 }

@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
+import { currentUserSessionOptions } from "@/features/auth/auth.queries";
 import { LoginForm } from "@/features/auth/components/login-form";
 
 export const Route = createFileRoute("/_main/login")({
@@ -9,6 +10,12 @@ export const Route = createFileRoute("/_main/login")({
   validateSearch: z.object({
     redirect_url: z.string().startsWith("/").optional().catch(undefined),
   }),
+  beforeLoad: async ({ context }) => {
+    const session = await context.queryClient.ensureQueryData(
+      currentUserSessionOptions(),
+    );
+    if (session) throw redirect({ to: "/" });
+  },
 });
 
 function RouteComponent() {

@@ -1,9 +1,14 @@
 "use client";
 
+import { LoaderIcon } from "lucide-react";
 import { toast } from "sonner";
-import { z } from "zod";
 
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+
+import { loginUserSchema } from "../auth.schema";
+import { loginUserFn } from "../server/functions/user";
 
 import {
   Card,
@@ -15,24 +20,23 @@ import {
 import { useAppForm } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-const zodSchema = z.object({
-  email: z.string().min(1).email(),
-  password: z.string().min(8),
-});
-
 export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: useServerFn(loginUserFn),
+  });
+
   const form = useAppForm({
     defaultValues: {
       email: "",
       password: "",
     },
     validators: {
-      onSubmit: zodSchema,
-      onBlur: zodSchema,
+      onChange: loginUserSchema,
     },
-    onSubmit: ({ value }) => {
-      console.log(value);
-      const response = { status: "a", message: "Login successful" };
+    onSubmit: async ({ value }) => {
+      const response = await mutation.mutateAsync({ data: value });
 
       if (response.status === "SUCCESS") {
         toast.success(response.message);
@@ -44,8 +48,6 @@ export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
       }
     },
   });
-
-  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-6">
@@ -112,7 +114,14 @@ export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
                     )}
                   />
 
-                  <form.Button type="submit" className="w-full">
+                  <form.Button
+                    type="submit"
+                    className="w-full"
+                    disabled={mutation.isPending}
+                  >
+                    {mutation.isPending && (
+                      <LoaderIcon className="h-4 w-4 animate-spin" />
+                    )}
                     Login
                   </form.Button>
                 </div>

@@ -1,0 +1,50 @@
+import { z } from "zod";
+
+export const emailSchema = z
+  .string()
+  .trim()
+  .email({ message: "Please enter a valid email address." })
+  .min(5, { message: "Email must be at least 5 characters long." });
+export type EmailSchema = z.infer<typeof emailSchema>;
+
+export const passwordSchema = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long." })
+  .max(255, { message: "Password must be less than 255 characters long." });
+export type PasswordSchema = z.infer<typeof passwordSchema>;
+
+export const newPasswordSchema = passwordSchema
+  .regex(/[A-Z]/, {
+    message: "Password must include at least one uppercase letter.",
+  })
+  .regex(/[a-z]/, {
+    message: "Password must include at least one lowercase letter.",
+  })
+  .regex(/[0-9]/, { message: "Password must include at least one number." })
+  .regex(/[^A-Za-z0-9]/, {
+    message: "Password must include at least one special character.",
+  });
+export type NewPasswordSchema = z.infer<typeof newPasswordSchema>;
+
+export const nameSchema = z
+  .string()
+  .trim()
+  .min(3, { message: "Name must be at least 3 characters long." })
+  .max(100, { message: "Name must be less than 100 characters long." })
+  .regex(/^[a-zA-Z\s]*$/, {
+    message: "Name can only contain letters and spaces.",
+  });
+export type NameSchema = z.infer<typeof nameSchema>;
+
+export const loginUserSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+});
+export type LoginUserSchema = z.infer<typeof loginUserSchema>;
+
+export const registerUserSchema = z.object({
+  name: nameSchema,
+  email: emailSchema,
+  password: newPasswordSchema,
+});
+export type RegisterUserSchema = z.infer<typeof registerUserSchema>;

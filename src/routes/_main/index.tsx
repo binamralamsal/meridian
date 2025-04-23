@@ -403,8 +403,8 @@ function Home() {
               Pvt. Ltd. has undergone a remarkable transformation and has been
               established under a new name as Meridian Multi Speciality
               Polyclinic Pvt. Ltd. in 2024 A.D. with an amazing management team
-              and the same specialists' team of doctors who have been serving
-              the community since 2002 A.D.
+              and the same specialists&apos; team of doctors who have been
+              serving the community since 2002 A.D.
             </p>
 
             <div className="grid gap-3">
@@ -528,7 +528,7 @@ function Home() {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.map((post, index) => (
+          {blogPosts.map((post) => (
             <BlogCard
               key={post.id}
               title={post.title}
@@ -551,7 +551,7 @@ function Home() {
               </h2>
               <p className="mx-auto max-w-[50ch] text-balance md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed">
                 Schedule an appointment today and take the first step towards a
-                healthier life with ProHealth's expert medical team.
+                healthier life with ProHealth&apos;s expert medical team.
               </p>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
