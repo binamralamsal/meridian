@@ -1,3 +1,4 @@
+import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getHeader } from "@tanstack/react-start/server";
 
@@ -5,7 +6,9 @@ import { loginUserSchema } from "../../auth.schema";
 import { verifyPassword } from "../use-cases/password";
 import {
   createSession,
+  deleteSessionTokenCookie,
   generateSessionToken,
+  invalidateSession,
   setSessionTokenCookie,
 } from "../use-cases/sessions";
 import { getCurrentSessionFn } from "./sessions";
@@ -74,5 +77,17 @@ export const getCurrentUserFn = createServerFn({ method: "GET" }).handler(
     if (!currentUser) return null;
 
     return { session: currentSesion, user: currentUser };
+  },
+);
+
+export const logoutUserFn = createServerFn({ method: "POST" }).handler(
+  async () => {
+    const currentSesion = await getCurrentSessionFn();
+    if (currentSesion) {
+      await invalidateSession(currentSesion.id);
+      deleteSessionTokenCookie();
+    }
+
+    throw redirect({ to: "/login" });
   },
 );

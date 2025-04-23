@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AdminRouteImport } from './routes/admin/route'
 import { Route as MainRouteImport } from './routes/_main/route'
 import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as MainIndexImport } from './routes/_main/index'
@@ -22,15 +23,21 @@ import { Route as MainAboutImport } from './routes/_main/about'
 
 // Create/Update Routes
 
+const AdminRouteRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const MainRouteRoute = MainRouteImport.update({
   id: '/_main',
   getParentRoute: () => rootRoute,
 } as any)
 
 const AdminIndexRoute = AdminIndexImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 const MainIndexRoute = MainIndexImport.update({
@@ -80,6 +87,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainRouteImport
       parentRoute: typeof rootRoute
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/_main/about': {
       id: '/_main/about'
       path: '/about'
@@ -124,10 +138,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin'
+      path: '/'
+      fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AdminRouteImport
     }
   }
 }
@@ -156,15 +170,28 @@ const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(
   MainRouteRouteChildren,
 )
 
+interface AdminRouteRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '': typeof MainRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/about': typeof MainAboutRoute
   '/blogs': typeof MainBlogsRoute
   '/contact': typeof MainContactRoute
   '/login': typeof MainLoginRoute
   '/services': typeof MainServicesRoute
   '/': typeof MainIndexRoute
-  '/admin': typeof AdminIndexRoute
+  '/admin/': typeof AdminIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -180,6 +207,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_main': typeof MainRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/_main/about': typeof MainAboutRoute
   '/_main/blogs': typeof MainBlogsRoute
   '/_main/contact': typeof MainContactRoute
@@ -193,18 +221,20 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/admin'
     | '/about'
     | '/blogs'
     | '/contact'
     | '/login'
     | '/services'
     | '/'
-    | '/admin'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to: '/about' | '/blogs' | '/contact' | '/login' | '/services' | '/' | '/admin'
   id:
     | '__root__'
     | '/_main'
+    | '/admin'
     | '/_main/about'
     | '/_main/blogs'
     | '/_main/contact'
@@ -217,12 +247,12 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   MainRouteRoute: typeof MainRouteRouteWithChildren
-  AdminIndexRoute: typeof AdminIndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   MainRouteRoute: MainRouteRouteWithChildren,
-  AdminIndexRoute: AdminIndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -236,7 +266,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_main",
-        "/admin/"
+        "/admin"
       ]
     },
     "/_main": {
@@ -248,6 +278,12 @@ export const routeTree = rootRoute
         "/_main/login",
         "/_main/services",
         "/_main/"
+      ]
+    },
+    "/admin": {
+      "filePath": "admin/route.tsx",
+      "children": [
+        "/admin/"
       ]
     },
     "/_main/about": {
@@ -275,7 +311,8 @@ export const routeTree = rootRoute
       "parent": "/_main"
     },
     "/admin/": {
-      "filePath": "admin/index.tsx"
+      "filePath": "admin/index.tsx",
+      "parent": "/admin"
     }
   }
 }
