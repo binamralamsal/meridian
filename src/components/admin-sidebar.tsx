@@ -1,7 +1,6 @@
 import {
   BoxesIcon,
   ChevronRightIcon,
-  GalleryVerticalEndIcon,
   HeartPlusIcon,
   HomeIcon,
   NewspaperIcon,
@@ -15,6 +14,7 @@ import { Suspense } from "react";
 import { Link, LinkProps, ReactNode } from "@tanstack/react-router";
 
 import { AdminNavUser } from "./admin-nav-user";
+import { LogoWithoutText } from "./icons/logo-without-text";
 import {
   Collapsible,
   CollapsibleContent,
@@ -45,6 +45,7 @@ interface SidebarMenuItem {
   isActive?: boolean;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   items?: Omit<SidebarMenuItem, "icon">[];
+  exact?: boolean;
 }
 
 interface SidebarGroupItem {
@@ -82,10 +83,14 @@ const items: SidebarGroupItem[] = [
     items: [
       {
         title: "All Doctors",
-        url: "/admin/users",
+        url: "/admin/doctors",
         icon: StethoscopeIcon,
       },
-      { title: "Add New Doctor", url: "/admin/users/new", icon: HeartPlusIcon },
+      {
+        title: "Add New Doctor",
+        url: "/admin/doctors/new",
+        icon: HeartPlusIcon,
+      },
     ],
   },
   {
@@ -93,20 +98,22 @@ const items: SidebarGroupItem[] = [
     items: [
       {
         title: "Blogs",
-        url: "/admin/users",
+        url: "/admin/blogs",
         icon: NewspaperIcon,
+        exact: false,
         items: [
-          { title: "All Blogs", url: "/admin/users" },
-          { title: "Add New Blog", url: "/admin/users/new" },
+          { title: "All Blogs", url: "/admin/blogs" },
+          { title: "Add New Blog", url: "/admin/blogs/new" },
         ],
       },
       {
         title: "Categories",
-        url: "/admin/users",
+        url: "/admin/blog-categories",
         icon: BoxesIcon,
+        exact: false,
         items: [
-          { title: "All Categories", url: "/admin/users" },
-          { title: "Add New Category", url: "/admin/users/new" },
+          { title: "All Categories", url: "/admin/blog-categories" },
+          { title: "Add New Category", url: "/admin/blog-categories/new" },
         ],
       },
     ],
@@ -122,7 +129,11 @@ export function AdminSidebar() {
             <SidebarMenuButton size="lg" asChild>
               <Link to="/admin">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <GalleryVerticalEndIcon className="size-4" />
+                  <LogoWithoutText
+                    className="size-4"
+                    mono
+                    monoFillClass="fill-white dark:fill-black"
+                  />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Meridian</span>
@@ -153,6 +164,9 @@ export function AdminSidebar() {
                         <Link
                           to={item.url}
                           activeProps={{ "data-active": true }}
+                          activeOptions={{
+                            exact: item.exact ?? true,
+                          }}
                         >
                           <item.icon />
                           <span>{item.title}</span>
@@ -174,6 +188,9 @@ export function AdminSidebar() {
                                     <Link
                                       to={subItem.url}
                                       activeProps={{ "data-active": true }}
+                                      activeOptions={{
+                                        exact: subItem.exact ?? true,
+                                      }}
                                     >
                                       <span>{subItem.title}</span>
                                     </Link>

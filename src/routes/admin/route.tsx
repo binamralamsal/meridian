@@ -21,17 +21,19 @@ import {
 import { currentUserOptions } from "@/features/auth/auth.queries";
 
 const getSidebarStateFn = createServerFn({ method: "GET" }).handler(() => {
-  const defaultOpen = getCookie("sidebar_state") === "true";
+  const sidebarState = getCookie("sidebar_state");
+  const defaultOpen = sidebarState ? sidebarState === "true" : true;
+
   return { defaultOpen };
 });
 
 export const Route = createFileRoute("/admin")({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
+  beforeLoad: async ({ context, location }) => {
     const data =
       await context.queryClient.ensureQueryData(currentUserOptions());
     if (!data || data.user.role !== "admin")
-      throw redirect({ to: "/login", search: { redirect_url: "/admin" } });
+      throw redirect({ to: "/login", search: { redirect_url: location.href } });
   },
   loader: async () => {
     return await getSidebarStateFn();

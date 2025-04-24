@@ -135,10 +135,12 @@ function Home() {
                 <div className="from-primary/30 absolute inset-0 bg-gradient-to-t to-transparent"></div>
               </div>
 
-              <div className="animate-float absolute bottom-4 left-4 max-w-xs rounded-lg bg-white/80 p-4 shadow-lg backdrop-blur-md lg:bottom-14 lg:-left-8">
+              <div className="animate-float bg-background/80 absolute bottom-4 left-4 max-w-xs rounded-lg p-4 shadow-lg backdrop-blur-md lg:bottom-14 lg:-left-8">
                 <div className="flex items-center gap-3">
                   <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full">
-                    <span className="font-bold text-white">30</span>
+                    <span className="text-primary-foreground font-bold">
+                      30
+                    </span>
                   </div>
                   <div>
                     <p className="text-primary font-semibold">
@@ -219,9 +221,9 @@ function Home() {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-rose-50 p-4">
-              <Heart className="h-6 w-6 text-rose-500" />
+          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-rose-50 p-4 dark:bg-rose-500">
+              <Heart className="h-6 w-6 text-rose-500 dark:text-rose-50" />
             </div>
             <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
               Cardiology
@@ -239,9 +241,9 @@ function Home() {
             </Link>
           </div>
 
-          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-violet-50 p-4">
-              <Brain className="h-6 w-6 text-violet-500" />
+          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-violet-50 p-4 dark:bg-violet-500">
+              <Brain className="h-6 w-6 text-violet-500 dark:text-violet-50" />
             </div>
             <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
               Neurology
@@ -259,9 +261,9 @@ function Home() {
             </Link>
           </div>
 
-          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-amber-50 p-4">
-              <Bone className="h-6 w-6 text-amber-500" />
+          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-amber-50 p-4 dark:bg-amber-500">
+              <Bone className="h-6 w-6 text-amber-500 dark:text-amber-50" />
             </div>
             <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
               Orthopedics
@@ -279,9 +281,9 @@ function Home() {
             </Link>
           </div>
 
-          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-sky-50 p-4">
-              <Baby className="h-6 w-6 text-sky-500" />
+          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-sky-50 p-4 dark:bg-sky-500">
+              <Baby className="h-6 w-6 text-sky-500 dark:text-sky-50" />
             </div>
             <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
               Pediatrics
@@ -299,9 +301,9 @@ function Home() {
             </Link>
           </div>
 
-          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-emerald-50 p-4">
-              <Stethoscope className="h-6 w-6 text-emerald-500" />
+          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-emerald-50 p-4 dark:bg-emerald-500">
+              <Stethoscope className="h-6 w-6 text-emerald-500 dark:text-emerald-50" />
             </div>
             <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
               Primary Care
@@ -319,9 +321,9 @@ function Home() {
             </Link>
           </div>
 
-          <div className="group space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-indigo-50 p-4">
-              <Microscope className="h-6 w-6 text-indigo-500" />
+          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
+            <div className="inline-block rounded-lg bg-indigo-50 p-4 dark:bg-indigo-500">
+              <Microscope className="h-6 w-6 text-indigo-500 dark:text-indigo-50" />
             </div>
             <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
               Laboratory
@@ -348,7 +350,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="bg-primary py-14 text-white">
+      <section className="bg-primary dark:bg-muted py-14 text-white">
         <div className="container">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <StatsCounter number={870} label="Expert Doctors" icon="user-md" />
@@ -378,7 +380,7 @@ function Home() {
               />
             </div>
 
-            <div className="p animate-float bg-primary/80 absolute right-4 bottom-4 rounded-lg p-6 text-white shadow-lg backdrop-blur-md lg:-right-6 lg:-bottom-6">
+            <div className="p animate-float bg-primary/80 text-primary-foreground absolute right-4 bottom-4 rounded-lg p-6 shadow-lg backdrop-blur-md lg:-right-6 lg:-bottom-6">
               <div className="text-4xl font-bold">30+</div>
               <div className="text-sm">Years of Experience</div>
             </div>
@@ -476,19 +478,19 @@ function Home() {
                     <div className="mb-6 flex space-x-4">
                       <a
                         href="#"
-                        className="hover:bg-primary rounded-full bg-white p-2 transition-all hover:text-white"
+                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
                       >
                         <Facebook className="h-4 w-4" />
                       </a>
                       <a
                         href="#"
-                        className="hover:bg-primary rounded-full bg-white p-2 transition-all hover:text-white"
+                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
                       >
                         <Twitter className="h-4 w-4" />
                       </a>
                       <a
                         href="#"
-                        className="hover:bg-primary rounded-full bg-white p-2 transition-all hover:text-white"
+                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
                       >
                         <Linkedin className="h-4 w-4" />
                       </a>
@@ -542,7 +544,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="bg-primary text-primary-foreground w-full py-14 md:py-20 lg:py-28">
+      <section className="bg-primary dark:bg-muted text-primary-foreground dark:text-foreground w-full py-14 md:py-20 lg:py-28">
         <div className="container">
           <div className="grid place-items-center gap-4 text-center">
             <div className="space-y-2">
@@ -634,15 +636,15 @@ function StatsCounter({ number, label, icon }: StatsCounterProps) {
   function getIcon(iconName: string) {
     switch (iconName) {
       case "user-md":
-        return <User className="h-10 w-10" />;
+        return <User className="text-primary-foreground h-10 w-10" />;
       case "heart":
-        return <Heart className="h-10 w-10" />;
+        return <Heart className="text-primary-foreground h-10 w-10" />;
       case "bed":
-        return <Bed className="h-10 w-10" />;
+        return <Bed className="text-primary-foreground h-10 w-10" />;
       case "calendar":
-        return <Calendar className="h-10 w-10" />;
+        return <Calendar className="text-primary-foreground h-10 w-10" />;
       default:
-        return <User className="h-10 w-10" />;
+        return <User className="text-primary-foreground h-10 w-10" />;
     }
   }
 
@@ -655,7 +657,7 @@ function StatsCounter({ number, label, icon }: StatsCounterProps) {
 
   return (
     <div className="flex flex-col items-center" ref={countRef}>
-      <div className="mb-4 rounded-full bg-sky-600 p-4">{getIcon(icon)}</div>
+      <div className="bg-primary mb-4 rounded-full p-4">{getIcon(icon)}</div>
       <div className="mb-2 text-4xl font-bold">{formatNumber(count)}</div>
       <div className="text-sky-100">{label}</div>
     </div>
@@ -678,7 +680,7 @@ function BlogCard({
   category: string;
 }) {
   return (
-    <div className="group rounded-md border shadow-slate-100 transition-all duration-300 hover:shadow-lg">
+    <div className="group dark:bg-muted/20 dark:hover:bg-muted/50 rounded-md border shadow-slate-100 transition-all duration-300 hover:shadow-lg dark:shadow-slate-900">
       <div className="relative overflow-hidden">
         <a href="#">
           <img

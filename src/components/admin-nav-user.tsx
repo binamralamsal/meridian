@@ -1,6 +1,15 @@
 "use client";
 
-import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
+import {
+  BadgeCheck,
+  ChevronsUpDown,
+  ComputerIcon,
+  LogOut,
+  MoonIcon,
+  PaletteIcon,
+  SunIcon,
+} from "lucide-react";
+import { useTheme } from "next-themes";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
@@ -9,10 +18,15 @@ import { useServerFn } from "@tanstack/react-start";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -30,6 +44,9 @@ export function AdminNavUser() {
   const router = useRouter();
 
   const logoutButtonClick = useServerFn(logoutUserFn);
+  const { setTheme, theme } = useTheme();
+
+  console.log(theme);
 
   const { data } = useSuspenseQuery(currentUserOptions());
   if (!data) {
@@ -90,6 +107,33 @@ export function AdminNavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <PaletteIcon className="size-4 shrink-0" /> Theme
+              </DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  <DropdownMenuCheckboxItem
+                    checked={theme === "dark"}
+                    onCheckedChange={() => setTheme("dark")}
+                  >
+                    <MoonIcon /> Dark
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={theme === "light"}
+                    onCheckedChange={() => setTheme("light")}
+                  >
+                    <SunIcon /> Light
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={theme === "system"}
+                    onCheckedChange={() => setTheme("system")}
+                  >
+                    <ComputerIcon /> System
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <BadgeCheck />
