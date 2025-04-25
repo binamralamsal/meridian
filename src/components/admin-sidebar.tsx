@@ -67,7 +67,7 @@ const items: SidebarGroupItem[] = [
   },
   {
     label: "User Management",
-    action: <Link to="/admin">+</Link>,
+    action: <Link to="/admin/users/new">+</Link>,
     items: [
       {
         title: "All Users",
@@ -166,6 +166,7 @@ export function AdminSidebar() {
                           activeProps={{ "data-active": true }}
                           activeOptions={{
                             exact: item.exact ?? true,
+                            includeSearch: false,
                           }}
                         >
                           <item.icon />
@@ -190,6 +191,7 @@ export function AdminSidebar() {
                                       activeProps={{ "data-active": true }}
                                       activeOptions={{
                                         exact: subItem.exact ?? true,
+                                        includeSearch: false,
                                       }}
                                     >
                                       <span>{subItem.title}</span>

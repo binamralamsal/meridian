@@ -46,8 +46,6 @@ export function AdminNavUser() {
   const logoutButtonClick = useServerFn(logoutUserFn);
   const { setTheme, theme } = useTheme();
 
-  console.log(theme);
-
   const { data } = useSuspenseQuery(currentUserOptions());
   if (!data) {
     router.navigate({ to: "/" });

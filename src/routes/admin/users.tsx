@@ -1,0 +1,87 @@
+import { useQuery } from "@tanstack/react-query";
+import { Link, createFileRoute } from "@tanstack/react-router";
+
+import { AdminPageWrapper } from "@/components/admin-page-wrapper";
+import { DataTable } from "@/components/data-table/data-table";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { allUsersOptions } from "@/features/auth/auth.queries";
+import { getAllUsersSchema } from "@/features/auth/auth.schema";
+import { columns } from "@/features/auth/components/users-table-columns";
+
+export const Route = createFileRoute("/admin/users")({
+  component: RouteComponent,
+  validateSearch: getAllUsersSchema,
+  loaderDeps: ({ search }) => ({ search }),
+  loader: async ({ context, deps: { search } }) => {
+    context.queryClient.prefetchQuery(allUsersOptions({ values: search }));
+  },
+});
+
+function RouteComponent() {
+  const searchParams = Route.useSearch();
+  const { data, isPending } = useQuery(
+    allUsersOptions({ values: searchParams }),
+  );
+
+  return (
+    <AdminPageWrapper pageTitle="Users">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div className="space-y-2">
+            <CardTitle>Users</CardTitle>
+            <CardDescription>
+              <p>Here are the list of users</p>
+            </CardDescription>
+          </div>
+          <Button asChild>
+            <Link to="/admin/users">Add new</Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <DataTable
+            columns={columns}
+            data={data?.users || []}
+            isLoading={isPending}
+            filters={[
+              {
+                accessorKey: "role",
+                title: "Roles",
+                options: [
+                  { label: "Admin", value: "admin" },
+                  { label: "Normal User", value: "user" },
+                ],
+              },
+            ]}
+            options={{
+              pageCount: data?.pagination.totalPages,
+              initialState: {
+                columnVisibility: { updatedAt: false },
+                columnFilters: [
+                  {
+                    id: "role",
+                    value: searchParams.role,
+                  },
+                ],
+                sorting: Object.entries(searchParams.sort).map(
+                  ([key, value]) => ({
+                    desc: value === "desc",
+                    id: key,
+                  }),
+                ),
+              },
+            }}
+            skeletonColumnWidths={["5rem", "14rem", "22rem", "8rem"]}
+          />
+        </CardContent>
+      </Card>
+    </AdminPageWrapper>
+  );
+}

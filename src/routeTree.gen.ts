@@ -15,11 +15,13 @@ import { Route as AdminRouteImport } from './routes/admin/route'
 import { Route as MainRouteImport } from './routes/_main/route'
 import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as MainIndexImport } from './routes/_main/index'
+import { Route as AdminUsersImport } from './routes/admin/users'
 import { Route as MainServicesImport } from './routes/_main/services'
 import { Route as MainLoginImport } from './routes/_main/login'
 import { Route as MainContactImport } from './routes/_main/contact'
 import { Route as MainBlogsImport } from './routes/_main/blogs'
 import { Route as MainAboutImport } from './routes/_main/about'
+import { Route as AdminUsersNewImport } from './routes/admin/users_.new'
 
 // Create/Update Routes
 
@@ -44,6 +46,12 @@ const MainIndexRoute = MainIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MainRouteRoute,
+} as any)
+
+const AdminUsersRoute = AdminUsersImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 const MainServicesRoute = MainServicesImport.update({
@@ -74,6 +82,12 @@ const MainAboutRoute = MainAboutImport.update({
   id: '/about',
   path: '/about',
   getParentRoute: () => MainRouteRoute,
+} as any)
+
+const AdminUsersNewRoute = AdminUsersNewImport.update({
+  id: '/users_/new',
+  path: '/users/new',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -129,6 +143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainServicesImport
       parentRoute: typeof MainRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersImport
+      parentRoute: typeof AdminRouteImport
+    }
     '/_main/': {
       id: '/_main/'
       path: '/'
@@ -141,6 +162,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexImport
+      parentRoute: typeof AdminRouteImport
+    }
+    '/admin/users_/new': {
+      id: '/admin/users_/new'
+      path: '/users/new'
+      fullPath: '/admin/users/new'
+      preLoaderRoute: typeof AdminUsersNewImport
       parentRoute: typeof AdminRouteImport
     }
   }
@@ -171,11 +199,15 @@ const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(
 )
 
 interface AdminRouteRouteChildren {
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminUsersNewRoute: typeof AdminUsersNewRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminUsersNewRoute: AdminUsersNewRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
@@ -190,8 +222,10 @@ export interface FileRoutesByFullPath {
   '/contact': typeof MainContactRoute
   '/login': typeof MainLoginRoute
   '/services': typeof MainServicesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/': typeof MainIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/users/new': typeof AdminUsersNewRoute
 }
 
 export interface FileRoutesByTo {
@@ -200,8 +234,10 @@ export interface FileRoutesByTo {
   '/contact': typeof MainContactRoute
   '/login': typeof MainLoginRoute
   '/services': typeof MainServicesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/': typeof MainIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/users/new': typeof AdminUsersNewRoute
 }
 
 export interface FileRoutesById {
@@ -213,8 +249,10 @@ export interface FileRoutesById {
   '/_main/contact': typeof MainContactRoute
   '/_main/login': typeof MainLoginRoute
   '/_main/services': typeof MainServicesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/_main/': typeof MainIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/users_/new': typeof AdminUsersNewRoute
 }
 
 export interface FileRouteTypes {
@@ -227,10 +265,21 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/services'
+    | '/admin/users'
     | '/'
     | '/admin/'
+    | '/admin/users/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/blogs' | '/contact' | '/login' | '/services' | '/' | '/admin'
+  to:
+    | '/about'
+    | '/blogs'
+    | '/contact'
+    | '/login'
+    | '/services'
+    | '/admin/users'
+    | '/'
+    | '/admin'
+    | '/admin/users/new'
   id:
     | '__root__'
     | '/_main'
@@ -240,8 +289,10 @@ export interface FileRouteTypes {
     | '/_main/contact'
     | '/_main/login'
     | '/_main/services'
+    | '/admin/users'
     | '/_main/'
     | '/admin/'
+    | '/admin/users_/new'
   fileRoutesById: FileRoutesById
 }
 
@@ -283,7 +334,9 @@ export const routeTree = rootRoute
     "/admin": {
       "filePath": "admin/route.tsx",
       "children": [
-        "/admin/"
+        "/admin/users",
+        "/admin/",
+        "/admin/users_/new"
       ]
     },
     "/_main/about": {
@@ -306,12 +359,20 @@ export const routeTree = rootRoute
       "filePath": "_main/services.tsx",
       "parent": "/_main"
     },
+    "/admin/users": {
+      "filePath": "admin/users.tsx",
+      "parent": "/admin"
+    },
     "/_main/": {
       "filePath": "_main/index.tsx",
       "parent": "/_main"
     },
     "/admin/": {
       "filePath": "admin/index.tsx",
+      "parent": "/admin"
+    },
+    "/admin/users_/new": {
+      "filePath": "admin/users_.new.tsx",
       "parent": "/admin"
     }
   }

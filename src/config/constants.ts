@@ -14,3 +14,5 @@ export const SESSION_LIFETIME =
 
 export const SESSION_REFRESH_TIME = SESSION_LIFETIME / 2;
 export const SESSION_COOKIE_NAME = "session";
+
+export const DATATABLE_PAGE_SIZE = 15;

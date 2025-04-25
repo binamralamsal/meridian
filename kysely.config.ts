@@ -1,4 +1,8 @@
-import { PostgresDialect } from "kysely";
+import {
+  CamelCasePlugin,
+  DeduplicateJoinsPlugin,
+  PostgresDialect,
+} from "kysely";
 import { defineConfig } from "kysely-ctl";
 import { Pool } from "pg";
 
@@ -16,4 +20,8 @@ export default defineConfig({
   migrations: {
     migrationFolder: "migrations",
   },
+  seeds: {
+    seedFolder: "seeds",
+  },
+  plugins: [new CamelCasePlugin(), new DeduplicateJoinsPlugin()],
 });

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { DATATABLE_PAGE_SIZE } from "@/config/constants";
+
 export const emailSchema = z
   .string()
   .trim()
@@ -48,3 +50,28 @@ export const registerUserSchema = z.object({
   password: newPasswordSchema,
 });
 export type RegisterUserSchema = z.infer<typeof registerUserSchema>;
+
+export const getAllUsersSchema = z.object({
+  page: z.number().int().min(1).optional().default(1).catch(1),
+  pageSize: z
+    .number()
+    .int()
+    .min(5)
+    .optional()
+    .default(DATATABLE_PAGE_SIZE)
+    .catch(DATATABLE_PAGE_SIZE),
+  search: z.string().optional(),
+  role: z
+    .array(z.enum(["admin", "user"]))
+    .default([])
+    .catch([]),
+  sort: z
+    .record(
+      z.enum(["id", "name", "email", "role", "createdAt", "updatedAt"]),
+      z.enum(["asc", "desc"]),
+    )
+    .optional()
+    .default({ createdAt: "desc" })
+    .catch({ createdAt: "desc" }),
+});
+export type GetAllUsersSchema = z.infer<typeof getAllUsersSchema>;
