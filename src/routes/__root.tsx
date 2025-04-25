@@ -99,7 +99,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          {children} <Toaster />
+          {children} <Toaster richColors />
         </ThemeProvider>
 
         <TanStackRouterDevtools position="bottom-right" />

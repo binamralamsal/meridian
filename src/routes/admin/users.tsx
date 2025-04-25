@@ -14,7 +14,7 @@ import {
 
 import { allUsersOptions } from "@/features/auth/auth.queries";
 import { getAllUsersSchema } from "@/features/auth/auth.schema";
-import { columns } from "@/features/auth/components/users-table-columns";
+import { userTableColumns } from "@/features/auth/components/users-table-columns";
 
 export const Route = createFileRoute("/admin/users")({
   component: RouteComponent,
@@ -47,7 +47,7 @@ function RouteComponent() {
         </CardHeader>
         <CardContent>
           <DataTable
-            columns={columns}
+            columns={userTableColumns}
             data={data?.users || []}
             isLoading={isPending}
             filters={[
@@ -78,7 +78,7 @@ function RouteComponent() {
                 ),
               },
             }}
-            skeletonColumnWidths={["5rem", "14rem", "22rem", "8rem"]}
+            skeletonColumnWidths={["9%", "20%", "35%", "10%", "18%"]}
           />
         </CardContent>
       </Card>

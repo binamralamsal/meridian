@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 
@@ -43,7 +43,10 @@ export function AdminNavUser() {
   const { isMobile } = useSidebar();
   const router = useRouter();
 
-  const logoutButtonClick = useServerFn(logoutUserFn);
+  const logoutUserMutation = useMutation({
+    mutationFn: useServerFn(logoutUserFn),
+  });
+
   const { setTheme, theme } = useTheme();
 
   const { data } = useSuspenseQuery(currentUserOptions());
@@ -137,7 +140,9 @@ export function AdminNavUser() {
               <BadgeCheck />
               Account
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => logoutButtonClick()}>
+            <DropdownMenuItem
+              onClick={() => logoutUserMutation.mutateAsync({})}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>

@@ -1,8 +1,11 @@
+import { z } from "zod";
+
 import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getHeader } from "@tanstack/react-start/server";
 
 import { getAllUsersSchema, loginUserSchema } from "../../auth.schema";
+import { ensureAdmin } from "../middlewares/ensure-admin";
 import { verifyPassword } from "../use-cases/password";
 import {
   createSession,
@@ -94,11 +97,8 @@ export const logoutUserFn = createServerFn({ method: "POST" }).handler(
 
 export const getAllUsersFn = createServerFn({ method: "GET" })
   .validator(getAllUsersSchema)
+  .middleware([ensureAdmin])
   .handler(async ({ data }) => {
-    const currentUser = await getCurrentUserFn();
-    if (!currentUser || currentUser.user.role !== "admin")
-      throw redirect({ to: "/" });
-
     const { sort, page, pageSize, search, role } = data;
 
     function createBaseQuery() {
@@ -168,4 +168,16 @@ export const getAllUsersFn = createServerFn({ method: "GET" })
         totalPages,
       },
     };
+  });
+
+export const deleteUserFn = createServerFn()
+  .middleware([ensureAdmin])
+  .validator(z.number().int())
+  .handler(async ({ context: { auth }, data }) => {
+    if (data === auth.user.id)
+      return { status: "ERROR", message: "Oops! You can not delete yourself!" };
+
+    await db.deleteFrom("users").where("users.id", "=", data).execute();
+
+    return { status: "SUCCESS", message: "Deleted user successfully!" };
   });
