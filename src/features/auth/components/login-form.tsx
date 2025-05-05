@@ -1,5 +1,3 @@
-"use client";
-
 import { LoaderIcon } from "lucide-react";
 import { toast } from "sonner";
 
@@ -19,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { useAppForm } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
   const router = useRouter();
@@ -75,7 +74,7 @@ export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
                         <field.FormControl>
                           <Input
                             type="email"
-                            placeholder="m@example.com"
+                            placeholder="email@website.com"
                             name={field.name}
                             value={field.state.value}
                             onBlur={field.handleBlur}
@@ -101,8 +100,8 @@ export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
                           </a>
                         </div>
                         <field.FormControl>
-                          <Input
-                            type="password"
+                          <PasswordInput
+                            placeholder="********"
                             name={field.name}
                             value={field.state.value}
                             onBlur={field.handleBlur}

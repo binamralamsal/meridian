@@ -32,7 +32,7 @@ function RouteComponent() {
   );
 
   return (
-    <AdminPageWrapper pageTitle="Users">
+    <AdminPageWrapper pageTitle="All Users">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="space-y-2">
@@ -42,7 +42,7 @@ function RouteComponent() {
             </CardDescription>
           </div>
           <Button asChild>
-            <Link to="/admin/users">Add new</Link>
+            <Link to="/admin/users/new">Add new</Link>
           </Button>
         </CardHeader>
         <CardContent>

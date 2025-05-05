@@ -1,5 +1,3 @@
-"use client";
-
 import { SearchIcon } from "lucide-react";
 
 import { FormEvent, Fragment, useEffect, useState } from "react";

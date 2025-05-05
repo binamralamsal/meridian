@@ -3,11 +3,12 @@ import { toast } from "sonner";
 
 import { useState } from "react";
 
-import { useQueryClient } from "@tanstack/react-query";
-import { Link, useSearch } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useRouter, useSearch } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { ColumnDef } from "@tanstack/react-table";
 
-import { allUsersOptions } from "../auth.queries";
+import { allUsersOptions, currentUserOptions } from "../auth.queries";
 import { deleteUserFn } from "../server/functions/user";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
@@ -125,24 +126,35 @@ export const userTableColumns: ColumnDef<User>[] = [
 
       const queryClient = useQueryClient();
       const searchParams = useSearch({ from: "/admin/users" });
+      const router = useRouter();
+      const deleteUser = useServerFn(deleteUserFn);
 
       const [deleteDialogOpened, setDeleteDialogOpened] = useState(false);
       const [actionsDropdownOpened, setActionsDropdownOpened] = useState(false);
 
+      const { data } = useQuery(currentUserOptions());
+
+      const isDeletingCurrentUser = data?.user.id === user.id;
+      const nameWithId = `${row.original.name} #${row.original.id}`;
+
       async function handleDeleteUser() {
-        const response = await deleteUserFn({ data: user.id });
+        setDeleteDialogOpened(false);
+        setActionsDropdownOpened(false);
+
+        const response = await deleteUser({ data: user.id });
 
         if (response.status === "SUCCESS") {
           toast.success(response.message);
-          await queryClient.refetchQueries(
-            allUsersOptions({ values: searchParams }),
-          );
+          if (isDeletingCurrentUser) {
+            router.navigate({ to: "/" });
+          } else {
+            await queryClient.invalidateQueries(
+              allUsersOptions({ values: searchParams }),
+            );
+          }
         } else {
           toast.error(response.message);
         }
-
-        setDeleteDialogOpened(false);
-        setActionsDropdownOpened(false);
       }
 
       return (
@@ -176,20 +188,25 @@ export const userTableColumns: ColumnDef<User>[] = [
                   <AlertDialogTitle>
                     Are you absolutely sure you want to delete{" "}
                     <strong>
-                      {row.original.name} #{row.original.id}
-                    </strong>{" "}
-                    user?
+                      {isDeletingCurrentUser
+                        ? "your own account?"
+                        : `${nameWithId} user?`}
+                    </strong>
                   </AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete{" "}
                     <strong>
-                      {row.original.name} #{row.original.id}
+                      {isDeletingCurrentUser ? "your account" : `${nameWithId}`}
                     </strong>{" "}
                     from our servers.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel
+                    onClick={() => setActionsDropdownOpened(false)}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
                   <Button variant="destructive" onClick={handleDeleteUser}>
                     Delete
                   </Button>

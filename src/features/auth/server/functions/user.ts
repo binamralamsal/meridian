@@ -91,7 +91,7 @@ export const logoutUserFn = createServerFn({ method: "POST" }).handler(
       deleteSessionTokenCookie();
     }
 
-    throw redirect({ to: "/login" });
+    throw redirect({ to: "/login", search: { redirect_url: "/admin" } });
   },
 );
 
@@ -173,10 +173,7 @@ export const getAllUsersFn = createServerFn({ method: "GET" })
 export const deleteUserFn = createServerFn()
   .middleware([ensureAdmin])
   .validator(z.number().int())
-  .handler(async ({ context: { auth }, data }) => {
-    if (data === auth.user.id)
-      return { status: "ERROR", message: "Oops! You can not delete yourself!" };
-
+  .handler(async ({ data }) => {
     await db.deleteFrom("users").where("users.id", "=", data).execute();
 
     return { status: "SUCCESS", message: "Deleted user successfully!" };

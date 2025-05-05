@@ -1,5 +1,3 @@
-"use client";
-
 import {
   BadgeCheck,
   ChevronsUpDown,
@@ -9,7 +7,6 @@ import {
   PaletteIcon,
   SunIcon,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
@@ -38,6 +35,7 @@ import {
 
 import { currentUserOptions } from "@/features/auth/auth.queries";
 import { logoutUserFn } from "@/features/auth/server/functions/user";
+import { useAnimatedThemeSwitcher } from "@/hooks/use-animated-theme-switcher";
 
 export function AdminNavUser() {
   const { isMobile } = useSidebar();
@@ -47,7 +45,7 @@ export function AdminNavUser() {
     mutationFn: useServerFn(logoutUserFn),
   });
 
-  const { setTheme, theme } = useTheme();
+  const { changeTheme, theme } = useAnimatedThemeSwitcher();
 
   const { data } = useSuspenseQuery(currentUserOptions());
   if (!data) {
@@ -116,19 +114,19 @@ export function AdminNavUser() {
                 <DropdownMenuSubContent>
                   <DropdownMenuCheckboxItem
                     checked={theme === "dark"}
-                    onCheckedChange={() => setTheme("dark")}
+                    onCheckedChange={() => changeTheme("dark")}
                   >
                     <MoonIcon /> Dark
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
                     checked={theme === "light"}
-                    onCheckedChange={() => setTheme("light")}
+                    onCheckedChange={() => changeTheme("light")}
                   >
                     <SunIcon /> Light
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
                     checked={theme === "system"}
-                    onCheckedChange={() => setTheme("system")}
+                    onCheckedChange={() => changeTheme("system")}
                   >
                     <ComputerIcon /> System
                   </DropdownMenuCheckboxItem>

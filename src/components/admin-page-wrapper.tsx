@@ -1,5 +1,7 @@
 import { Fragment, ReactNode } from "react";
 
+import { LinkProps } from "@tanstack/react-router";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,7 +15,7 @@ import { SidebarTrigger } from "./ui/sidebar";
 
 type BreadcrumbItem = {
   label: string;
-  href: string;
+  href: LinkProps["to"];
 };
 
 export function AdminPageWrapper({
