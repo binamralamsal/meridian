@@ -84,11 +84,11 @@ function RouteComponent() {
           pageTitle="Add New User"
           rightSideContent={<ActionButtons />}
         >
-          <Card>
+          <Card className="container px-0">
             <CardHeader>
               <CardTitle>Add User</CardTitle>
               <CardDescription>
-                Lipsum dolor sit amet, consectetur adipiscing elit
+                Add a new user by entering their name, email, role, and password
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">

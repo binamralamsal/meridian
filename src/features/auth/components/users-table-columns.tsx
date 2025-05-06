@@ -167,7 +167,9 @@ export const userTableColumns: ColumnDef<User>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/admin/users">Edit</Link>
+              <Link to="/admin/users/$id" params={{ id: user.id.toString() }}>
+                Edit
+              </Link>
             </DropdownMenuItem>
             {!isDeletingCurrentUser && (
               <AlertDialog
