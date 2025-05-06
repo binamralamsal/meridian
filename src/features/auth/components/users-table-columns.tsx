@@ -4,12 +4,12 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useRouter, useSearch } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { allUsersOptions, currentUserOptions } from "../auth.queries";
-import { deleteUserFn } from "../server/functions/user";
+import { deleteUserFn } from "../server/functions/admin-user";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import {
@@ -126,7 +126,6 @@ export const userTableColumns: ColumnDef<User>[] = [
 
       const queryClient = useQueryClient();
       const searchParams = useSearch({ from: "/admin/users" });
-      const router = useRouter();
       const deleteUser = useServerFn(deleteUserFn);
 
       const [deleteDialogOpened, setDeleteDialogOpened] = useState(false);
@@ -145,13 +144,9 @@ export const userTableColumns: ColumnDef<User>[] = [
 
         if (response.status === "SUCCESS") {
           toast.success(response.message);
-          if (isDeletingCurrentUser) {
-            router.navigate({ to: "/" });
-          } else {
-            await queryClient.invalidateQueries(
-              allUsersOptions({ values: searchParams }),
-            );
-          }
+          await queryClient.invalidateQueries(
+            allUsersOptions({ values: searchParams }),
+          );
         } else {
           toast.error(response.message);
         }
@@ -174,45 +169,40 @@ export const userTableColumns: ColumnDef<User>[] = [
             <DropdownMenuItem asChild>
               <Link to="/admin/users">Edit</Link>
             </DropdownMenuItem>
-            <AlertDialog
-              open={deleteDialogOpened}
-              onOpenChange={setDeleteDialogOpened}
-            >
-              <AlertDialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  Delete
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Are you absolutely sure you want to delete{" "}
-                    <strong>
-                      {isDeletingCurrentUser
-                        ? "your own account?"
-                        : `${nameWithId} user?`}
-                    </strong>
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete{" "}
-                    <strong>
-                      {isDeletingCurrentUser ? "your account" : `${nameWithId}`}
-                    </strong>{" "}
-                    from our servers.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel
-                    onClick={() => setActionsDropdownOpened(false)}
-                  >
-                    Cancel
-                  </AlertDialogCancel>
-                  <Button variant="destructive" onClick={handleDeleteUser}>
+            {!isDeletingCurrentUser && (
+              <AlertDialog
+                open={deleteDialogOpened}
+                onOpenChange={setDeleteDialogOpened}
+              >
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                     Delete
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure you want to delete{" "}
+                      <strong>{nameWithId} user?</strong>
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete{" "}
+                      <strong>{nameWithId}</strong> from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel
+                      onClick={() => setActionsDropdownOpened(false)}
+                    >
+                      Cancel
+                    </AlertDialogCancel>
+                    <Button variant="destructive" onClick={handleDeleteUser}>
+                      Delete
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

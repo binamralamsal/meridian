@@ -1,6 +1,7 @@
 import { LoaderCircleIcon } from "lucide-react";
+import { toast } from "sonner";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 
 import { AdminPageWrapper } from "@/components/admin-page-wrapper";
@@ -23,11 +24,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  NewUserClientSchema,
+  newUserClientSchema,
+} from "@/features/auth/auth.schema";
+import { createUserFn } from "@/features/auth/server/functions/admin-user";
+
 export const Route = createFileRoute("/admin/users_/new")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
+
   const form = useAppForm({
     defaultValues: {
       name: "",
@@ -36,9 +45,28 @@ function RouteComponent() {
       confirmPassword: "",
       role: "user",
     },
-
+    validators: {
+      // @ts-expect-error -- Tanstack Form's bug
+      onChange: newUserClientSchema,
+    },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      const response = await createUserFn({
+        data: {
+          email: value.email,
+          name: value.name,
+          password: value.password,
+          role: value.role as NewUserClientSchema["role"],
+        },
+      });
+
+      if (response.status === "SUCCESS") {
+        toast.success(response.message);
+        navigate({
+          to: "/admin/users",
+        });
+      } else {
+        toast.error(response.message);
+      }
     },
   });
 
@@ -110,23 +138,24 @@ function RouteComponent() {
                   children={(field) => (
                     <field.FormItem className="md:col-span-2 lg:col-auto">
                       <field.FormLabel>Role</field.FormLabel>
-                      <field.FormControl>
-                        <Select
-                          value={field.state.value}
-                          onValueChange={(value) => field.handleChange(value)}
-                        >
+
+                      <Select
+                        value={field.state.value}
+                        onValueChange={(value) => field.handleChange(value)}
+                      >
+                        <field.FormControl>
                           <SelectTrigger
-                            aria-label="Select role"
+                            aria-label="Select a role suitable for this user"
                             className="w-full"
                           >
                             <SelectValue placeholder="Select role" />
                           </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="user">Normal User</SelectItem>
-                            <SelectItem value="admin">Administrator</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </field.FormControl>
+                        </field.FormControl>
+                        <SelectContent>
+                          <SelectItem value="user">Normal User</SelectItem>
+                          <SelectItem value="admin">Administrator</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <field.FormMessage />
                       <field.FormDescription>
                         Admins can access the admin panel, and do whatever they

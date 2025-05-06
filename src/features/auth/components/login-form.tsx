@@ -2,7 +2,7 @@ import { LoaderIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 
 import { loginUserSchema } from "../auth.schema";
@@ -20,8 +20,7 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 
 export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
-  const router = useRouter();
-
+  const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: useServerFn(loginUserFn),
   });
@@ -39,7 +38,7 @@ export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
 
       if (response.status === "SUCCESS") {
         toast.success(response.message);
-        router.navigate({
+        navigate({
           href: redirectUrl || "/",
         });
       } else {

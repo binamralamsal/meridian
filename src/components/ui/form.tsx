@@ -57,7 +57,7 @@ function FormItem({ className, ...props }: ComponentProps<"div">) {
 
 function useFieldContext() {
   const { id } = useContext(FormItemContext);
-  const { name, store, getMeta, ...fieldContext } = _useFieldContext();
+  const { name, store, getMeta, form, ...fieldContext } = _useFieldContext();
 
   const { isBlurred } = getMeta();
 
@@ -75,7 +75,9 @@ function useFieldContext() {
     errors,
     store,
     getMeta,
-    shouldShowError: isBlurred && !!errors.length,
+    form,
+    shouldShowError:
+      (isBlurred || form.state.submissionAttempts > 0) && !!errors.length,
     ...fieldContext,
   };
 }

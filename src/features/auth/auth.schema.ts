@@ -38,6 +38,11 @@ export const nameSchema = z
   });
 export type NameSchema = z.infer<typeof nameSchema>;
 
+export const roleSchema = z
+  .enum(["admin", "user"], { message: "Role is required" })
+  .default("user");
+export type RoleSchema = z.infer<typeof roleSchema>;
+
 export const loginUserSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
@@ -50,6 +55,28 @@ export const registerUserSchema = z.object({
   password: newPasswordSchema,
 });
 export type RegisterUserSchema = z.infer<typeof registerUserSchema>;
+
+export const newUserSchema = z.object({
+  name: nameSchema,
+  email: emailSchema,
+  password: newPasswordSchema,
+  role: roleSchema,
+});
+export type NewUserSchema = z.infer<typeof newUserSchema>;
+
+export const newUserClientSchema = z
+  .object({
+    name: nameSchema,
+    email: emailSchema,
+    password: newPasswordSchema,
+    confirmPassword: newPasswordSchema,
+    role: roleSchema,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+export type NewUserClientSchema = z.infer<typeof newUserClientSchema>;
 
 export const getAllUsersSchema = z.object({
   page: z.number().int().min(1).optional().default(1).catch(1),
