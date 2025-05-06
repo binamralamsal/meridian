@@ -9,9 +9,15 @@ const dataSchema = z.object({
     .default("draft"),
 });
 
+type FormValues = z.infer<typeof dataSchema>;
+
 export function Component() {
+  const defaultValues: FormValues = {
+    status: undefined,
+  };
+
   const form = useForm({
-    defaultValues: { status: "draft" },
+    defaultValues,
     validators: {
       onChange: dataSchema,
     },

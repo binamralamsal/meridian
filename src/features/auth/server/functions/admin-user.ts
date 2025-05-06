@@ -1,4 +1,6 @@
+import { jsonArrayFrom } from "kysely/helpers/postgres";
 import { DatabaseError } from "pg";
+import { UAParser } from "ua-parser-js";
 import { z } from "zod";
 
 import { createServerFn } from "@tanstack/react-start";
@@ -134,4 +136,49 @@ export const createUserFn = createServerFn()
     }
 
     return { status: "SUCCESS", message: "User created successfully!" };
+  });
+
+export const getUserFn = createServerFn()
+  .middleware([ensureAdmin])
+  .validator(z.number().int())
+  .handler(async ({ data, context: { auth } }) => {
+    const user = await db
+      .selectFrom("users")
+      .innerJoin("emails", "emails.userId", "users.id")
+      .select((eb) => [
+        "users.id",
+        "users.name",
+        "users.role",
+        "emails.email",
+        jsonArrayFrom(
+          eb
+            .selectFrom("sessions")
+            .select(["sessions.id", "sessions.userAgent", "sessions.ip"])
+            .whereRef("sessions.userId", "=", "users.id")
+            .orderBy("sessions.createdAt", "desc"),
+        ).as("sessions"),
+      ])
+      .where("users.id", "=", data)
+      .executeTakeFirst();
+
+    if (!user) return null;
+    if (user)
+      return {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        email: user.email,
+        sessions: user.sessions.map((session) => {
+          const { browser, os } = UAParser(session.userAgent);
+
+          return {
+            id: session.id,
+            ip: session.ip,
+            userAgent: session.userAgent,
+            isCurrent: session.id === auth.session.id,
+            browser: browser.name,
+            os: os.name,
+          };
+        }),
+      };
   });
