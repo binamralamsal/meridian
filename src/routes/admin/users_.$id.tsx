@@ -91,6 +91,9 @@ import { cn } from "@/util/cn";
 
 export const Route = createFileRoute("/admin/users_/$id")({
   component: RouteComponent,
+  loader: async ({ context: { queryClient }, params }) => {
+    queryClient.prefetchQuery(getUserOptions(parseInt(params.id)));
+  },
 });
 
 function RouteComponent() {
@@ -112,8 +115,6 @@ function RouteComponent() {
           <DangerZoneCard />
         </>
       )}
-
-      {/* <UserDetailsLoading /> */}
     </AdminPageWrapper>
   );
 }

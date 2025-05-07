@@ -1,9 +1,11 @@
 import {
   BoxesIcon,
   ChevronRightIcon,
+  FilePlus2Icon,
   HeartPlusIcon,
   HomeIcon,
   NewspaperIcon,
+  PackagePlusIcon,
   StethoscopeIcon,
   UserPlusIcon,
   UsersIcon,
@@ -14,6 +16,7 @@ import { Suspense } from "react";
 import { Link, LinkProps, ReactNode } from "@tanstack/react-router";
 
 import { AdminNavUser } from "./admin-nav-user";
+import { AdminSearchCommandMenu } from "./admin-search-command-menu";
 import { LogoWithoutText } from "./icons/logo-without-text";
 import {
   Collapsible,
@@ -39,22 +42,24 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-interface SidebarMenuItem {
+export interface SidebarMenuItem {
   title: string;
   url: LinkProps["to"] | (string & {});
   isActive?: boolean;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  items?: Omit<SidebarMenuItem, "icon">[];
+  items?: (Omit<SidebarMenuItem, "icon"> & {
+    icon?: SidebarMenuItem["icon"];
+  })[];
   exact?: boolean;
 }
 
-interface SidebarGroupItem {
+export interface SidebarGroupItem {
   label: string;
   action?: ReactNode;
   items: SidebarMenuItem[];
 }
 
-const items: SidebarGroupItem[] = [
+export const sidebarItems: SidebarGroupItem[] = [
   {
     label: "Dashboard",
     items: [
@@ -102,8 +107,12 @@ const items: SidebarGroupItem[] = [
         icon: NewspaperIcon,
         exact: false,
         items: [
-          { title: "All Blogs", url: "/admin/blogs" },
-          { title: "Add New Blog", url: "/admin/blogs/new" },
+          { title: "All Blogs", url: "/admin/blogs", icon: NewspaperIcon },
+          {
+            title: "Add New Blog",
+            url: "/admin/blogs/new",
+            icon: FilePlus2Icon,
+          },
         ],
       },
       {
@@ -112,8 +121,16 @@ const items: SidebarGroupItem[] = [
         icon: BoxesIcon,
         exact: false,
         items: [
-          { title: "All Categories", url: "/admin/blog-categories" },
-          { title: "Add New Category", url: "/admin/blog-categories/new" },
+          {
+            title: "All Categories",
+            url: "/admin/blog-categories",
+            icon: BoxesIcon,
+          },
+          {
+            title: "Add New Category",
+            url: "/admin/blog-categories/new",
+            icon: PackagePlusIcon,
+          },
         ],
       },
     ],
@@ -143,9 +160,10 @@ export function AdminSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <AdminSearchCommandMenu />
       </SidebarHeader>
       <SidebarContent>
-        {items.map((group) => (
+        {sidebarItems.map((group) => (
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
             {group.action ? (

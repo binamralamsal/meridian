@@ -1,6 +1,6 @@
 import {
-  BadgeCheck,
   ChevronsUpDown,
+  CircleUserIcon,
   ComputerIcon,
   LogOut,
   MoonIcon,
@@ -136,7 +136,7 @@ export function AdminNavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link to="/admin/users/$id" params={{ id: user.id.toString() }}>
-                <BadgeCheck />
+                <CircleUserIcon />
                 Account
               </Link>
             </DropdownMenuItem>
