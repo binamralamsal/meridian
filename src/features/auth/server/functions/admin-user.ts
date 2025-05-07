@@ -90,10 +90,7 @@ export const getAllUsersFn = createServerFn({ method: "GET" })
 export const deleteUserFn = createServerFn()
   .middleware([ensureAdmin])
   .validator(z.number().int())
-  .handler(async ({ data, context: { auth } }) => {
-    if (data === auth.user.id)
-      return { status: "ERROR", message: "Oops! You can not delete yourself!" };
-
+  .handler(async ({ data }) => {
     await db.deleteFrom("users").where("users.id", "=", data).execute();
 
     return { status: "SUCCESS", message: "Deleted user successfully!" };
