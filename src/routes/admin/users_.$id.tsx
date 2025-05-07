@@ -14,6 +14,7 @@ import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 
 import { AdminPageWrapper } from "@/components/admin-page-wrapper";
+import { FormNavigationBlocker } from "@/components/form-navigation-blocker";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -288,6 +289,7 @@ export function UserDetailsForm() {
       </CardHeader>
       <CardContent>
         <form.AppForm>
+          <FormNavigationBlocker />
           <form
             onSubmit={(e) => {
               e.preventDefault();

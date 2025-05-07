@@ -1,10 +1,12 @@
 import { LoaderCircleIcon } from "lucide-react";
 import { toast } from "sonner";
 
+import type {} from "@tanstack/react-form";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 
 import { AdminPageWrapper } from "@/components/admin-page-wrapper";
+import { FormNavigationBlocker } from "@/components/form-navigation-blocker";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -79,6 +81,7 @@ function RouteComponent() {
           form.handleSubmit();
         }}
       >
+        <FormNavigationBlocker />
         <AdminPageWrapper
           breadcrumbs={[{ label: "Users", href: "/admin/users" }]}
           pageTitle="Add New User"
