@@ -5,6 +5,7 @@ import { getHeader } from "@tanstack/react-start/server";
 import { openMaxmind } from "@/lib/maxmind";
 
 const IP_HEADER_PRIORITY = [
+  "cf-connecting-ip",
   "x-client-ip",
   "x-forwarded-for",
   "x-real-ip",
