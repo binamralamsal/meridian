@@ -111,3 +111,13 @@ export const getAllUsersSchema = z.object({
     .catch({ createdAt: "desc" }),
 });
 export type GetAllUsersSchema = z.infer<typeof getAllUsersSchema>;
+
+export const changePasswordClientSchema = z
+  .object({
+    newPassword: newPasswordSchema,
+    confirmPassword: newPasswordSchema,
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });

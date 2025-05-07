@@ -2,7 +2,7 @@ import { LoaderIcon, MoreHorizontal } from "lucide-react";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import {
   useMutation,
@@ -51,7 +51,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppForm } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Select,
   SelectContent,
@@ -76,9 +76,11 @@ import {
 } from "@/features/auth/auth.queries";
 import {
   UpdateUserSchemaInput,
+  changePasswordClientSchema,
   updateUserSchema,
 } from "@/features/auth/auth.schema";
 import {
+  changeUserPasswordFn,
   deleteUserFn,
   terminateSessionFn,
   updateUserFn,
@@ -237,12 +239,14 @@ function UserDetailsLoading() {
 export function UserDetailsForm() {
   const sidebar = useSidebar();
 
-  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
-
   const params = Route.useParams();
+  const userId = parseInt(params.id);
 
-  const { data } = useSuspenseQuery(getUserOptions(parseInt(params.id)));
+  const { data } = useSuspenseQuery(getUserOptions(userId));
+  const { data: currentUser } = useSuspenseQuery(currentUserOptions());
+
   const updateUser = useServerFn(updateUserFn);
+  const queryClient = useQueryClient();
 
   const form = useAppForm({
     defaultValues: {
@@ -261,29 +265,12 @@ export function UserDetailsForm() {
       });
 
       toast.success(response.message);
+      await queryClient.invalidateQueries(getUserOptions(userId));
+      if (currentUser?.user.id === userId) {
+        await queryClient.invalidateQueries(currentUserOptions());
+      }
     },
   });
-
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-
-  const handlePasswordChange = () => {
-    if (password !== confirmPassword) {
-      setPasswordError("Passwords do not match");
-      return;
-    }
-    if (password.length < 8) {
-      setPasswordError("Password must be at least 8 characters");
-      return;
-    }
-    // In a real app, you would send this to your API
-    console.log("Password changed:", password);
-    setIsPasswordDialogOpen(false);
-    setPassword("");
-    setConfirmPassword("");
-    setPasswordError("");
-  };
 
   const userIntiail = data?.name
     .trim()
@@ -400,64 +387,7 @@ export function UserDetailsForm() {
                 )}
               />
               <div className="col-span-full grid gap-2 md:grid-cols-2 md:justify-self-end">
-                <Dialog
-                  open={isPasswordDialogOpen}
-                  onOpenChange={setIsPasswordDialogOpen}
-                >
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="w-full md:w-auto"
-                    >
-                      Change Password
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Change Password</DialogTitle>
-                      <DialogDescription>
-                        Enter a new password for this user.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="new-password">New Password</Label>
-                        <Input
-                          id="new-password"
-                          type="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirm-password">
-                          Confirm Password
-                        </Label>
-                        <Input
-                          id="confirm-password"
-                          type="password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                      </div>
-                      {passwordError && (
-                        <p className="text-sm text-red-500">{passwordError}</p>
-                      )}
-                    </div>
-                    <DialogFooter>
-                      <Button
-                        variant="outline"
-                        onClick={() => setIsPasswordDialogOpen(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button onClick={handlePasswordChange}>
-                        Save Password
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                <ChangePasswordForm />
                 <Button
                   disabled={form.state.isSubmitting}
                   type="submit"
@@ -475,6 +405,117 @@ export function UserDetailsForm() {
         </form.AppForm>
       </CardContent>
     </Card>
+  );
+}
+
+function ChangePasswordForm() {
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+
+  const params = Route.useParams();
+  const userId = parseInt(params.id);
+  const queryClient = useQueryClient();
+
+  const changeUserPassword = useServerFn(changeUserPasswordFn);
+  const form = useAppForm({
+    defaultValues: {
+      newPassword: "",
+      confirmPassword: "",
+    },
+    validators: {
+      onChange: changePasswordClientSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const response = await changeUserPassword({
+        data: { id: userId, newPassword: value.newPassword },
+      });
+      await queryClient.invalidateQueries(getUserOptions(userId));
+      setIsPasswordDialogOpen(false);
+
+      toast.success(response.message);
+      form.reset();
+    },
+  });
+
+  const id = useId();
+
+  return (
+    <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="lg" className="w-full md:w-auto">
+          Change Password
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Change Password</DialogTitle>
+          <DialogDescription>
+            Enter a new password for this user.
+          </DialogDescription>
+        </DialogHeader>
+        <form.AppForm>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="space-y-4"
+            id={id}
+          >
+            <form.AppField
+              name="newPassword"
+              children={(field) => (
+                <field.FormItem>
+                  <field.FormLabel>New Password</field.FormLabel>
+                  <field.FormControl>
+                    <PasswordInput
+                      placeholder="********"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
+              )}
+            />
+            <form.AppField
+              name="confirmPassword"
+              children={(field) => (
+                <field.FormItem>
+                  <field.FormLabel>Confirm Password</field.FormLabel>
+                  <field.FormControl>
+                    <PasswordInput
+                      placeholder="********"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
+              )}
+            />
+          </form>
+        </form.AppForm>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => setIsPasswordDialogOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button form={id} type="submit" disabled={form.state.isSubmitting}>
+            {form.state.isSubmitting && (
+              <LoaderIcon className="h-4 w-4 animate-spin" />
+            )}
+            Save Password
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

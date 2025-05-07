@@ -7,6 +7,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 import {
   getAllUsersSchema,
+  newPasswordSchema,
   newUserSchema,
   updateUserSchema,
 } from "../../auth.schema";
@@ -228,4 +229,29 @@ export const updateUserFn = createServerFn()
     });
 
     return { status: "SUCCESS", message: "User updated successfully!" };
+  });
+
+export const changeUserPasswordFn = createServerFn()
+  .middleware([ensureAdmin])
+  .validator(z.object({ id: z.number().int(), newPassword: newPasswordSchema }))
+  .handler(async ({ data }) => {
+    const hashedPassword = await hashPassword(data.newPassword);
+
+    await db.transaction().execute(async (trx) => {
+      await trx
+        .updateTable("users")
+        .set({ password: hashedPassword })
+        .where("users.id", "=", data.id)
+        .execute();
+
+      await trx
+        .deleteFrom("sessions")
+        .where("sessions.userId", "=", data.id)
+        .execute();
+    });
+
+    return {
+      status: "SUCCESS",
+      message: "User password updated successfully!",
+    };
   });
