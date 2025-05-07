@@ -153,7 +153,14 @@ export const getUserFn = createServerFn()
         jsonArrayFrom(
           eb
             .selectFrom("sessions")
-            .select(["sessions.id", "sessions.userAgent", "sessions.ip"])
+            .select([
+              "sessions.id",
+              "sessions.userAgent",
+              "sessions.ip",
+              "sessions.country",
+              "sessions.region",
+              "sessions.city",
+            ])
             .whereRef("sessions.userId", "=", "users.id")
             .orderBy("sessions.createdAt", "desc"),
         ).as("sessions"),
@@ -178,6 +185,9 @@ export const getUserFn = createServerFn()
             isCurrent: session.id === auth.session.id,
             browser: browser.name,
             os: os.name,
+            country: session.country,
+            region: session.region,
+            city: session.city,
           };
         }),
       };

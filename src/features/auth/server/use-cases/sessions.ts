@@ -37,7 +37,7 @@ export async function createSession({
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const expiresAt = new Date(Date.now() + SESSION_LIFETIME);
 
-  getCurrentLocation();
+  const location = getCurrentLocation();
 
   const session = await db
     .insertInto("sessions")
@@ -47,6 +47,9 @@ export async function createSession({
       userId,
       id: sessionId,
       expiresAt: expiresAt,
+      city: location.city,
+      region: location.region,
+      country: location.country,
     })
     .returning([
       "id",

@@ -811,7 +811,11 @@ export function ActiveSessionsTable() {
                       </Badge>
                     )}
                   </TableCell>
-                  <TableCell className="p-4">Unknown</TableCell>
+                  <TableCell className="p-4">
+                    {[session.city, session.region, session.country]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </TableCell>
                   <TableCell className="p-4">
                     {[session.browser, session.os].filter(Boolean).join(" / ")}
                   </TableCell>
