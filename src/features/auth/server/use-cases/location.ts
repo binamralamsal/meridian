@@ -2,7 +2,7 @@ import iso from "iso-3166-2";
 
 import { getHeader } from "@tanstack/react-start/server";
 
-import { maxmindLookup } from "@/lib/maxmind";
+import { openMaxmind } from "@/lib/maxmind";
 
 const IP_HEADER_PRIORITY = [
   "x-client-ip",
@@ -53,7 +53,7 @@ function extractLocationFromHeaders(
   };
 }
 
-export function getCurrentLocation() {
+export async function getCurrentLocation() {
   let location = extractLocationFromHeaders(
     "cf",
     "ipcountry",
@@ -80,7 +80,7 @@ export function getCurrentLocation() {
 
   const ip = getIPAddress();
   if (ip) {
-    const geo = maxmindLookup.get(ip);
+    const geo = (await openMaxmind()).get(ip);
     if (geo) {
       location.country ??= geo.country?.names.en;
       location.city ??= geo.city?.names.en;
