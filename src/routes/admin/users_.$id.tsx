@@ -352,11 +352,18 @@
 // }
 import { MoreHorizontal } from "lucide-react";
 import { Trash2Icon } from "lucide-react";
+import { toast } from "sonner";
 
 import { useState } from "react";
 
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 
 import { AdminPageWrapper } from "@/components/admin-page-wrapper";
 import {
@@ -416,6 +423,8 @@ import {
 } from "@/components/ui/table";
 
 import { getUserOptions } from "@/features/auth/auth.queries";
+import { terminateSessionFn } from "@/features/auth/server/functions/admin-user";
+import { logoutUserFn } from "@/features/auth/server/functions/user";
 import { cn } from "@/util/cn";
 
 export const Route = createFileRoute("/admin/users_/$id")({
@@ -682,7 +691,7 @@ export function UserDetailsForm() {
               <form.AppField
                 name="role"
                 children={(field) => (
-                  <field.FormItem className="md:col-span-2 lg:col-auto">
+                  <field.FormItem>
                     <field.FormLabel>Role</field.FormLabel>
 
                     <Select
@@ -710,13 +719,19 @@ export function UserDetailsForm() {
                   </field.FormItem>
                 )}
               />
-              <div className="-col-start-2 flex gap-6 justify-self-end">
+              <div className="-col-start-2 flex flex-wrap gap-2 justify-self-center md:flex-nowrap md:justify-self-end">
                 <Dialog
                   open={isPasswordDialogOpen}
                   onOpenChange={setIsPasswordDialogOpen}
                 >
                   <DialogTrigger asChild>
-                    <Button variant="outline">Change Password</Button>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full md:w-auto"
+                    >
+                      Change Password
+                    </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
@@ -763,7 +778,9 @@ export function UserDetailsForm() {
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" size="lg" className="w-full md:w-auto">
+                  Save Changes
+                </Button>
               </div>
             </div>
           </form>
@@ -774,12 +791,25 @@ export function UserDetailsForm() {
 }
 
 export function ActiveSessionsTable() {
-  const handleTerminateSession = (sessionId: string) => {
-    console.log(`Terminate session: ${sessionId}`);
-  };
-
   const params = Route.useParams();
-  const { data: user } = useSuspenseQuery(getUserOptions(parseInt(params.id)));
+  const userId = parseInt(params.id);
+
+  const logoutUserMutation = useMutation({
+    mutationFn: useServerFn(logoutUserFn),
+  });
+
+  const queryClient = useQueryClient();
+
+  const terminateSession = useServerFn(terminateSessionFn);
+  const terminateUserMutation = useMutation({
+    mutationFn: terminateSession,
+    onSuccess: async (data) => {
+      toast.success(data.message);
+      await queryClient.invalidateQueries(getUserOptions(userId));
+    },
+  });
+
+  const { data: user } = useSuspenseQuery(getUserOptions(userId));
 
   return (
     <Card className="container px-0">
@@ -828,13 +858,25 @@ export function ActiveSessionsTable() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive"
-                          disabled={session.isCurrent}
-                          onClick={() => handleTerminateSession(session.id)}
-                        >
-                          Terminate Session
-                        </DropdownMenuItem>
+                        {session.isCurrent ? (
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => logoutUserMutation.mutateAsync({})}
+                          >
+                            Logout
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() =>
+                              terminateUserMutation.mutateAsync({
+                                data: session.id,
+                              })
+                            }
+                          >
+                            Terminate Session
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

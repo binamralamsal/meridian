@@ -8,6 +8,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getAllUsersSchema, newUserSchema } from "../../auth.schema";
 import { ensureAdmin } from "../middlewares/ensure-admin";
 import { hashPassword } from "../use-cases/password";
+import { invalidateSession } from "../use-cases/sessions";
 
 import { db } from "@/config/db";
 
@@ -96,6 +97,15 @@ export const deleteUserFn = createServerFn()
     await db.deleteFrom("users").where("users.id", "=", data).execute();
 
     return { status: "SUCCESS", message: "Deleted user successfully!" };
+  });
+
+export const terminateSessionFn = createServerFn()
+  .middleware([ensureAdmin])
+  .validator(z.string())
+  .handler(async ({ data }) => {
+    await invalidateSession(data);
+
+    return { status: "SUCCESS", message: "Terminated the given user session!" };
   });
 
 export const createUserFn = createServerFn()
