@@ -428,11 +428,11 @@ function ChangePasswordForm() {
       const response = await changeUserPassword({
         data: { id: userId, newPassword: value.newPassword },
       });
-      await queryClient.invalidateQueries(getUserOptions(userId));
       setIsPasswordDialogOpen(false);
 
       toast.success(response.message);
       form.reset();
+      queryClient.invalidateQueries(getUserOptions(userId));
     },
   });
 
