@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -134,9 +134,11 @@ export function AdminNavUser() {
               </DropdownMenuPortal>
             </DropdownMenuSub>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <BadgeCheck />
-              Account
+            <DropdownMenuItem asChild>
+              <Link to="/admin/users/$id" params={{ id: user.id.toString() }}>
+                <BadgeCheck />
+                Account
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => logoutUserMutation.mutateAsync({})}

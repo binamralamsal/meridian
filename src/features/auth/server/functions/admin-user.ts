@@ -5,7 +5,11 @@ import { z } from "zod";
 
 import { createServerFn } from "@tanstack/react-start";
 
-import { getAllUsersSchema, newUserSchema } from "../../auth.schema";
+import {
+  getAllUsersSchema,
+  newUserSchema,
+  updateUserSchema,
+} from "../../auth.schema";
 import { ensureAdmin } from "../middlewares/ensure-admin";
 import { hashPassword } from "../use-cases/password";
 import { invalidateSession } from "../use-cases/sessions";
@@ -198,4 +202,30 @@ export const getUserFn = createServerFn()
           };
         }),
       };
+  });
+
+export const updateUserFn = createServerFn()
+  .middleware([ensureAdmin])
+  .validator(
+    z.object({
+      id: z.number().int(),
+      data: updateUserSchema,
+    }),
+  )
+  .handler(async ({ data }) => {
+    await db.transaction().execute(async (trx) => {
+      await trx
+        .updateTable("users")
+        .set({ name: data.data.name, role: data.data.role })
+        .where("users.id", "=", data.id)
+        .execute();
+
+      await trx
+        .updateTable("emails")
+        .set({ email: data.data.email })
+        .where("emails.userId", "=", data.id)
+        .execute();
+    });
+
+    return { status: "SUCCESS", message: "User updated successfully!" };
   });

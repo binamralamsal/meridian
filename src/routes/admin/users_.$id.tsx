@@ -1,4 +1,4 @@
-import { MoreHorizontal } from "lucide-react";
+import { LoaderIcon, MoreHorizontal } from "lucide-react";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
@@ -75,8 +75,13 @@ import {
   getUserOptions,
 } from "@/features/auth/auth.queries";
 import {
+  UpdateUserSchemaInput,
+  updateUserSchema,
+} from "@/features/auth/auth.schema";
+import {
   deleteUserFn,
   terminateSessionFn,
+  updateUserFn,
 } from "@/features/auth/server/functions/admin-user";
 import { logoutUserFn } from "@/features/auth/server/functions/user";
 import { cn } from "@/util/cn";
@@ -116,8 +121,7 @@ function NotFoundState() {
       <div className="container flex flex-col items-center justify-center py-12">
         <h2 className="text-3xl font-bold tracking-tight">User not found</h2>
         <p className="text-muted-foreground mt-4 text-center">
-          The user you&apos;re looking for doesn&apos;t exist or you don&apos;t
-          have permission to view it.
+          The user you&apos;re looking for doesn&apos;t exist.
         </p>
         <Link
           to="/admin/users"
@@ -238,15 +242,25 @@ export function UserDetailsForm() {
   const params = Route.useParams();
 
   const { data } = useSuspenseQuery(getUserOptions(parseInt(params.id)));
+  const updateUser = useServerFn(updateUserFn);
 
   const form = useAppForm({
     defaultValues: {
       name: data?.name ?? "",
       email: data?.email ?? "",
       role: data?.role ?? "",
+    } as UpdateUserSchemaInput,
+    validators: {
+      onChange: updateUserSchema,
     },
-    onSubmit: ({ value }) => {
-      console.log(value);
+    onSubmit: async ({ value }) => {
+      if (!data) return;
+
+      const response = await updateUser({
+        data: { id: data.id, data: value },
+      });
+
+      toast.success(response.message);
     },
   });
 
@@ -270,6 +284,14 @@ export function UserDetailsForm() {
     setConfirmPassword("");
     setPasswordError("");
   };
+
+  const userIntiail = data?.name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word.charAt(0))
+    .join("")
+    .toUpperCase();
 
   return (
     <Card className="container px-0">
@@ -302,7 +324,9 @@ export function UserDetailsForm() {
                 )}
               >
                 <AvatarImage src={"/placeholder.svg"} />
-                <AvatarFallback className="text-3xl">AB</AvatarFallback>
+                <AvatarFallback className="text-3xl">
+                  {userIntiail}
+                </AvatarFallback>
               </Avatar>
               <form.AppField
                 name="name"
@@ -350,7 +374,9 @@ export function UserDetailsForm() {
 
                     <Select
                       value={field.state.value}
-                      onValueChange={(value) => field.handleChange(value)}
+                      onValueChange={(value) =>
+                        field.handleChange(value as "admin" | "user")
+                      }
                     >
                       <field.FormControl>
                         <SelectTrigger
@@ -373,7 +399,7 @@ export function UserDetailsForm() {
                   </field.FormItem>
                 )}
               />
-              <div className="-col-start-2 flex flex-wrap gap-2 justify-self-center md:flex-nowrap md:justify-self-end">
+              <div className="col-span-full grid gap-2 md:grid-cols-2 md:justify-self-end">
                 <Dialog
                   open={isPasswordDialogOpen}
                   onOpenChange={setIsPasswordDialogOpen}
@@ -432,7 +458,15 @@ export function UserDetailsForm() {
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
-                <Button type="submit" size="lg" className="w-full md:w-auto">
+                <Button
+                  disabled={form.state.isSubmitting}
+                  type="submit"
+                  size="lg"
+                  className="w-full md:w-auto"
+                >
+                  {form.state.isSubmitting && (
+                    <LoaderIcon className="h-4 w-4 animate-spin" />
+                  )}
                   Save Changes
                 </Button>
               </div>

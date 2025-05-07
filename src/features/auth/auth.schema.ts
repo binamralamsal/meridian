@@ -64,6 +64,14 @@ export const newUserSchema = z.object({
 });
 export type NewUserSchema = z.infer<typeof newUserSchema>;
 
+export const updateUserSchema = z.object({
+  name: nameSchema,
+  email: emailSchema,
+  role: roleSchema,
+});
+export type UpdateUserSchema = z.infer<typeof updateUserSchema>;
+export type UpdateUserSchemaInput = z.input<typeof updateUserSchema>;
+
 export const newUserClientSchema = z
   .object({
     name: nameSchema,
