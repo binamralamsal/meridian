@@ -15,6 +15,11 @@ export default defineConfig({
         projects: ["./tsconfig.json"],
       }),
     ],
+    build: {
+      rollupOptions: {
+        external: ["iso-3166-2"],
+      },
+    },
   },
   server: {
     prerender: {
