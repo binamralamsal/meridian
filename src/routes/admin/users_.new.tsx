@@ -26,6 +26,7 @@ import {
 
 import {
   NewUserClientSchema,
+  NewUserClientSchemaInput,
   newUserClientSchema,
 } from "@/features/auth/auth.schema";
 import { createUserFn } from "@/features/auth/server/functions/admin-user";
@@ -43,10 +44,9 @@ function RouteComponent() {
       email: "",
       password: "",
       confirmPassword: "",
-      role: "user",
-    },
+      role: undefined,
+    } as NewUserClientSchemaInput,
     validators: {
-      // @ts-expect-error -- Tanstack Form's bug
       onChange: newUserClientSchema,
     },
     onSubmit: async ({ value }) => {
@@ -141,7 +141,9 @@ function RouteComponent() {
 
                       <Select
                         value={field.state.value}
-                        onValueChange={(value) => field.handleChange(value)}
+                        onValueChange={(value) =>
+                          field.handleChange(value as "user" | "admin")
+                        }
                       >
                         <field.FormControl>
                           <SelectTrigger

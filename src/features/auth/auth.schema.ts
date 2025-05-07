@@ -77,6 +77,7 @@ export const newUserClientSchema = z
     path: ["confirmPassword"],
   });
 export type NewUserClientSchema = z.infer<typeof newUserClientSchema>;
+export type NewUserClientSchemaInput = z.input<typeof newUserClientSchema>;
 
 export const getAllUsersSchema = z.object({
   page: z.number().int().min(1).optional().default(1).catch(1),

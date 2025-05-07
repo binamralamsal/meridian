@@ -797,7 +797,6 @@ export function ActiveSessionsTable() {
                 <TableHead className="p-4">IP Address</TableHead>
                 <TableHead className="p-4">Location</TableHead>
                 <TableHead className="p-4">Browser</TableHead>
-                <TableHead className="p-4">Last Active</TableHead>
                 <TableHead className="w-4"></TableHead>
               </TableRow>
             </TableHeader>

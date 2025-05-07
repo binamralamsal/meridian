@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getHeader } from "@tanstack/react-start/server";
 
 import { loginUserSchema } from "../../auth.schema";
+import { getIPAddress } from "../use-cases/location";
 import { verifyPassword } from "../use-cases/password";
 import {
   createSession,
@@ -44,8 +45,11 @@ export const loginUserFn = createServerFn({ method: "POST" })
 
     if (!isPasswordValid) return { status: "ERROR", message: errorMessage };
 
-    const ip = getHeader("x-forwarded-for") || "0.0.0.0";
-    const userAgent = getHeader("user-agent") || "unknown";
+    const ip = getIPAddress() || "0.0.0.0";
+    const userAgent = getHeader("user-agent");
+
+    if (!userAgent)
+      return { status: "ERROR", message: "Invalid Login Attempt" };
 
     const token = generateSessionToken();
     await createSession({ token, userId: user.id, ip, userAgent });

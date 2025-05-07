@@ -6,6 +6,8 @@ import {
 
 import { deleteCookie, setCookie } from "@tanstack/react-start/server";
 
+import { getCurrentLocation } from "./location";
+
 import {
   SESSION_COOKIE_NAME,
   SESSION_LIFETIME,
@@ -34,6 +36,8 @@ export async function createSession({
 }: CreateSessionData) {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const expiresAt = new Date(Date.now() + SESSION_LIFETIME);
+
+  getCurrentLocation();
 
   const session = await db
     .insertInto("sessions")

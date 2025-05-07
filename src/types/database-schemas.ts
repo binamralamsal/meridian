@@ -24,10 +24,13 @@ export interface Email {
 }
 
 export interface Session {
+  city: string | null;
+  country: Generated<string>;
   createdAt: Generated<Timestamp>;
   expiresAt: Timestamp;
   id: string;
   ip: string;
+  region: string | null;
   updatedAt: Generated<Timestamp>;
   userAgent: string;
   userId: number;
