@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { useStore } from "@tanstack/react-form";
 import { useBlocker } from "@tanstack/react-router";
 
@@ -63,36 +61,23 @@ export function FormNavigationBlocker() {
     withResolver: true,
   });
 
-  const [alertOpened, setAlertOpened] = useState(true);
-
-  if (status === "blocked") {
-    return (
-      <AlertDialog open={alertOpened} onOpenChange={setAlertOpened}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to leave?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Leaving this page will discard your changes. Are you sure you want
-              to continue?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <Button onClick={reset} variant="outline">
-              No
-            </Button>
-            <Button
-              onClick={() => {
-                setAlertOpened(false);
-                proceed();
-              }}
-            >
-              Yes
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    );
-  }
-
-  return null;
+  return (
+    <AlertDialog open={status === "blocked"} onOpenChange={reset}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure you want to leave?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Leaving this page will discard your changes. Are you sure you want
+            to continue?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <Button onClick={reset} variant="outline">
+            No
+          </Button>
+          <Button onClick={proceed}>Yes</Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }
