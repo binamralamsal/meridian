@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
-    "start": "node --env-file=.env ./node_modules/.bin/vinxi start",
+    "start": "node --env-file=.env .output/server/index.mjs",
     "db:migrate": "kysely migrate",
     "db:seed": "kysely seed",
     "db:codegen": "kysely-codegen --out-file ./src/types/database-schemas.ts --singularize --camel-case",
