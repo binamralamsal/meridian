@@ -13,7 +13,7 @@ import {
 import { Separator } from "./ui/separator";
 import { SidebarTrigger } from "./ui/sidebar";
 
-type BreadcrumbItem = {
+export type BreadcrumbItem = {
   label: string;
   href: LinkProps["to"];
 };

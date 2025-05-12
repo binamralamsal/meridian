@@ -2,18 +2,20 @@ import { LoaderIcon, MoreHorizontal } from "lucide-react";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
-import { useId, useState } from "react";
+import { Suspense, useId, useState } from "react";
 
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 
-import { AdminPageWrapper } from "@/components/admin-page-wrapper";
+import {
+  AdminPageWrapper,
+  BreadcrumbItem,
+} from "@/components/admin-page-wrapper";
 import { FormNavigationBlocker } from "@/components/form-navigation-blocker";
 import {
   AlertDialog,
@@ -96,32 +98,38 @@ export const Route = createFileRoute("/admin/users_/$id")({
   },
 });
 
-function RouteComponent() {
-  const params = Route.useParams();
-  const { data, isLoading } = useQuery(getUserOptions(parseInt(params.id)));
+const breadcrumb: BreadcrumbItem[] = [
+  { href: "/admin/users", label: `All Users` },
+];
 
-  if (!isLoading && !data) {
-    return <NotFoundState />;
-  }
+function RouteComponent() {
+  return (
+    <AdminPageWrapper pageTitle="Edit User" breadcrumbs={breadcrumb}>
+      <Suspense fallback={<UserDetailsLoading />}>
+        <UserAccountDetails />
+      </Suspense>
+    </AdminPageWrapper>
+  );
+}
+
+function UserAccountDetails() {
+  const params = Route.useParams();
+  const { data } = useSuspenseQuery(getUserOptions(parseInt(params.id)));
+
+  if (!data) return <NotFoundState />;
 
   return (
-    <AdminPageWrapper pageTitle="Edit User">
-      {isLoading ? (
-        <UserDetailsLoading />
-      ) : (
-        <>
-          <UserDetailsForm />
-          <ActiveSessionsTable />
-          <DangerZoneCard />
-        </>
-      )}
-    </AdminPageWrapper>
+    <>
+      <UserDetailsForm />
+      <ActiveSessionsTable />
+      <DangerZoneCard />
+    </>
   );
 }
 
 function NotFoundState() {
   return (
-    <AdminPageWrapper pageTitle="User Not Found">
+    <AdminPageWrapper pageTitle="User Not Found" breadcrumbs={breadcrumb}>
       <div className="container flex flex-col items-center justify-center py-12">
         <h2 className="text-3xl font-bold tracking-tight">User not found</h2>
         <p className="text-muted-foreground mt-4 text-center">

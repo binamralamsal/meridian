@@ -23,9 +23,7 @@ export function DataTableToolbar<TData>({
   filters,
 }: DataTableToolbarProps<TData>) {
   const [query, setQuery] = useState("");
-
   const navigate = useNavigate();
-
   const searchQuery = useSearch({
     strict: false,
     select: (state) => state.search,
@@ -37,7 +35,6 @@ export function DataTableToolbar<TData>({
 
   function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     navigate({
       to: ".",
       search: (prev) => {
@@ -47,37 +44,38 @@ export function DataTableToolbar<TData>({
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between">
-      <div className="flex flex-wrap items-center gap-2">
-        <form
-          className="flex flex-1 items-center space-x-2"
-          onSubmit={handleSearchSubmit}
-        >
-          <Input
-            placeholder={`Search ${dataKey}`}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="h-10 w-[150px] lg:w-[350px]"
-          />
-          <Button size="icon">
-            <SearchIcon />
-          </Button>
-        </form>
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <form
+        className="flex w-full items-center gap-2 lg:w-auto"
+        onSubmit={handleSearchSubmit}
+      >
+        <Input
+          placeholder={`Search ${dataKey}`}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="h-10 w-full lg:w-[300px]"
+        />
+        <Button size="icon">
+          <SearchIcon />
+        </Button>
+      </form>
 
-        {filters?.map((filter) => (
-          <Fragment key={filter.accessorKey}>
-            {table.getColumn(filter.accessorKey) && (
-              <DataTableFacetedFilter
-                column={table.getColumn(filter.accessorKey)}
-                title={filter.title}
-                options={filter.options}
-              />
-            )}
-          </Fragment>
-        ))}
+      <div className="flex flex-wrap items-center justify-between gap-2 lg:flex-nowrap lg:justify-end">
+        <div className="flex flex-wrap gap-2">
+          {filters?.map((filter) => (
+            <Fragment key={filter.accessorKey}>
+              {table.getColumn(filter.accessorKey) && (
+                <DataTableFacetedFilter
+                  column={table.getColumn(filter.accessorKey)}
+                  title={filter.title}
+                  options={filter.options}
+                />
+              )}
+            </Fragment>
+          ))}
+        </div>
+        <DataTableViewOptions table={table} />
       </div>
-
-      <DataTableViewOptions table={table} />
     </div>
   );
 }

@@ -83,7 +83,7 @@ function RouteComponent() {
       >
         <FormNavigationBlocker />
         <AdminPageWrapper
-          breadcrumbs={[{ label: "Users", href: "/admin/users" }]}
+          breadcrumbs={[{ label: "All Users", href: "/admin/users" }]}
           pageTitle="Add New User"
           rightSideContent={<ActionButtons />}
         >
