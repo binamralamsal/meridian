@@ -4,6 +4,7 @@ import {
   Bed,
   Bone,
   Brain,
+  BrainIcon,
   Calendar,
   CheckCircle2Icon,
   Facebook,
@@ -24,6 +25,13 @@ import { useEffect, useRef, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export const Route = createFileRoute("/_main/")({
   component: Home,
@@ -445,6 +453,37 @@ function Home() {
             </Button>
           </div>
         </div>
+      </section>
+
+      <section className="relative container py-14 md:py-20 lg:pt-20 lg:pb-28">
+        <div className="from-primary/5 to-primary/30 absolute top-0 right-0 bottom-30 left-0 -z-10 rounded-xl bg-gradient-to-tl md:bottom-50 md:rounded-2xl lg:rounded-4xl"></div>
+        <h2 className="text-primary mb-4 text-center text-3xl font-bold md:mb-6 md:text-4xl lg:mb-10 lg:text-5xl">
+          Departments
+        </h2>
+        <Carousel
+          opts={{ loop: true, align: "start" }}
+          className="group/carousel"
+        >
+          <CarouselContent className="-ml-4">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <CarouselItem
+                key={index}
+                className="xs:basis-1/1 my-2 pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/5"
+              >
+                <Link to="/">
+                  <div className="hover:bg-primary hover:text-primary-foreground group bg-background relative grid place-items-center gap-4 rounded-xl px-4 py-14 shadow-md shadow-slate-100 transition-all duration-500">
+                    <BrainIcon className="text-primary group-hover:text-primary-foreground h-20 w-20 transition-all duration-500" />
+                    <p className="text-center text-xl leading-tight">
+                      Psychiatry Department
+                    </p>
+                  </div>
+                </Link>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hover:bg-background left-0 h-12 rounded-md opacity-100 transition-all group-hover/carousel:opacity-100 md:opacity-0" />
+          <CarouselNext className="hover:bg-background right-0 h-12 rounded-md opacity-100 transition-all group-hover/carousel:opacity-100 md:opacity-0" />
+        </Carousel>
       </section>
 
       <section className="bg-muted relative py-14 md:py-20 lg:py-28">

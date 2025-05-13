@@ -137,6 +137,8 @@
       transform: translateY(-5px);
     }
   }
+
+  --breakpoint-xs: 30rem;
 }
 
 @utility container {
