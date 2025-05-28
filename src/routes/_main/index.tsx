@@ -470,7 +470,7 @@ function Home() {
                 key={index}
                 className="xs:basis-1/1 my-2 pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/5"
               >
-                <Link to="/">
+                <Link to="/departments/$slug" params={{ slug: "psychiatry" }}>
                   <div className="hover:bg-primary hover:text-primary-foreground group bg-background relative grid place-items-center gap-4 rounded-xl px-4 py-14 shadow-md shadow-slate-100 transition-all duration-500">
                     <BrainIcon className="text-primary group-hover:text-primary-foreground h-20 w-20 transition-all duration-500" />
                     <p className="text-center text-xl leading-tight">
@@ -580,35 +580,6 @@ function Home() {
               category={post.category}
             />
           ))}
-        </div>
-      </section>
-
-      <section className="bg-primary dark:bg-muted text-primary-foreground dark:text-foreground w-full py-14 md:py-20 lg:py-28">
-        <div className="container">
-          <div className="grid place-items-center gap-4 text-center">
-            <div className="space-y-2">
-              <h2 className="max-w-[25ch] text-3xl leading-tight font-bold tracking-tighter text-balance sm:text-4xl md:text-5xl">
-                Ready to Take Control of Your Health?
-              </h2>
-              <p className="mx-auto max-w-[50ch] text-balance md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed">
-                Schedule an appointment today and take the first step towards a
-                healthier life with ProHealth&apos;s expert medical team.
-              </p>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <Button size="lg" variant="secondary" asChild>
-                <Link to="/">Book Appointment</Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="hover:text-foreground border-white bg-transparent text-white hover:bg-white"
-                asChild
-              >
-                <Link to="/contact">Contact Us</Link>
-              </Button>
-            </div>
-          </div>
         </div>
       </section>
     </main>
