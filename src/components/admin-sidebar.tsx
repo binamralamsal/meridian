@@ -1,6 +1,8 @@
 import {
   BoxesIcon,
   ChevronRightIcon,
+  ClipboardIcon,
+  ClipboardPlusIcon,
   FilePlus2Icon,
   HeartPlusIcon,
   HomeIcon,
@@ -83,9 +85,19 @@ export const sidebarItems: SidebarGroupItem[] = [
     ],
   },
   {
-    label: "Doctor Management",
+    label: "Department Management",
     action: <Link to="/admin">+</Link>,
     items: [
+      {
+        title: "All Departments",
+        url: "/admin/departments",
+        icon: ClipboardIcon,
+      },
+      {
+        title: "Add New Department",
+        url: "/admin/departments/new",
+        icon: ClipboardPlusIcon,
+      },
       {
         title: "All Doctors",
         url: "/admin/doctors",

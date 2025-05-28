@@ -19,6 +19,7 @@ export interface Department {
   icon: string;
   id: Generated<number>;
   name: string;
+  slug: string;
   updatedAt: Generated<Timestamp>;
 }
 

@@ -34,6 +34,7 @@ import { Route as AdminBlogsNewImport } from './routes/admin/blogs_.new'
 import { Route as AdminBlogCategoriesNewImport } from './routes/admin/blog-categories_.new'
 import { Route as MainDoctorsSlugImport } from './routes/_main/doctors_.$slug'
 import { Route as MainDepartmentsSlugImport } from './routes/_main/departments_.$slug'
+import { Route as AdminDepartmentsIdEditImport } from './routes/admin/departments_.$id.edit'
 
 // Create/Update Routes
 
@@ -172,6 +173,12 @@ const MainDepartmentsSlugRoute = MainDepartmentsSlugImport.update({
   id: '/departments_/$slug',
   path: '/departments/$slug',
   getParentRoute: () => MainRouteRoute,
+} as any)
+
+const AdminDepartmentsIdEditRoute = AdminDepartmentsIdEditImport.update({
+  id: '/departments_/$id/edit',
+  path: '/departments/$id/edit',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -339,6 +346,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersNewImport
       parentRoute: typeof AdminRouteImport
     }
+    '/admin/departments_/$id/edit': {
+      id: '/admin/departments_/$id/edit'
+      path: '/departments/$id/edit'
+      fullPath: '/admin/departments/$id/edit'
+      preLoaderRoute: typeof AdminDepartmentsIdEditImport
+      parentRoute: typeof AdminRouteImport
+    }
   }
 }
 
@@ -385,6 +399,7 @@ interface AdminRouteRouteChildren {
   AdminDoctorsNewRoute: typeof AdminDoctorsNewRoute
   AdminUsersIdRoute: typeof AdminUsersIdRoute
   AdminUsersNewRoute: typeof AdminUsersNewRoute
+  AdminDepartmentsIdEditRoute: typeof AdminDepartmentsIdEditRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -400,6 +415,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDoctorsNewRoute: AdminDoctorsNewRoute,
   AdminUsersIdRoute: AdminUsersIdRoute,
   AdminUsersNewRoute: AdminUsersNewRoute,
+  AdminDepartmentsIdEditRoute: AdminDepartmentsIdEditRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
@@ -430,6 +446,7 @@ export interface FileRoutesByFullPath {
   '/admin/doctors/new': typeof AdminDoctorsNewRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
+  '/admin/departments/$id/edit': typeof AdminDepartmentsIdEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -454,6 +471,7 @@ export interface FileRoutesByTo {
   '/admin/doctors/new': typeof AdminDoctorsNewRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
+  '/admin/departments/$id/edit': typeof AdminDepartmentsIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -481,6 +499,7 @@ export interface FileRoutesById {
   '/admin/doctors_/new': typeof AdminDoctorsNewRoute
   '/admin/users_/$id': typeof AdminUsersIdRoute
   '/admin/users_/new': typeof AdminUsersNewRoute
+  '/admin/departments_/$id/edit': typeof AdminDepartmentsIdEditRoute
 }
 
 export interface FileRouteTypes {
@@ -509,6 +528,7 @@ export interface FileRouteTypes {
     | '/admin/doctors/new'
     | '/admin/users/$id'
     | '/admin/users/new'
+    | '/admin/departments/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
@@ -532,6 +552,7 @@ export interface FileRouteTypes {
     | '/admin/doctors/new'
     | '/admin/users/$id'
     | '/admin/users/new'
+    | '/admin/departments/$id/edit'
   id:
     | '__root__'
     | '/_main'
@@ -557,6 +578,7 @@ export interface FileRouteTypes {
     | '/admin/doctors_/new'
     | '/admin/users_/$id'
     | '/admin/users_/new'
+    | '/admin/departments_/$id/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -612,7 +634,8 @@ export const routeTree = rootRoute
         "/admin/departments_/new",
         "/admin/doctors_/new",
         "/admin/users_/$id",
-        "/admin/users_/new"
+        "/admin/users_/new",
+        "/admin/departments_/$id/edit"
       ]
     },
     "/_main/about": {
@@ -697,6 +720,10 @@ export const routeTree = rootRoute
     },
     "/admin/users_/new": {
       "filePath": "admin/users_.new.tsx",
+      "parent": "/admin"
+    },
+    "/admin/departments_/$id/edit": {
+      "filePath": "admin/departments_.$id.edit.tsx",
       "parent": "/admin"
     }
   }

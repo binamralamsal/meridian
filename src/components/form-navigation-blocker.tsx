@@ -52,14 +52,24 @@ export function FormNavigationBlocker() {
   const form = useFormContext();
 
   const values = useStore(form.store, (state) => state.values);
+  const isSubmitSuccessful = useStore(
+    form.store,
+    (state) => state.isSubmitSuccessful,
+  );
 
   const { proceed, reset, status } = useBlocker({
     shouldBlockFn: () => {
       return true;
     },
-    disabled: deepEqual(values, form.options.defaultValues),
+    disabled:
+      isSubmitSuccessful || deepEqual(values, form.options.defaultValues),
     withResolver: true,
   });
+
+  if (isSubmitSuccessful && proceed) {
+    proceed();
+    return null;
+  }
 
   return (
     <AlertDialog open={status === "blocked"} onOpenChange={reset}>

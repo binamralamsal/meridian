@@ -7,6 +7,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.generatedAlwaysAsIdentity().primaryKey(),
     )
     .addColumn("name", "text", (col) => col.notNull())
+    .addColumn("slug", "text", (col) => col.notNull().unique())
     .addColumn("icon", "text", (col) => col.notNull())
     .addColumn("header_description", "text", (col) => col.notNull())
     .addColumn("created_at", "timestamptz", (col) =>

@@ -1,22 +1,28 @@
 import {
   ArrowRightIcon,
-  BrainIcon,
   FacebookIcon,
-  HeadphonesIcon,
-  HeartPulseIcon,
   LinkedinIcon,
-  PillIcon,
   TwitterIcon,
-  UserIcon,
-  UsersIcon,
 } from "lucide-react";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
+import { departmentBySlugOptions } from "@/features/departments/departments.queries";
+import { DynamicIcon } from "@/lib/load-icon";
+import { cn } from "@/util/cn";
+
 export const Route = createFileRoute("/_main/departments_/$slug")({
   component: RouteComponent,
+  loader: async ({ context: { queryClient }, params: { slug } }) => {
+    const data = await queryClient.ensureQueryData(
+      departmentBySlugOptions({ slug }),
+    );
+
+    if (!data) throw notFound();
+  },
 });
 
 const doctors = [
@@ -47,6 +53,13 @@ const doctors = [
 ];
 
 function RouteComponent() {
+  const params = Route.useParams();
+  const { data: department } = useSuspenseQuery(
+    departmentBySlugOptions({ slug: params.slug }),
+  );
+
+  if (!department) return null;
+
   return (
     <main>
       <section className="bg-muted relative">
@@ -54,14 +67,10 @@ function RouteComponent() {
           <div className="grid items-center gap-8 md:gap-10 lg:grid-cols-2 lg:gap-12">
             <div className="grid gap-6">
               <h1 className="text-meridian-dark text-4xl leading-tight font-bold text-balance sm:text-5xl lg:text-6xl">
-                Psychiatry Department
+                {department.title}
               </h1>
               <p className="max-w-xl text-lg leading-relaxed">
-                Our Psychiatry Department specializes in the diagnosis,
-                treatment, and prevention of mental, emotional, and behavioral
-                disorders. We provide compassionate care through evidence-based
-                approaches to help patients achieve mental wellness and improved
-                quality of life.
+                {department.description}
               </p>
             </div>
 
@@ -121,131 +130,55 @@ function RouteComponent() {
         </div>
       </section>
 
-      <section className="container py-14 md:py-20 lg:py-28">
-        <div className="mb-16 text-center">
-          <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-3 py-1 text-sm font-medium">
-            Specialized Services
-          </span>
-          <h2 className="mb-6 text-3xl font-bold text-balance md:text-4xl">
-            Comprehensive Mental Health Care
-          </h2>
-          <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
-            Our psychiatry department offers a wide range of specialized
-            treatments and therapies to address various mental health conditions
-            with compassion and expertise.
-          </p>
-        </div>
-
-        <div className="grid gap-8 md:grid-cols-3 lg:grid-cols-4">
-          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-purple-50 p-4 dark:bg-purple-500">
-              <BrainIcon className="h-6 w-6 text-purple-500 dark:text-purple-50" />
-            </div>
-            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
-              Cognitive Behavioral Therapy
-            </h3>
-            <p className="text-muted-foreground">
-              Evidence-based approach that helps identify and change negative
-              thought patterns affecting emotions and behaviors.
+      {department.sections.map((section) => (
+        <section key={section.id} className="container py-14 md:py-20 lg:py-28">
+          <div className="mb-16 text-center">
+            <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-3 py-1 text-sm font-medium">
+              {section.label}
+            </span>
+            <h2 className="mb-6 text-3xl font-bold text-balance md:text-4xl">
+              {section.title}
+            </h2>
+            <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
+              {section.description}
             </p>
           </div>
 
-          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-teal-50 p-4 dark:bg-teal-500">
-              <PillIcon className="h-6 w-6 text-teal-500 dark:text-teal-50" />
-            </div>
-            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
-              Medication Management
-            </h3>
-            <p className="text-muted-foreground">
-              Personalized psychiatric medication plans with ongoing monitoring
-              to ensure optimal effectiveness and minimal side effects.
-            </p>
+          <div
+            className={cn(
+              "grid gap-8",
+              section.cards.length > 3
+                ? "md:grid-cols-3 lg:grid-cols-4"
+                : "md:grid-cols-3",
+            )}
+          >
+            {section.cards.map((card) => (
+              <div
+                key={card.id}
+                className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm"
+              >
+                <div
+                  className={cn(
+                    "inline-block rounded-lg p-4",
+                    getCardColorClasses(card.title).background,
+                  )}
+                >
+                  <DynamicIcon
+                    iconName={card.icon}
+                    key={card.icon}
+                    className={getCardColorClasses(card.title).icon}
+                    fallbackClassName="h-6 w-6 text-purple-500 dark:text-purple-50"
+                  />
+                </div>
+                <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
+                  {card.title}
+                </h3>
+                <p className="text-muted-foreground">{card.description}</p>
+              </div>
+            ))}
           </div>
-
-          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-blue-50 p-4 dark:bg-blue-500">
-              <UsersIcon className="h-6 w-6 text-blue-500 dark:text-blue-50" />
-            </div>
-            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
-              Group Therapy
-            </h3>
-            <p className="text-muted-foreground">
-              Therapeutic sessions in a supportive group setting to share
-              experiences, build coping skills, and foster connection.
-            </p>
-          </div>
-
-          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-amber-50 p-4 dark:bg-amber-500">
-              <HeadphonesIcon className="h-6 w-6 text-amber-500 dark:text-amber-50" />
-            </div>
-            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
-              Telepsychiatry
-            </h3>
-            <p className="text-muted-foreground">
-              Virtual psychiatric consultations and therapy sessions providing
-              convenient access to mental health care from anywhere.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="container py-14 md:py-20 lg:py-28">
-        <div className="mb-16 text-center">
-          <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-3 py-1 text-sm font-medium">
-            Conditions We Treat
-          </span>
-          <h2 className="mb-6 text-3xl font-bold text-balance md:text-4xl">
-            Specialized Mental Health Care
-          </h2>
-          <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
-            Our psychiatry department provides expert diagnosis and treatment
-            for a wide range of mental health conditions.
-          </p>
-        </div>
-
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-rose-50 p-4 dark:bg-rose-500">
-              <HeartPulseIcon className="h-6 w-6 text-rose-500 dark:text-rose-50" />
-            </div>
-            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
-              Anxiety Disorders
-            </h3>
-            <p className="text-muted-foreground">
-              Treatment for generalized anxiety, panic disorder, social anxiety,
-              and specific phobias through therapy and medication.
-            </p>
-          </div>
-
-          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-indigo-50 p-4 dark:bg-indigo-500">
-              <BrainIcon className="h-6 w-6 text-indigo-500 dark:text-indigo-50" />
-            </div>
-            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
-              Mood Disorders
-            </h3>
-            <p className="text-muted-foreground">
-              Comprehensive care for depression, bipolar disorder, and other
-              mood conditions with personalized treatment plans.
-            </p>
-          </div>
-
-          <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
-            <div className="inline-block rounded-lg bg-emerald-50 p-4 dark:bg-emerald-500">
-              <UserIcon className="h-6 w-6 text-emerald-500 dark:text-emerald-50" />
-            </div>
-            <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-500">
-              PTSD & Trauma
-            </h3>
-            <p className="text-muted-foreground">
-              Specialized trauma-focused therapies to help process traumatic
-              experiences and reduce symptoms of PTSD.
-            </p>
-          </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
       <section className="bg-muted relative py-14 md:py-20 lg:py-28">
         <div className="relative z-10 container">
@@ -314,4 +247,37 @@ function RouteComponent() {
       </section>
     </main>
   );
+}
+
+const colors = ["purple", "teal", "blue", "amber", "rose", "indigo", "emerald"];
+
+const tailwindColorMap = colors.map((color) => ({
+  background: `bg-${color}-50 dark:bg-${color}-500`,
+  icon: `text-${color}-500 dark:text-${color}-50`,
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _twSafelist = [
+  ...colors.flatMap((color) => [
+    `bg-${color}-50`,
+    `dark:bg-${color}-500`,
+    `text-${color}-500`,
+    `dark:text-${color}-50`,
+  ]),
+];
+
+function hashStringToIndex(str: string, mod: number): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) % 2_147_483_647;
+  }
+  return hash % mod;
+}
+
+export function getCardColorClasses(cardName: string): {
+  background: string;
+  icon: string;
+} {
+  const index = hashStringToIndex(cardName, colors.length);
+  return tailwindColorMap[index];
 }
