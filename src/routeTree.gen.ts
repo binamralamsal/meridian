@@ -17,6 +17,7 @@ import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as MainIndexImport } from './routes/_main/index'
 import { Route as AdminUsersImport } from './routes/admin/users'
 import { Route as AdminDoctorsImport } from './routes/admin/doctors'
+import { Route as AdminDepartmentsImport } from './routes/admin/departments'
 import { Route as AdminBlogsImport } from './routes/admin/blogs'
 import { Route as AdminBlogCategoriesImport } from './routes/admin/blog-categories'
 import { Route as MainServicesImport } from './routes/_main/services'
@@ -28,6 +29,7 @@ import { Route as MainAboutImport } from './routes/_main/about'
 import { Route as AdminUsersNewImport } from './routes/admin/users_.new'
 import { Route as AdminUsersIdImport } from './routes/admin/users_.$id'
 import { Route as AdminDoctorsNewImport } from './routes/admin/doctors_.new'
+import { Route as AdminDepartmentsNewImport } from './routes/admin/departments_.new'
 import { Route as AdminBlogsNewImport } from './routes/admin/blogs_.new'
 import { Route as AdminBlogCategoriesNewImport } from './routes/admin/blog-categories_.new'
 import { Route as MainDoctorsSlugImport } from './routes/_main/doctors_.$slug'
@@ -67,6 +69,12 @@ const AdminUsersRoute = AdminUsersImport.update({
 const AdminDoctorsRoute = AdminDoctorsImport.update({
   id: '/doctors',
   path: '/doctors',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+
+const AdminDepartmentsRoute = AdminDepartmentsImport.update({
+  id: '/departments',
+  path: '/departments',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
@@ -133,6 +141,12 @@ const AdminUsersIdRoute = AdminUsersIdImport.update({
 const AdminDoctorsNewRoute = AdminDoctorsNewImport.update({
   id: '/doctors_/new',
   path: '/doctors/new',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+
+const AdminDepartmentsNewRoute = AdminDepartmentsNewImport.update({
+  id: '/departments_/new',
+  path: '/departments/new',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
@@ -234,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogsImport
       parentRoute: typeof AdminRouteImport
     }
+    '/admin/departments': {
+      id: '/admin/departments'
+      path: '/departments'
+      fullPath: '/admin/departments'
+      preLoaderRoute: typeof AdminDepartmentsImport
+      parentRoute: typeof AdminRouteImport
+    }
     '/admin/doctors': {
       id: '/admin/doctors'
       path: '/doctors'
@@ -288,6 +309,13 @@ declare module '@tanstack/react-router' {
       path: '/blogs/new'
       fullPath: '/admin/blogs/new'
       preLoaderRoute: typeof AdminBlogsNewImport
+      parentRoute: typeof AdminRouteImport
+    }
+    '/admin/departments_/new': {
+      id: '/admin/departments_/new'
+      path: '/departments/new'
+      fullPath: '/admin/departments/new'
+      preLoaderRoute: typeof AdminDepartmentsNewImport
       parentRoute: typeof AdminRouteImport
     }
     '/admin/doctors_/new': {
@@ -347,11 +375,13 @@ const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(
 interface AdminRouteRouteChildren {
   AdminBlogCategoriesRoute: typeof AdminBlogCategoriesRoute
   AdminBlogsRoute: typeof AdminBlogsRoute
+  AdminDepartmentsRoute: typeof AdminDepartmentsRoute
   AdminDoctorsRoute: typeof AdminDoctorsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBlogCategoriesNewRoute: typeof AdminBlogCategoriesNewRoute
   AdminBlogsNewRoute: typeof AdminBlogsNewRoute
+  AdminDepartmentsNewRoute: typeof AdminDepartmentsNewRoute
   AdminDoctorsNewRoute: typeof AdminDoctorsNewRoute
   AdminUsersIdRoute: typeof AdminUsersIdRoute
   AdminUsersNewRoute: typeof AdminUsersNewRoute
@@ -360,11 +390,13 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminBlogCategoriesRoute: AdminBlogCategoriesRoute,
   AdminBlogsRoute: AdminBlogsRoute,
+  AdminDepartmentsRoute: AdminDepartmentsRoute,
   AdminDoctorsRoute: AdminDoctorsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminBlogCategoriesNewRoute: AdminBlogCategoriesNewRoute,
   AdminBlogsNewRoute: AdminBlogsNewRoute,
+  AdminDepartmentsNewRoute: AdminDepartmentsNewRoute,
   AdminDoctorsNewRoute: AdminDoctorsNewRoute,
   AdminUsersIdRoute: AdminUsersIdRoute,
   AdminUsersNewRoute: AdminUsersNewRoute,
@@ -385,6 +417,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
   '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
   '/admin/users': typeof AdminUsersRoute
   '/': typeof MainIndexRoute
@@ -393,6 +426,7 @@ export interface FileRoutesByFullPath {
   '/doctors/$slug': typeof MainDoctorsSlugRoute
   '/admin/blog-categories/new': typeof AdminBlogCategoriesNewRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
+  '/admin/departments/new': typeof AdminDepartmentsNewRoute
   '/admin/doctors/new': typeof AdminDoctorsNewRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
@@ -407,6 +441,7 @@ export interface FileRoutesByTo {
   '/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
   '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
   '/admin/users': typeof AdminUsersRoute
   '/': typeof MainIndexRoute
@@ -415,6 +450,7 @@ export interface FileRoutesByTo {
   '/doctors/$slug': typeof MainDoctorsSlugRoute
   '/admin/blog-categories/new': typeof AdminBlogCategoriesNewRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
+  '/admin/departments/new': typeof AdminDepartmentsNewRoute
   '/admin/doctors/new': typeof AdminDoctorsNewRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
@@ -432,6 +468,7 @@ export interface FileRoutesById {
   '/_main/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
   '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
   '/admin/users': typeof AdminUsersRoute
   '/_main/': typeof MainIndexRoute
@@ -440,6 +477,7 @@ export interface FileRoutesById {
   '/_main/doctors_/$slug': typeof MainDoctorsSlugRoute
   '/admin/blog-categories_/new': typeof AdminBlogCategoriesNewRoute
   '/admin/blogs_/new': typeof AdminBlogsNewRoute
+  '/admin/departments_/new': typeof AdminDepartmentsNewRoute
   '/admin/doctors_/new': typeof AdminDoctorsNewRoute
   '/admin/users_/$id': typeof AdminUsersIdRoute
   '/admin/users_/new': typeof AdminUsersNewRoute
@@ -458,6 +496,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/blog-categories'
     | '/admin/blogs'
+    | '/admin/departments'
     | '/admin/doctors'
     | '/admin/users'
     | '/'
@@ -466,6 +505,7 @@ export interface FileRouteTypes {
     | '/doctors/$slug'
     | '/admin/blog-categories/new'
     | '/admin/blogs/new'
+    | '/admin/departments/new'
     | '/admin/doctors/new'
     | '/admin/users/$id'
     | '/admin/users/new'
@@ -479,6 +519,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/blog-categories'
     | '/admin/blogs'
+    | '/admin/departments'
     | '/admin/doctors'
     | '/admin/users'
     | '/'
@@ -487,6 +528,7 @@ export interface FileRouteTypes {
     | '/doctors/$slug'
     | '/admin/blog-categories/new'
     | '/admin/blogs/new'
+    | '/admin/departments/new'
     | '/admin/doctors/new'
     | '/admin/users/$id'
     | '/admin/users/new'
@@ -502,6 +544,7 @@ export interface FileRouteTypes {
     | '/_main/services'
     | '/admin/blog-categories'
     | '/admin/blogs'
+    | '/admin/departments'
     | '/admin/doctors'
     | '/admin/users'
     | '/_main/'
@@ -510,6 +553,7 @@ export interface FileRouteTypes {
     | '/_main/doctors_/$slug'
     | '/admin/blog-categories_/new'
     | '/admin/blogs_/new'
+    | '/admin/departments_/new'
     | '/admin/doctors_/new'
     | '/admin/users_/$id'
     | '/admin/users_/new'
@@ -559,11 +603,13 @@ export const routeTree = rootRoute
       "children": [
         "/admin/blog-categories",
         "/admin/blogs",
+        "/admin/departments",
         "/admin/doctors",
         "/admin/users",
         "/admin/",
         "/admin/blog-categories_/new",
         "/admin/blogs_/new",
+        "/admin/departments_/new",
         "/admin/doctors_/new",
         "/admin/users_/$id",
         "/admin/users_/new"
@@ -601,6 +647,10 @@ export const routeTree = rootRoute
       "filePath": "admin/blogs.tsx",
       "parent": "/admin"
     },
+    "/admin/departments": {
+      "filePath": "admin/departments.tsx",
+      "parent": "/admin"
+    },
     "/admin/doctors": {
       "filePath": "admin/doctors.tsx",
       "parent": "/admin"
@@ -631,6 +681,10 @@ export const routeTree = rootRoute
     },
     "/admin/blogs_/new": {
       "filePath": "admin/blogs_.new.tsx",
+      "parent": "/admin"
+    },
+    "/admin/departments_/new": {
+      "filePath": "admin/departments_.new.tsx",
       "parent": "/admin"
     },
     "/admin/doctors_/new": {

@@ -13,6 +13,37 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export type UserRole = "admin" | "user";
 
+export interface Department {
+  createdAt: Generated<Timestamp>;
+  headerDescription: string;
+  icon: string;
+  id: Generated<number>;
+  name: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface DepartmentSectionCard {
+  createdAt: Generated<Timestamp>;
+  description: string;
+  displayOrder: number;
+  icon: string;
+  id: Generated<number>;
+  sectionId: number;
+  title: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface DepartmentSection {
+  createdAt: Generated<Timestamp>;
+  departmentId: number;
+  description: string;
+  displayOrder: number;
+  id: Generated<number>;
+  label: string;
+  title: string;
+  updatedAt: Generated<Timestamp>;
+}
+
 export interface Email {
   createdAt: Generated<Timestamp>;
   email: string;
@@ -46,6 +77,9 @@ export interface User {
 }
 
 export interface DB {
+  departments: Department;
+  departmentSectionCards: DepartmentSectionCard;
+  departmentSections: DepartmentSection;
   emails: Email;
   sessions: Session;
   users: User;
