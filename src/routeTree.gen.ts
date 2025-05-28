@@ -26,6 +26,7 @@ import { Route as MainLoginImport } from './routes/_main/login'
 import { Route as MainDoctorsImport } from './routes/_main/doctors'
 import { Route as MainContactImport } from './routes/_main/contact'
 import { Route as MainBlogsImport } from './routes/_main/blogs'
+import { Route as MainAppointmentImport } from './routes/_main/appointment'
 import { Route as MainAboutImport } from './routes/_main/about'
 import { Route as AdminUsersNewImport } from './routes/admin/users_.new'
 import { Route as AdminUsersIdImport } from './routes/admin/users_.$id'
@@ -128,6 +129,12 @@ const MainBlogsRoute = MainBlogsImport.update({
   getParentRoute: () => MainRouteRoute,
 } as any)
 
+const MainAppointmentRoute = MainAppointmentImport.update({
+  id: '/appointment',
+  path: '/appointment',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+
 const MainAboutRoute = MainAboutImport.update({
   id: '/about',
   path: '/about',
@@ -211,6 +218,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof MainAboutImport
+      parentRoute: typeof MainRouteImport
+    }
+    '/_main/appointment': {
+      id: '/_main/appointment'
+      path: '/appointment'
+      fullPath: '/appointment'
+      preLoaderRoute: typeof MainAppointmentImport
       parentRoute: typeof MainRouteImport
     }
     '/_main/blogs': {
@@ -374,6 +388,7 @@ declare module '@tanstack/react-router' {
 
 interface MainRouteRouteChildren {
   MainAboutRoute: typeof MainAboutRoute
+  MainAppointmentRoute: typeof MainAppointmentRoute
   MainBlogsRoute: typeof MainBlogsRoute
   MainContactRoute: typeof MainContactRoute
   MainDoctorsRoute: typeof MainDoctorsRoute
@@ -386,6 +401,7 @@ interface MainRouteRouteChildren {
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainAboutRoute: MainAboutRoute,
+  MainAppointmentRoute: MainAppointmentRoute,
   MainBlogsRoute: MainBlogsRoute,
   MainContactRoute: MainContactRoute,
   MainDoctorsRoute: MainDoctorsRoute,
@@ -442,6 +458,7 @@ export interface FileRoutesByFullPath {
   '': typeof MainRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/about': typeof MainAboutRoute
+  '/appointment': typeof MainAppointmentRoute
   '/blogs': typeof MainBlogsRoute
   '/contact': typeof MainContactRoute
   '/doctors': typeof MainDoctorsRoute
@@ -468,6 +485,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/about': typeof MainAboutRoute
+  '/appointment': typeof MainAppointmentRoute
   '/blogs': typeof MainBlogsRoute
   '/contact': typeof MainContactRoute
   '/doctors': typeof MainDoctorsRoute
@@ -497,6 +515,7 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/_main/about': typeof MainAboutRoute
+  '/_main/appointment': typeof MainAppointmentRoute
   '/_main/blogs': typeof MainBlogsRoute
   '/_main/contact': typeof MainContactRoute
   '/_main/doctors': typeof MainDoctorsRoute
@@ -527,6 +546,7 @@ export interface FileRouteTypes {
     | ''
     | '/admin'
     | '/about'
+    | '/appointment'
     | '/blogs'
     | '/contact'
     | '/doctors'
@@ -552,6 +572,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
+    | '/appointment'
     | '/blogs'
     | '/contact'
     | '/doctors'
@@ -579,6 +600,7 @@ export interface FileRouteTypes {
     | '/_main'
     | '/admin'
     | '/_main/about'
+    | '/_main/appointment'
     | '/_main/blogs'
     | '/_main/contact'
     | '/_main/doctors'
@@ -632,6 +654,7 @@ export const routeTree = rootRoute
       "filePath": "_main/route.tsx",
       "children": [
         "/_main/about",
+        "/_main/appointment",
         "/_main/blogs",
         "/_main/contact",
         "/_main/doctors",
@@ -663,6 +686,10 @@ export const routeTree = rootRoute
     },
     "/_main/about": {
       "filePath": "_main/about.tsx",
+      "parent": "/_main"
+    },
+    "/_main/appointment": {
+      "filePath": "_main/appointment.tsx",
       "parent": "/_main"
     },
     "/_main/blogs": {

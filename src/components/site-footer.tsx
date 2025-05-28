@@ -30,7 +30,7 @@ export function SiteFooter() {
             </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <Button size="lg" variant="secondary" asChild>
-                <Link to="/">Book Appointment</Link>
+                <Link to="/appointment">Book Appointment</Link>
               </Button>
               <Button
                 size="lg"

@@ -1,3 +1,5 @@
+import { ChevronDown } from "lucide-react";
+
 import { useEffect, useState } from "react";
 
 import { Link } from "@tanstack/react-router";
@@ -5,6 +7,14 @@ import { Link } from "@tanstack/react-router";
 import { DesktopNav } from "./desktop-nav";
 import { Logo } from "./icons/logo";
 import { MobileNav } from "./mobile-nav";
+import { Button } from "./ui/button";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { cn } from "@/util/cn";
 
@@ -40,6 +50,55 @@ export function SiteHeader() {
 
         <DesktopNav />
         <MobileNav />
+
+        <div className="hidden md:block lg:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="lg"
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                Links <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuItem asChild>
+                <Link to="/appointment" className="w-full">
+                  📅 Make an Appointment
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a
+                  href="http://202.51.74.38:10050/?authCode=%22674e58f5-91a5-42e6-aada-2f8aea985875%22"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full"
+                >
+                  🩺 Patient Portal
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <ul className="hidden gap-2 lg:flex">
+          <li>
+            <Button size="lg" asChild>
+              <Link to="/appointment">Make an appointment</Link>
+            </Button>
+          </li>
+          <li>
+            <Button size="lg" variant="outline" asChild>
+              <a
+                href="http://202.51.74.38:10050/?authCode=%22674e58f5-91a5-42e6-aada-2f8aea985875%22"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Go to Patient Portal
+              </a>
+            </Button>
+          </li>
+        </ul>
       </div>
     </header>
   );

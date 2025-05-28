@@ -49,6 +49,25 @@ export function MobileNav() {
             </li>
           ))}
         </ul>
+
+        <ul className="grid gap-2 px-4">
+          <li>
+            <Button size="lg" className="w-full" asChild>
+              <Link to="/appointment">Make an appointment</Link>
+            </Button>
+          </li>
+          <li>
+            <Button size="lg" className="w-full" variant="outline" asChild>
+              <a
+                href="http://202.51.74.38:10050/?authCode=%22674e58f5-91a5-42e6-aada-2f8aea985875%22"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Go to Patient Portal
+              </a>
+            </Button>
+          </li>
+        </ul>
       </SheetContent>
     </Sheet>
   );
