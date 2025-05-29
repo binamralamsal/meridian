@@ -256,16 +256,6 @@ const tailwindColorMap = colors.map((color) => ({
   icon: `text-${color}-500 dark:text-${color}-50`,
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _twSafelist = [
-  ...colors.flatMap((color) => [
-    `bg-${color}-50`,
-    `dark:bg-${color}-500`,
-    `text-${color}-500`,
-    `dark:text-${color}-50`,
-  ]),
-];
-
 function hashStringToIndex(str: string, mod: number): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {

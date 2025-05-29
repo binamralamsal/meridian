@@ -19,7 +19,7 @@ import {
   User,
 } from "lucide-react";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -38,6 +38,11 @@ import { DynamicIcon } from "@/lib/load-icon";
 
 export const Route = createFileRoute("/_main/")({
   component: Home,
+  loader: async ({ context: { queryClient } }) => {
+    queryClient.prefetchQuery(
+      allDepartmentsOptions({ values: { page: 1, pageSize: 20 } }),
+    );
+  },
 });
 
 const doctors = [
@@ -458,7 +463,9 @@ function Home() {
         </div>
       </section>
 
-      <DepartmentsSection />
+      <Suspense fallback={<div>Loading</div>}>
+        <DepartmentsSection />
+      </Suspense>
 
       <section className="bg-muted relative py-14 md:py-20 lg:py-28">
         <div className="relative z-10 container">

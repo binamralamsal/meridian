@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@source inline("{dark:,}bg-{purple,teal,blue,amber,rose,indigo,emerald}-{50,500}");
+@source inline("{dark:,}text-{purple,teal,blue,amber,rose,indigo,emerald}-{50,500}");
 
 :root {
   --background: oklch(1 0 0);
