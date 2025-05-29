@@ -4,12 +4,12 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { Link, useSearch } from "@tanstack/react-router";
+import { useSearch } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ColumnDef } from "@tanstack/react-table";
 
-import { allDepartmentsOptions } from "../departments.queries";
-import { deleteDepartmentFn } from "../server/functions/departments";
+import { allContactEntriesOptions } from "../contact-entries.queries";
+import { deleteContactEntryFn } from "../server/functions/contact";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import {
@@ -24,11 +24,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -38,15 +43,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type Department = {
+export type ContactEntry = {
   id: number;
   name: string;
-  slug: string;
+  email: string;
+  phone: string;
+  message: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
-export const departmentTableColumns: ColumnDef<Department>[] = [
+export const contactEntriesTableColumns: ColumnDef<ContactEntry>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -60,10 +67,40 @@ export const departmentTableColumns: ColumnDef<Department>[] = [
     ),
   },
   {
-    accessorKey: "slug",
+    accessorKey: "email",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Slug" />
+      <DataTableColumnHeader column={column} title="Email" />
     ),
+  },
+  {
+    accessorKey: "phone",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Phone" />
+    ),
+  },
+  {
+    id: "message",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Message" />
+    ),
+    cell: ({ row }) => {
+      const { message, name } = row.original;
+
+      return (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              View Message
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent>
+            <DialogTitle>{name}&apos; message</DialogTitle>
+            {message}
+          </DialogContent>
+        </Dialog>
+      );
+    },
   },
   {
     accessorKey: "createdAt",
@@ -104,27 +141,27 @@ export const departmentTableColumns: ColumnDef<Department>[] = [
   {
     id: "actions",
     cell: function CellComponent({ row }) {
-      const department = row.original;
+      const contactEntry = row.original;
 
       const queryClient = useQueryClient();
-      const deleteDepartment = useServerFn(deleteDepartmentFn);
-      const searchParams = useSearch({ from: "/admin/departments" });
+      const searchParams = useSearch({ from: "/admin/contact-entries" });
+      const deleteContactEntry = useServerFn(deleteContactEntryFn);
 
       const [deleteDialogOpened, setDeleteDialogOpened] = useState(false);
       const [actionsDropdownOpened, setActionsDropdownOpened] = useState(false);
 
       const nameWithId = `${row.original.name} #${row.original.id}`;
 
-      async function handleDeleteDepartment() {
+      async function handleDeleteContactEntry() {
         setDeleteDialogOpened(false);
         setActionsDropdownOpened(false);
 
-        const response = await deleteDepartment({ data: department.id });
+        const response = await deleteContactEntry({ data: contactEntry.id });
 
         if (response.status === "SUCCESS") {
           toast.success(response.message);
           await queryClient.invalidateQueries(
-            allDepartmentsOptions({ values: searchParams }),
+            allContactEntriesOptions({ values: searchParams }),
           );
         } else {
           toast.error(response.message);
@@ -144,16 +181,6 @@ export const departmentTableColumns: ColumnDef<Department>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link
-                to="/admin/departments/$id/edit"
-                params={{ id: department.id.toString() }}
-              >
-                Edit
-              </Link>
-            </DropdownMenuItem>
-
             <AlertDialog
               open={deleteDialogOpened}
               onOpenChange={setDeleteDialogOpened}
@@ -167,7 +194,7 @@ export const departmentTableColumns: ColumnDef<Department>[] = [
                 <AlertDialogHeader>
                   <AlertDialogTitle>
                     Are you absolutely sure you want to delete{" "}
-                    <strong>{nameWithId} department?</strong>
+                    <strong>{nameWithId} category?</strong>
                   </AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete{" "}
@@ -182,7 +209,7 @@ export const departmentTableColumns: ColumnDef<Department>[] = [
                   </AlertDialogCancel>
                   <Button
                     variant="destructive"
-                    onClick={handleDeleteDepartment}
+                    onClick={handleDeleteContactEntry}
                   >
                     Delete
                   </Button>

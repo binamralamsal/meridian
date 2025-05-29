@@ -18,6 +18,7 @@ import { Route as MainIndexImport } from './routes/_main/index'
 import { Route as AdminUsersImport } from './routes/admin/users'
 import { Route as AdminDoctorsImport } from './routes/admin/doctors'
 import { Route as AdminDepartmentsImport } from './routes/admin/departments'
+import { Route as AdminContactEntriesImport } from './routes/admin/contact-entries'
 import { Route as AdminBlogsImport } from './routes/admin/blogs'
 import { Route as AdminBlogCategoriesImport } from './routes/admin/blog-categories'
 import { Route as MainServicesImport } from './routes/_main/services'
@@ -76,6 +77,12 @@ const AdminDoctorsRoute = AdminDoctorsImport.update({
 const AdminDepartmentsRoute = AdminDepartmentsImport.update({
   id: '/departments',
   path: '/departments',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+
+const AdminContactEntriesRoute = AdminContactEntriesImport.update({
+  id: '/contact-entries',
+  path: '/contact-entries',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
@@ -255,6 +262,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogsImport
       parentRoute: typeof AdminRouteImport
     }
+    '/admin/contact-entries': {
+      id: '/admin/contact-entries'
+      path: '/contact-entries'
+      fullPath: '/admin/contact-entries'
+      preLoaderRoute: typeof AdminContactEntriesImport
+      parentRoute: typeof AdminRouteImport
+    }
     '/admin/departments': {
       id: '/admin/departments'
       path: '/departments'
@@ -389,6 +403,7 @@ const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(
 interface AdminRouteRouteChildren {
   AdminBlogCategoriesRoute: typeof AdminBlogCategoriesRoute
   AdminBlogsRoute: typeof AdminBlogsRoute
+  AdminContactEntriesRoute: typeof AdminContactEntriesRoute
   AdminDepartmentsRoute: typeof AdminDepartmentsRoute
   AdminDoctorsRoute: typeof AdminDoctorsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -405,6 +420,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminBlogCategoriesRoute: AdminBlogCategoriesRoute,
   AdminBlogsRoute: AdminBlogsRoute,
+  AdminContactEntriesRoute: AdminContactEntriesRoute,
   AdminDepartmentsRoute: AdminDepartmentsRoute,
   AdminDoctorsRoute: AdminDoctorsRoute,
   AdminUsersRoute: AdminUsersRoute,
@@ -433,6 +449,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
   '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/contact-entries': typeof AdminContactEntriesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -458,6 +475,7 @@ export interface FileRoutesByTo {
   '/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
   '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/contact-entries': typeof AdminContactEntriesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -486,6 +504,7 @@ export interface FileRoutesById {
   '/_main/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
   '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/contact-entries': typeof AdminContactEntriesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -515,6 +534,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/blog-categories'
     | '/admin/blogs'
+    | '/admin/contact-entries'
     | '/admin/departments'
     | '/admin/doctors'
     | '/admin/users'
@@ -539,6 +559,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/blog-categories'
     | '/admin/blogs'
+    | '/admin/contact-entries'
     | '/admin/departments'
     | '/admin/doctors'
     | '/admin/users'
@@ -565,6 +586,7 @@ export interface FileRouteTypes {
     | '/_main/services'
     | '/admin/blog-categories'
     | '/admin/blogs'
+    | '/admin/contact-entries'
     | '/admin/departments'
     | '/admin/doctors'
     | '/admin/users'
@@ -625,6 +647,7 @@ export const routeTree = rootRoute
       "children": [
         "/admin/blog-categories",
         "/admin/blogs",
+        "/admin/contact-entries",
         "/admin/departments",
         "/admin/doctors",
         "/admin/users",
@@ -668,6 +691,10 @@ export const routeTree = rootRoute
     },
     "/admin/blogs": {
       "filePath": "admin/blogs.tsx",
+      "parent": "/admin"
+    },
+    "/admin/contact-entries": {
+      "filePath": "admin/contact-entries.tsx",
       "parent": "/admin"
     },
     "/admin/departments": {

@@ -13,6 +13,16 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export type UserRole = "admin" | "user";
 
+export interface ContactEntry {
+  createdAt: Generated<Timestamp>;
+  email: string;
+  id: Generated<number>;
+  message: string;
+  name: string;
+  phone: string;
+  updatedAt: Generated<Timestamp>;
+}
+
 export interface Department {
   createdAt: Generated<Timestamp>;
   headerDescription: string;
@@ -78,6 +88,7 @@ export interface User {
 }
 
 export interface DB {
+  contactEntries: ContactEntry;
   departments: Department;
   departmentSectionCards: DepartmentSectionCard;
   departmentSections: DepartmentSection;
