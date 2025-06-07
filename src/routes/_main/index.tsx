@@ -6,16 +6,13 @@ import {
   Brain,
   Calendar,
   CheckCircle2Icon,
-  Facebook,
   Heart,
-  Linkedin,
   Mail,
   MapPin,
   Microscope,
   Phone,
   Share2,
   Stethoscope,
-  Twitter,
   User,
 } from "lucide-react";
 
@@ -108,12 +105,16 @@ function Home() {
                 healthcare services to help you live healthier and happier.
               </p>
               <div className="mt-2 flex flex-col flex-wrap gap-2 md:flex-row">
-                <Button className="group" size="lg">
-                  Learn More{" "}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <Button className="group" size="lg" asChild>
+                  <Link to="/about">
+                    Learn More{" "}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
                 </Button>
-                <Button variant="outline" size="lg">
-                  <Calendar size={18} /> Book Appointment
+                <Button variant="outline" size="lg" asChild>
+                  <Link to="/appointment">
+                    <Calendar size={18} /> Book Appointment
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -429,12 +430,14 @@ function Home() {
               </div>
             </div>
 
-            <Button className="group mt-2" size="lg">
-              <span>Meet Our Doctors</span>
-              <ArrowRight
-                size={18}
-                className="transition-transform group-hover:translate-x-1"
-              />
+            <Button className="group mt-2" size="lg" asChild>
+              <Link to="/doctors">
+                <span>Meet Our Doctors</span>
+                <ArrowRight
+                  size={18}
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              </Link>
             </Button>
           </div>
         </div>

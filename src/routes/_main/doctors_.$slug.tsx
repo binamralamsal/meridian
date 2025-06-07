@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { Badge } from "@/components/ui/badge";
 
@@ -60,9 +60,13 @@ export default function RouteComponent() {
                 alt={doctor.name}
                 className="aspect-square h-full w-full object-cover"
               />
-              <div className="bg-primary text-primary-foreground absolute right-0 bottom-0 left-0 px-4 py-2 text-center font-medium">
+              <Link
+                className="bg-primary text-primary-foreground absolute right-0 bottom-0 left-0 px-4 py-2 text-center font-medium"
+                to="/departments/$slug"
+                params={{ slug: doctor.department?.slug || "" }}
+              >
                 {doctor.department?.name}
-              </div>
+              </Link>
             </div>
 
             <div className="grid gap-8 p-6">

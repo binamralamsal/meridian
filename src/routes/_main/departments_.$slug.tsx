@@ -6,11 +6,13 @@ import {
 } from "lucide-react";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
+import { DoctorCard } from "@/features/departments/components/doctor-card";
 import { departmentBySlugOptions } from "@/features/departments/departments.queries";
+import { allDoctorsOptions } from "@/features/departments/doctors.queries";
 import { DynamicIcon } from "@/lib/load-icon";
 import { cn } from "@/util/cn";
 
@@ -22,40 +24,23 @@ export const Route = createFileRoute("/_main/departments_/$slug")({
     );
 
     if (!data) throw notFound();
+
+    queryClient.prefetchQuery(
+      allDoctorsOptions({ page: 1, pageSize: 4, departments: [slug] }),
+    );
   },
 });
-
-const doctors = [
-  {
-    name: "Dr. Emily Richards",
-    specialty: "Adult Psychiatrist",
-    image:
-      "https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=300&h=400&auto=format&fit=crop",
-  },
-  {
-    name: "Dr. Michael Chen",
-    specialty: "Child & Adolescent Psychiatrist",
-    image:
-      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=300&h=400&auto=format&fit=crop",
-  },
-  {
-    name: "Dr. Sarah Johnson",
-    specialty: "Geriatric Psychiatrist",
-    image:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-  },
-  {
-    name: "Dr. James Wilson",
-    specialty: "Addiction Psychiatrist",
-    image:
-      "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=300&h=400&auto=format&fit=crop",
-  },
-];
 
 function RouteComponent() {
   const params = Route.useParams();
   const { data: department } = useSuspenseQuery(
     departmentBySlugOptions({ slug: params.slug }),
+  );
+
+  const {
+    data: { doctors },
+  } = useSuspenseQuery(
+    allDoctorsOptions({ page: 1, pageSize: 4, departments: [params.slug] }),
   );
 
   if (!department) return null;
@@ -84,47 +69,34 @@ function RouteComponent() {
                 <div className="from-primary/30 absolute inset-0 bg-gradient-to-t to-transparent"></div>
               </div>
 
-              <div className="animate-float bg-background/80 absolute bottom-4 left-4 max-w-xs rounded-lg p-4 shadow-lg backdrop-blur-md lg:bottom-14 lg:-left-8">
-                <p className="text-primary mb-2 font-semibold">
-                  Available Specialists
-                </p>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-blue-100">
-                      <img
-                        src="/placeholder.svg?height=40&width=40"
-                        alt="Dr. Lisa Mayer"
-                        width={40}
-                        height={40}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Dr. Lisa Mayer, MD</h3>
-                      <p className="text-sm text-gray-500">
-                        Clinical Psychiatrist
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-blue-100">
-                      <img
-                        src="/placeholder.svg?height=40&width=40"
-                        alt="Dr. Robert Klein"
-                        width={40}
-                        height={40}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Dr. Robert Klein, MD</h3>
-                      <p className="text-sm text-gray-500">
-                        Psychiatric Specialist
-                      </p>
-                    </div>
+              {doctors.length > 0 && (
+                <div className="animate-float bg-background/80 absolute bottom-4 left-4 max-w-xs rounded-lg p-4 shadow-lg backdrop-blur-md lg:bottom-14 lg:-left-8">
+                  <p className="text-primary mb-2 font-semibold">
+                    Available Specialists
+                  </p>
+                  <div className="space-y-4">
+                    {doctors.map((doctor) => (
+                      <div key={doctor.id} className="flex items-center gap-3">
+                        <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full">
+                          <img
+                            src={doctor.photo?.url}
+                            alt={doctor.name}
+                            width={40}
+                            height={40}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">{doctor.name}</h3>
+                          <p className="text-muted-foreground text-sm">
+                            {doctor.role}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -180,71 +152,48 @@ function RouteComponent() {
         </section>
       ))}
 
-      <section className="bg-muted relative py-14 md:py-20 lg:py-28">
-        <div className="relative z-10 container">
-          <div className="mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-            <div className="grid gap-3">
-              <h2 className="text-3xl font-bold text-balance md:text-4xl">
-                Our <span className="text-secondary">Psychiatrists</span>
-              </h2>
-              <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
-                Meet our team of board-certified psychiatrists dedicated to
-                providing compassionate, personalized mental health care for
-                patients of all ages.
-              </p>
-            </div>
-            <Button variant="outline" className="group" size="lg">
-              <span>View all specialists</span>
-              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </div>
-
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {doctors.map((doctor, index) => (
-              <div key={index} className="group">
-                <div className="relative mb-4 overflow-hidden rounded-xl shadow-sm">
-                  <img
-                    src={doctor.image || "/placeholder.svg"}
-                    alt={doctor.name}
-                    className="h-[350px] w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="from-primary/70 absolute inset-0 flex items-end justify-center bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="mb-6 flex space-x-4">
-                      <a
-                        href="#"
-                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
-                      >
-                        <FacebookIcon className="h-4 w-4" />
-                      </a>
-                      <a
-                        href="#"
-                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
-                      >
-                        <TwitterIcon className="h-4 w-4" />
-                      </a>
-                      <a
-                        href="#"
-                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
-                      >
-                        <LinkedinIcon className="h-4 w-4" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-primary text-xl font-semibold">
-                  {doctor.name}
-                </h3>
-                <p className="text-foreground/80">{doctor.specialty}</p>
+      {doctors.length > 0 && (
+        <section className="bg-muted relative py-14 md:py-20 lg:py-28">
+          <div className="relative z-10 container">
+            <div className="mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+              <div className="grid gap-3">
+                <h2 className="text-3xl font-bold text-balance md:text-4xl">
+                  Our <span className="text-secondary">Specialists</span> for{" "}
+                  {department.title}
+                </h2>
+                <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
+                  Meet our team of board-certified specialists dedicated to
+                  providing compassionate, personalized health care for patients
+                  of all ages.
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
+              <Button variant="outline" className="group" size="lg" asChild>
+                <Link to="/doctors" search={{ departments: [params.slug] }}>
+                  <span>View all specialists</span>
+                  <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+            </div>
 
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="bg-primary/10 absolute -top-72 -right-72 h-[800px] w-[800px] rounded-full blur-3xl"></div>
-          <div className="bg-secondary/10 absolute -bottom-72 -left-72 h-[600px] w-[600px] rounded-full blur-3xl"></div>
-        </div>
-      </section>
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {doctors.map((doctor) => (
+                <DoctorCard
+                  name={doctor.name}
+                  role={doctor.role}
+                  slug={doctor.slug}
+                  photo={doctor.photo?.url}
+                  key={doctor.id}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="bg-primary/10 absolute -top-72 -right-72 h-[800px] w-[800px] rounded-full blur-3xl"></div>
+            <div className="bg-secondary/10 absolute -bottom-72 -left-72 h-[600px] w-[600px] rounded-full blur-3xl"></div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
