@@ -6,6 +6,7 @@ import { AdminSidebar } from "@/components/admin-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { currentUserOptions } from "@/features/auth/auth.queries";
+import { ConfirmProvider } from "@/stores/confirm-alert";
 
 const getSidebarStateFn = createServerFn({ method: "GET" }).handler(() => {
   const sidebarState = getCookie("sidebar_state");
@@ -31,13 +32,13 @@ function RouteComponent() {
   const { defaultOpen } = Route.useLoaderData();
 
   return (
-    <>
+    <ConfirmProvider>
       <SidebarProvider defaultOpen={defaultOpen}>
         <AdminSidebar />
         <SidebarInset>
           <Outlet />
         </SidebarInset>
       </SidebarProvider>
-    </>
+    </ConfirmProvider>
   );
 }

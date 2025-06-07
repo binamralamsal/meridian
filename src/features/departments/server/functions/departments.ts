@@ -37,10 +37,9 @@ export const saveDepartmentFn = createServerFn()
             })
             .executeTakeFirstOrThrow();
 
-          const existingSectionIds =
-            sections
-              ?.filter((section) => !section.new)
-              .map((section) => section.id) || [];
+          const existingSectionIds = sections
+            ?.filter((section) => !section.new)
+            .map((section) => section.id);
 
           if (existingSectionIds.length > 0) {
             await trx

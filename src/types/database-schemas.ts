@@ -5,6 +5,8 @@
 
 import type { ColumnType } from "kysely";
 
+export type DayOfWeek = "friday" | "monday" | "saturday" | "sunday" | "thursday" | "tuesday" | "wednesday";
+
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
@@ -55,6 +57,63 @@ export interface DepartmentSection {
   updatedAt: Generated<Timestamp>;
 }
 
+export interface Doctor {
+  createdAt: Generated<Timestamp>;
+  departmentId: number;
+  description: string;
+  email: string | null;
+  id: Generated<number>;
+  location: string | null;
+  name: string;
+  phoneNumber: string | null;
+  photoFileId: number;
+  role: string;
+  slug: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface DoctorsAchievement {
+  createdAt: Generated<Timestamp>;
+  displayOrder: number;
+  doctorId: number;
+  id: Generated<number>;
+  title: string;
+  updatedAt: Generated<Timestamp>;
+  year: number;
+}
+
+export interface DoctorsAppointmentHour {
+  createdAt: Generated<Timestamp>;
+  day: DayOfWeek;
+  displayOrder: number;
+  doctorId: number;
+  id: Generated<number>;
+  timeEnd: string;
+  timeStart: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface DoctorsEducation {
+  createdAt: Generated<Timestamp>;
+  degree: string;
+  displayOrder: number;
+  doctorId: number;
+  id: Generated<number>;
+  institution: string;
+  updatedAt: Generated<Timestamp>;
+  yearOfCompletion: number;
+}
+
+export interface DoctorsExperience {
+  createdAt: Generated<Timestamp>;
+  displayOrder: number;
+  doctorId: number;
+  id: Generated<number>;
+  role: string;
+  shortDescription: string;
+  updatedAt: Generated<Timestamp>;
+}
+
 export interface Email {
   createdAt: Generated<Timestamp>;
   email: string;
@@ -78,6 +137,14 @@ export interface Session {
   userId: number;
 }
 
+export interface UploadedFile {
+  fileType: string;
+  id: Generated<number>;
+  name: string;
+  uploadedAt: Generated<Timestamp>;
+  url: string;
+}
+
 export interface User {
   createdAt: Generated<Timestamp>;
   id: Generated<number>;
@@ -92,7 +159,13 @@ export interface DB {
   departments: Department;
   departmentSectionCards: DepartmentSectionCard;
   departmentSections: DepartmentSection;
+  doctors: Doctor;
+  doctorsAchievements: DoctorsAchievement;
+  doctorsAppointmentHours: DoctorsAppointmentHour;
+  doctorsEducation: DoctorsEducation;
+  doctorsExperiences: DoctorsExperience;
   emails: Email;
   sessions: Session;
+  uploadedFiles: UploadedFile;
   users: User;
 }

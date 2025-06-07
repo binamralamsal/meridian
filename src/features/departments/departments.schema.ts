@@ -3,7 +3,7 @@ import { z } from "zod";
 import { DATATABLE_PAGE_SIZE } from "@/config/constants";
 
 const cardSchema = z.object({
-  id: z.number({ required_error: "Card ID is required" }),
+  id: z.number(),
   icon: z
     .string({ required_error: "Card icon is required" })
     .min(1, "Card icon cannot be empty"),
@@ -18,7 +18,7 @@ const cardSchema = z.object({
 });
 
 const sectionSchema = z.object({
-  id: z.number({ required_error: "Section ID is required" }),
+  id: z.number(),
   label: z
     .string({ required_error: "Section label is required" })
     .min(1, "Section label cannot be empty"),
@@ -43,7 +43,11 @@ export const departmentSchema = z.object({
     .min(3, "Title must be at least 3 characters"),
   slug: z
     .string({ required_error: "Slug is required" })
-    .min(3, "Slug must be at least 3 characters"),
+    .min(3, "Slug must be at least 3 characters")
+    .regex(/^[a-z0-9-]+$/, {
+      message:
+        "Slug can only contain lowercase letters, numbers, and hyphens. Spaces are not allowed.",
+    }),
   icon: z
     .string({ required_error: "Icon is required" })
     .min(1, "Icon cannot be empty"),

@@ -36,6 +36,7 @@ import { Route as AdminBlogsNewImport } from './routes/admin/blogs_.new'
 import { Route as AdminBlogCategoriesNewImport } from './routes/admin/blog-categories_.new'
 import { Route as MainDoctorsSlugImport } from './routes/_main/doctors_.$slug'
 import { Route as MainDepartmentsSlugImport } from './routes/_main/departments_.$slug'
+import { Route as AdminDoctorsIdEditImport } from './routes/admin/doctors_.$id.edit'
 import { Route as AdminDepartmentsIdEditImport } from './routes/admin/departments_.$id.edit'
 
 // Create/Update Routes
@@ -187,6 +188,12 @@ const MainDepartmentsSlugRoute = MainDepartmentsSlugImport.update({
   id: '/departments_/$slug',
   path: '/departments/$slug',
   getParentRoute: () => MainRouteRoute,
+} as any)
+
+const AdminDoctorsIdEditRoute = AdminDoctorsIdEditImport.update({
+  id: '/doctors_/$id/edit',
+  path: '/doctors/$id/edit',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 const AdminDepartmentsIdEditRoute = AdminDepartmentsIdEditImport.update({
@@ -381,6 +388,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDepartmentsIdEditImport
       parentRoute: typeof AdminRouteImport
     }
+    '/admin/doctors_/$id/edit': {
+      id: '/admin/doctors_/$id/edit'
+      path: '/doctors/$id/edit'
+      fullPath: '/admin/doctors/$id/edit'
+      preLoaderRoute: typeof AdminDoctorsIdEditImport
+      parentRoute: typeof AdminRouteImport
+    }
   }
 }
 
@@ -431,6 +445,7 @@ interface AdminRouteRouteChildren {
   AdminUsersIdRoute: typeof AdminUsersIdRoute
   AdminUsersNewRoute: typeof AdminUsersNewRoute
   AdminDepartmentsIdEditRoute: typeof AdminDepartmentsIdEditRoute
+  AdminDoctorsIdEditRoute: typeof AdminDoctorsIdEditRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -448,6 +463,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminUsersIdRoute: AdminUsersIdRoute,
   AdminUsersNewRoute: AdminUsersNewRoute,
   AdminDepartmentsIdEditRoute: AdminDepartmentsIdEditRoute,
+  AdminDoctorsIdEditRoute: AdminDoctorsIdEditRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
@@ -481,6 +497,7 @@ export interface FileRoutesByFullPath {
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
   '/admin/departments/$id/edit': typeof AdminDepartmentsIdEditRoute
+  '/admin/doctors/$id/edit': typeof AdminDoctorsIdEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -508,6 +525,7 @@ export interface FileRoutesByTo {
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
   '/admin/departments/$id/edit': typeof AdminDepartmentsIdEditRoute
+  '/admin/doctors/$id/edit': typeof AdminDoctorsIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -538,6 +556,7 @@ export interface FileRoutesById {
   '/admin/users_/$id': typeof AdminUsersIdRoute
   '/admin/users_/new': typeof AdminUsersNewRoute
   '/admin/departments_/$id/edit': typeof AdminDepartmentsIdEditRoute
+  '/admin/doctors_/$id/edit': typeof AdminDoctorsIdEditRoute
 }
 
 export interface FileRouteTypes {
@@ -569,6 +588,7 @@ export interface FileRouteTypes {
     | '/admin/users/$id'
     | '/admin/users/new'
     | '/admin/departments/$id/edit'
+    | '/admin/doctors/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
@@ -595,6 +615,7 @@ export interface FileRouteTypes {
     | '/admin/users/$id'
     | '/admin/users/new'
     | '/admin/departments/$id/edit'
+    | '/admin/doctors/$id/edit'
   id:
     | '__root__'
     | '/_main'
@@ -623,6 +644,7 @@ export interface FileRouteTypes {
     | '/admin/users_/$id'
     | '/admin/users_/new'
     | '/admin/departments_/$id/edit'
+    | '/admin/doctors_/$id/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -681,7 +703,8 @@ export const routeTree = rootRoute
         "/admin/doctors_/new",
         "/admin/users_/$id",
         "/admin/users_/new",
-        "/admin/departments_/$id/edit"
+        "/admin/departments_/$id/edit",
+        "/admin/doctors_/$id/edit"
       ]
     },
     "/_main/about": {
@@ -778,6 +801,10 @@ export const routeTree = rootRoute
     },
     "/admin/departments_/$id/edit": {
       "filePath": "admin/departments_.$id.edit.tsx",
+      "parent": "/admin"
+    },
+    "/admin/doctors_/$id/edit": {
+      "filePath": "admin/doctors_.$id.edit.tsx",
       "parent": "/admin"
     }
   }

@@ -24,3 +24,7 @@ yarn.lock
 count.txt
 
 .maxmind
+
+# Uploaded files
+/public/uploads/*
+!/public/uploads/.gitkeep

@@ -89,6 +89,10 @@ export function DepartmentForm(props: {
     },
   });
 
+  const pageTitle = props.id
+    ? `Edit ${props.defaultValues?.title} Department`
+    : "Add New Department";
+
   return (
     <form.AppForm>
       <form
@@ -100,7 +104,7 @@ export function DepartmentForm(props: {
       >
         <FormNavigationBlocker />
         <AdminPageWrapper
-          pageTitle="Add New Department"
+          pageTitle={pageTitle}
           breadcrumbs={[
             { label: "All Departments", href: "/admin/departments" },
           ]}
@@ -413,7 +417,7 @@ const SectionCard2 = withForm({
         children={(field) => (
           <Draggable
             key={field.state.value.id.toString()} // I don't know why but this is compulsory.
-            draggableId={field.state.value.id.toString()}
+            draggableId={field.state.value.id.toString() || ""}
             index={index}
           >
             {(provided, snapshot) => (
@@ -634,7 +638,7 @@ const SectionCard2 = withForm({
                                                 a.displayOrder - b.displayOrder,
                                             )
                                             .map((card, cardIndex) => (
-                                              <CardItem2
+                                              <CardItem
                                                 key={cardIndex}
                                                 form={form}
                                                 cardIndex={cardIndex}
@@ -678,7 +682,7 @@ const SectionCard2 = withForm({
   },
 });
 
-const CardItem2 = withForm({
+const CardItem = withForm({
   ...formOpts,
   props: {} as {
     sectionIndex: number;
