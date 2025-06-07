@@ -1,95 +1,41 @@
-import {
-  ClockIcon,
-  FacebookIcon,
-  LinkedinIcon,
-  TwitterIcon,
-} from "lucide-react";
+import { ClockIcon } from "lucide-react";
+import { z } from "zod";
 
-import { useState } from "react";
-
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DoctorCard } from "@/features/departments/components/doctor-card";
+import { allDepartmentsOptions } from "@/features/departments/departments.queries";
+import { allDoctorsOptions } from "@/features/departments/doctors.queries";
+import { cn } from "@/util/cn";
 
 export const Route = createFileRoute("/_main/doctors")({
   component: RouteComponent,
+  validateSearch: z.object({
+    departments: z.array(z.string()).optional().default([]).catch([]),
+    page: z.number().int().min(1).optional().default(1).catch(1),
+    pageSize: z.number().int().min(5).optional().default(12).catch(12),
+  }),
+  loaderDeps: ({ search }) => search,
+  loader: async ({ context: { queryClient }, deps: search }) => {
+    await queryClient.ensureQueryData(allDoctorsOptions(search));
+
+    await queryClient.ensureQueryData(
+      allDepartmentsOptions({ values: { page: 1, pageSize: 12 } }),
+    );
+  },
 });
 
 function RouteComponent() {
-  const [selectedDepartment, setSelectedDepartment] = useState("all");
-
-  const departments = [
-    { id: "all", name: "All Departments" },
-    { id: "cardiology", name: "Cardiology" },
-    { id: "neurology", name: "Neurology" },
-    { id: "pediatrics", name: "Pediatrics" },
-    { id: "orthopedics", name: "Orthopedics" },
-    { id: "dermatology", name: "Dermatology" },
-  ];
-
-  const doctors = [
-    {
-      name: "Dr. Sarah Johnson",
-      specialty: "Cardiology",
-      department: "cardiology",
-      image:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-    },
-    {
-      name: "Dr. Michael Chen",
-      specialty: "Neurology",
-      department: "neurology",
-      image:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-    },
-    {
-      name: "Dr. Emily Rodriguez",
-      specialty: "Pediatrics",
-      department: "pediatrics",
-      image:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-    },
-    {
-      name: "Dr. David Williams",
-      specialty: "Orthopedics",
-      department: "orthopedics",
-      image:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-    },
-    {
-      name: "Dr. Jessica Lee",
-      specialty: "Dermatology",
-      department: "dermatology",
-      image:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-    },
-    {
-      name: "Dr. Robert Taylor",
-      specialty: "Cardiology",
-      department: "cardiology",
-      image:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-    },
-    {
-      name: "Dr. Sophia Martinez",
-      specialty: "Neurology",
-      department: "neurology",
-      image:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-    },
-    {
-      name: "Dr. James Wilson",
-      specialty: "Pediatrics",
-      department: "pediatrics",
-      image:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-    },
-  ];
-
-  const filteredDoctors =
-    selectedDepartment === "all"
-      ? doctors
-      : doctors.filter((doctor) => doctor.department === selectedDepartment);
+  const searchParams = Route.useSearch();
+  const {
+    data: { doctors },
+  } = useSuspenseQuery(allDoctorsOptions(searchParams));
+  const {
+    data: { departments },
+  } = useSuspenseQuery(
+    allDepartmentsOptions({ values: { page: 1, pageSize: 12 } }),
+  );
 
   return (
     <main>
@@ -146,82 +92,66 @@ function RouteComponent() {
           </div>
         </div>
 
-        {/* Background decorations */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="bg-primary/10 absolute -top-72 -right-72 h-[800px] w-[800px] rounded-full blur-3xl"></div>
           <div className="bg-secondary/10 absolute -bottom-72 -left-72 h-[600px] w-[600px] rounded-full blur-3xl"></div>
         </div>
       </section>
 
-      <section className="relative container py-14 md:py-20 lg:py-28">
-        {/* Department Filters */}
-        <div className="mb-10">
-          <Tabs
-            defaultValue="all"
-            value={selectedDepartment}
-            onValueChange={setSelectedDepartment}
-            className="mb-4 overflow-y-scroll"
-          >
-            <TabsList className="flex justify-start gap-2 bg-transparent p-0">
-              {departments.map((dept) => (
-                <TabsTrigger
+      <section className="relative container grid gap-4 py-14 md:py-20 lg:py-28">
+        <div className="overflow-y-scroll">
+          <div className="flex justify-start gap-2 bg-transparent p-0">
+            <Link
+              to="/doctors"
+              search={{ departments: [] }}
+              className={cn(
+                "bg-muted rounded-full border px-4 py-2 transition-all duration-300",
+                searchParams.departments.length === 0 &&
+                  "text-primary-foreground bg-primary",
+              )}
+              resetScroll={false}
+            >
+              All
+            </Link>
+            {departments.map((dept) => {
+              let values = [...searchParams.departments];
+              if (searchParams.departments.includes(dept.slug)) {
+                values = searchParams.departments.filter(
+                  (dep) => dep !== dept.slug,
+                );
+              } else {
+                values.push(dept.slug);
+              }
+
+              return (
+                <Link
                   key={dept.id}
-                  value={dept.id}
-                  className="bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full border px-4 py-2"
+                  to="/doctors"
+                  search={{ departments: values }}
+                  className={cn(
+                    "bg-muted rounded-full border px-4 py-2 transition-all duration-300",
+                    searchParams.departments.includes(dept.slug) &&
+                      "text-primary-foreground bg-primary",
+                  )}
+                  resetScroll={false}
                 >
                   {dept.name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {filteredDoctors.map((doctor, index) => (
-              <div key={index} className="group">
-                <div className="relative mb-4 overflow-hidden rounded-xl shadow-sm">
-                  <Link
-                    to="/doctors/$slug"
-                    params={{ slug: "a" }}
-                    className="block"
-                  >
-                    <img
-                      src={doctor.image || "/placeholder.svg"}
-                      alt={doctor.name}
-                      className="h-[350px] w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="from-primary/70 absolute inset-0 flex items-end justify-center bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <div className="mb-6 flex space-x-4">
-                        <a
-                          href={"/"}
-                          className="bg-background hover:bg-primary hover:text-primary-foreground rounded-full p-2 transition-all"
-                        >
-                          <FacebookIcon className="h-4 w-4" />
-                        </a>
-                        <a
-                          href={"#"}
-                          className="bg-background hover:bg-primary hover:text-primary-foreground rounded-full p-2 transition-all"
-                        >
-                          <TwitterIcon className="h-4 w-4" />
-                        </a>
-                        <a
-                          href={"#"}
-                          className="bg-background hover:bg-primary hover:text-primary-foreground rounded-full p-2 transition-all"
-                        >
-                          <LinkedinIcon className="h-4 w-4" />
-                        </a>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-                <h3 className="text-primary text-xl font-semibold">
-                  <Link to="/doctors/$slug" params={{ slug: "a" }}>
-                    {doctor.name}
-                  </Link>
-                </h3>
-                <p className="text-foreground/80">{doctor.specialty}</p>
-              </div>
-            ))}
+                </Link>
+              );
+            })}
           </div>
+        </div>
+
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {doctors.map((doctor) => (
+            <DoctorCard
+              key={doctor.id}
+              name={doctor.name}
+              role={doctor.role}
+              slug={doctor.slug}
+              photo={doctor.photo?.url}
+            />
+          ))}
         </div>
       </section>
     </main>

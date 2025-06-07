@@ -52,7 +52,7 @@ export default function RouteComponent() {
         </div>
       </section>
       <section className="container py-10 md:py-16 lg:py-20">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[4fr_12fr]">
+        <div className="grid items-start gap-8 md:grid-cols-2 lg:grid-cols-[4fr_12fr]">
           <div className="border-muted border-r">
             <div className="relative">
               <img
