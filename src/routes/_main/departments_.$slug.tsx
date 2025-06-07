@@ -1,9 +1,4 @@
-import {
-  ArrowRightIcon,
-  FacebookIcon,
-  LinkedinIcon,
-  TwitterIcon,
-} from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";

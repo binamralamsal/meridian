@@ -68,7 +68,7 @@ const initialValues = {
   photoFileId: undefined as unknown as number,
   role: "",
   achievements: [],
-  email: undefined,
+  email: "",
   location: undefined,
   phoneNumber: undefined,
   departmentId: undefined as unknown as number,
@@ -372,7 +372,7 @@ const DoctorDetails = withForm({
                     type="text"
                     placeholder="john@smith.com"
                     name={field.name}
-                    value={field.state.value ? field.state.value : ""}
+                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
@@ -492,7 +492,7 @@ const DoctorAppointmentHours = withForm({
                         className="gap-2"
                       >
                         <Plus className="h-4 w-4" />
-                        Add Appointment Hour
+                        Add an Appointment Hour
                       </Button>
                     </field.FormControl>
                   </div>
@@ -796,7 +796,9 @@ const DoctorEducation = withForm({
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Education</CardTitle>
+                    <CardTitle className="text-lg">
+                      Education & Training
+                    </CardTitle>
 
                     <field.FormControl>
                       <Button
@@ -814,7 +816,7 @@ const DoctorEducation = withForm({
                         className="gap-2"
                       >
                         <Plus className="h-4 w-4" />
-                        Add Education
+                        Add an Education Detail
                       </Button>
                     </field.FormControl>
                   </div>
@@ -825,7 +827,7 @@ const DoctorEducation = withForm({
                       <Layers className="mx-auto mb-4 h-12 w-12 opacity-50" />
                       <p>No education details created yet</p>
                       <p className="text-sm">
-                        Click &quot;Add Education&quot; to get started
+                        Click &quot;Add an Education Detail&quot; to get started
                       </p>
                     </div>
                   ) : (
@@ -1054,7 +1056,9 @@ const DoctorExperiences = withForm({
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Experiences</CardTitle>
+                    <CardTitle className="text-lg">
+                      Experiences & Expertises
+                    </CardTitle>
 
                     <field.FormControl>
                       <Button
@@ -1273,7 +1277,9 @@ const DoctorsAchievements = withForm({
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Experiences</CardTitle>
+                    <CardTitle className="text-lg">
+                      Awards & Achievements
+                    </CardTitle>
 
                     <field.FormControl>
                       <Button
@@ -1290,7 +1296,7 @@ const DoctorsAchievements = withForm({
                         className="gap-2"
                       >
                         <Plus className="h-4 w-4" />
-                        Add an Experience
+                        Add an Achievement
                       </Button>
                     </field.FormControl>
                   </div>
@@ -1356,7 +1362,7 @@ const DoctorsAchievements = withForm({
                                                     >
                                                       <GripVertical className="h-5 w-5" />
                                                     </div>
-                                                    <div className="grid flex-1 gap-6">
+                                                    <div className="grid flex-1 gap-6 md:grid-cols-2">
                                                       <form.AppField
                                                         name={`${name}.title`}
                                                         children={(field) => (
@@ -1395,7 +1401,7 @@ const DoctorsAchievements = withForm({
                                                         children={(field) => (
                                                           <field.FormItem>
                                                             <field.FormLabel>
-                                                              Title
+                                                              Year
                                                             </field.FormLabel>
                                                             <field.FormControl>
                                                               <Input

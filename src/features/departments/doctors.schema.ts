@@ -131,7 +131,11 @@ export const doctorSchema = z.object({
     invalid_type_error: "Department ID must be a number",
   }),
   phoneNumber: z.string().nullable().optional(),
-  email: z.string().email("Invalid email format").nullable().optional(),
+  email: z.preprocess(
+    (val) =>
+      typeof val === "string" && val.trim().length === 0 ? undefined : val,
+    z.string().trim().email("Invalid email format").nullable().optional(),
+  ),
   location: z.string().nullable().optional(),
   appointmentHours: z
     .array(appointmentHourSchema, {
