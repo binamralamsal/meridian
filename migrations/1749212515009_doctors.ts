@@ -56,7 +56,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("role", "text", (col) => col.notNull())
     .addColumn("description", "text", (col) => col.notNull())
     .addColumn("photo_file_id", "integer", (col) =>
-      col.notNull().references("uploaded_files.id").onDelete("set null"),
+      col.references("uploaded_files.id").onDelete("set null"),
     )
     .addColumn("department_id", "integer", (col) =>
       col.references("departments.id").onDelete("cascade").notNull(),

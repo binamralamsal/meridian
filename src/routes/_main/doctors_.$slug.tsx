@@ -3,81 +3,34 @@ import {
   Briefcase,
   Calendar,
   Clock,
-  Facebook,
   GraduationCap,
-  Linkedin,
   Mail,
   MapPin,
   Phone,
-  Twitter,
 } from "lucide-react";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 
-import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+
+import { doctorBySlugOptions } from "@/features/departments/doctors.queries";
 
 export const Route = createFileRoute("/_main/doctors_/$slug")({
   component: RouteComponent,
+  loader: async ({ params: { slug }, context: { queryClient } }) => {
+    const doctor = await queryClient.ensureQueryData(
+      doctorBySlugOptions({ slug }),
+    );
+    if (!doctor) throw notFound();
+  },
 });
 
 export default function RouteComponent() {
-  const name = "Dr. Sarah Lee, MD, MPH, FAPA";
-  const title = "Board-certified Psychiatrist";
-  const department = "Psychiatry Department";
-  const image =
-    "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop";
-  const bio =
-    "Dr. Lee is a board-certified psychiatrist with over 15 years of experience in treating a wide range of mental health conditions. She specializes in mood disorders, anxiety, and trauma-related conditions.";
-  const phone = "+1 (555) 123-4567";
-  const email = "dr.sarah.lee@medical.com";
-  const location = "123 Medical Center Dr, Suite 456, New York, NY";
+  const { slug } = Route.useParams();
+  const { data: doctor } = useSuspenseQuery(doctorBySlugOptions({ slug }));
 
-  const schedule = [
-    { day: "Monday", hours: "9:00 AM - 5:00 PM" },
-    { day: "Wednesday", hours: "10:00 AM - 6:00 PM" },
-    { day: "Friday", hours: "9:00 AM - 3:00 PM" },
-  ];
-
-  const degrees = [
-    {
-      institution: "Harvard Medical School",
-      degree: "Doctor of Medicine",
-      year: "2005",
-    },
-    {
-      institution: "Johns Hopkins University",
-      degree: "Master of Public Health",
-      year: "2007",
-    },
-    {
-      institution: "NYU Langone Medical Center",
-      degree: "Residency in Psychiatry",
-      year: "2010",
-    },
-  ];
-
-  const experiences = [
-    {
-      title: "Clinical Director",
-      description: "New York Psychiatric Institute",
-    },
-    {
-      title: "Specialization",
-      description: "Mood disorders, anxiety, and trauma-related conditions",
-    },
-    {
-      title: "Research Focus",
-      description: "Innovative approaches to treatment-resistant depression",
-    },
-  ];
-
-  const awards = [
-    { title: "Excellence in Psychiatric Care Award", year: "2018" },
-    { title: "Top Mental Health Professional", year: "2020" },
-    { title: "Research Innovation Award", year: "2022" },
-  ];
+  if (!doctor) return null;
 
   return (
     <>
@@ -98,202 +51,192 @@ export default function RouteComponent() {
           </div>
         </div>
       </section>
-      <section className="container">
-        <Card className="overflow-hidden rounded-2xl border-0 shadow-lg">
-          <CardContent className="p-0">
-            <div className="flex flex-col md:flex-row">
-              <div className="w-full border-r border-gray-100 bg-white md:w-80">
-                <div className="flex h-full flex-col">
-                  {/* Profile Image */}
-                  <div className="relative">
-                    <div className="flex aspect-square items-center justify-center overflow-hidden bg-gray-100">
-                      <Avatar className="h-full w-full rounded-none">
-                        <img
-                          src={image || "/placeholder.svg"}
-                          alt={name}
-                          className="h-full w-full object-cover"
-                        />
-                      </Avatar>
+      <section className="container py-10 md:py-16 lg:py-20">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[4fr_12fr]">
+          <div className="border-muted border-r">
+            <div className="relative">
+              <img
+                src={doctor.photo?.url || "/placeholder.svg"}
+                alt={doctor.name}
+                className="aspect-square h-full w-full object-cover"
+              />
+              <div className="bg-primary text-primary-foreground absolute right-0 bottom-0 left-0 px-4 py-2 text-center font-medium">
+                {doctor.department?.name}
+              </div>
+            </div>
+
+            <div className="grid gap-8 p-6">
+              {doctor.email || doctor.phoneNumber || doctor.location ? (
+                <div className="grid gap-3">
+                  <h3 className="text-lg font-semibold">Contact Information</h3>
+
+                  {doctor.phoneNumber && (
+                    <div className="flex items-start gap-3">
+                      <Phone className="text-primary h-5 w-5" />
+                      <span className="text-muted-foreground text-sm">
+                        {doctor.phoneNumber}
+                      </span>
                     </div>
-                    <div className="absolute right-0 bottom-0 left-0 bg-blue-600 px-4 py-2 text-center font-medium text-white">
-                      {department}
+                  )}
+
+                  {doctor.email && (
+                    <div className="flex items-start gap-3">
+                      <Mail className="text-primary h-5 w-5" />
+                      <span className="text-muted-foreground text-sm">
+                        {doctor.email}
+                      </span>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Contact Info */}
-                  <div className="flex-grow space-y-4 p-6">
-                    <div className="space-y-3">
-                      <h3 className="text-lg font-semibold text-gray-700">
-                        Contact Information
-                      </h3>
+                  {doctor.location && (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="text-primary h-5 w-5" />
+                      <span className="text-muted-foreground text-sm">
+                        {doctor.location}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : null}
 
-                      <div className="flex items-start gap-3">
-                        <Phone className="mt-0.5 h-5 w-5 text-blue-600" />
-                        <span className="text-sm text-gray-600">{phone}</span>
+              <div className="grid gap-3">
+                <h3 className="text-lg font-semibold">Appointment Hours</h3>
+                <div className="bg-muted/40 rounded-xl p-4">
+                  {doctor.appointmentHours.map((appointmentHour) => (
+                    <div
+                      key={appointmentHour.id}
+                      className="border-muted-foreground/10 grid gap-1 border-b py-2 first:pt-0 last:border-0 last:pb-0"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Calendar className="text-primary h-4 w-4" />
+                        <span className="text-sm font-medium capitalize">
+                          {appointmentHour.day}
+                        </span>
                       </div>
-
-                      <div className="flex items-start gap-3">
-                        <Mail className="mt-0.5 h-5 w-5 text-blue-600" />
-                        <span className="text-sm text-gray-600">{email}</span>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <MapPin className="mt-0.5 h-5 w-5 text-blue-600" />
-                        <span className="text-sm text-gray-600">
-                          {location}
+                      <div className="flex items-center gap-2">
+                        <Clock className="text-primary h-4 w-4" />
+                        <span className="text-muted-foreground text-sm">
+                          {appointmentHour.timeStart} -{" "}
+                          {appointmentHour.timeEnd}
                         </span>
                       </div>
                     </div>
-
-                    {/* Appointment Schedule */}
-                    <div className="mt-6">
-                      <h3 className="mb-3 text-lg font-semibold text-gray-700">
-                        Appointment Hours
-                      </h3>
-                      <div className="rounded-xl bg-gray-50 p-4">
-                        {schedule.map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-between border-b border-gray-200 py-2 last:border-0"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4 text-blue-600" />
-                              <span className="text-sm font-medium">
-                                {item.day}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Clock className="h-4 w-4 text-blue-600" />
-                              <span className="text-sm text-gray-600">
-                                {item.hours}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column - Main Content */}
-              <div className="flex-1 bg-white p-8">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
-                      {name}
-                    </h1>
-                    <p className="mt-1 text-lg font-medium text-blue-600">
-                      {title}
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <a
-                      href="#"
-                      className="text-gray-400 transition-colors hover:text-blue-600"
-                    >
-                      <Linkedin className="h-5 w-5" />
-                    </a>
-                    <a
-                      href="#"
-                      className="text-gray-400 transition-colors hover:text-blue-600"
-                    >
-                      <Facebook className="h-5 w-5" />
-                    </a>
-                    <a
-                      href="#"
-                      className="text-gray-400 transition-colors hover:text-blue-600"
-                    >
-                      <Twitter className="h-5 w-5" />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <p className="leading-relaxed text-gray-600">{bio}</p>
-                </div>
-
-                {/* Degrees Section */}
-                <div className="mt-8">
-                  <div className="mb-4 flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-blue-600" />
-                    <h2 className="text-xl font-semibold text-gray-800">
-                      Education & Training
-                    </h2>
-                  </div>
-                  <div className="space-y-4 pl-7">
-                    {degrees.map((degree, index) => (
-                      <div
-                        key={index}
-                        className="border-l-2 border-blue-100 py-1 pl-4"
-                      >
-                        <p className="font-medium text-gray-800">
-                          {degree.institution}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {degree.degree} • {degree.year}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Experience Section */}
-                <div className="mt-8">
-                  <div className="mb-4 flex items-center gap-2">
-                    <Briefcase className="h-5 w-5 text-blue-600" />
-                    <h2 className="text-xl font-semibold text-gray-800">
-                      Experience & Expertise
-                    </h2>
-                  </div>
-                  <div className="space-y-3 pl-7">
-                    {experiences.map((exp, index) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-600"></div>
-                        <div>
-                          <span className="font-medium text-gray-800">
-                            {exp.title}:{" "}
-                          </span>
-                          <span className="text-gray-600">
-                            {exp.description}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Awards Section */}
-                <div className="mt-8">
-                  <div className="mb-4 flex items-center gap-2">
-                    <Award className="h-5 w-5 text-blue-600" />
-                    <h2 className="text-xl font-semibold text-gray-800">
-                      Awards & Achievements
-                    </h2>
-                  </div>
-                  <div className="space-y-3 pl-7">
-                    {awards.map((award, index) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-600"></div>
-                        <div>
-                          <span className="font-medium text-gray-800">
-                            {award.title}{" "}
-                          </span>
-                          <Badge
-                            variant="outline"
-                            className="ml-2 text-xs font-normal"
-                          >
-                            {award.year}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+
+          <div className="grid gap-6">
+            <div className="flex items-start justify-between">
+              <div className="grid gap-1">
+                <h1 className="text-2xl font-bold md:text-3xl">
+                  {doctor.name}
+                </h1>
+                <p className="text-primary text-lg font-medium">
+                  {doctor.role}
+                </p>
+              </div>
+              {/* <div className="flex gap-3">
+                <a
+                  href="#"
+                  className="text-gray-400 transition-colors hover:text-blue-600"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 transition-colors hover:text-blue-600"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 transition-colors hover:text-blue-600"
+                >
+                  <Twitter className="h-5 w-5" />
+                </a>
+              </div> */}
+            </div>
+
+            <p className="text-muted-foreground leading-relaxed">
+              {doctor.description}
+            </p>
+
+            <div className="grid gap-4">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="text-primary h-5 w-5" />
+                <h2 className="text-xl font-semibold">Education & Training</h2>
+              </div>
+              <div className="grid gap-4 pl-8">
+                {doctor.education.map((education) => (
+                  <div
+                    key={education.id}
+                    className="border-primary/20 border-l-2 py-1 pl-4"
+                  >
+                    <p className="text-primary font-medium">
+                      {education.institution}
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      {education.degree} • {education.yearOfCompletion}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="flex items-center gap-2">
+                <Briefcase className="text-primary h-5 w-5" />
+                <h2 className="text-xl font-semibold">
+                  Experience & Expertise
+                </h2>
+              </div>
+              <div className="grid gap-3 pl-8">
+                {doctor.experiences.map((exp) => (
+                  <div key={exp.id} className="flex items-start gap-2">
+                    <div className="bg-primary mt-2 h-1.5 w-1.5 rounded-full"></div>
+                    <div>
+                      <span className="font-medium">{exp.role}: </span>
+                      <span className="text-muted-foreground">
+                        {exp.shortDescription}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {doctor.achievements.length > 0 && (
+              <div className="grid gap-4">
+                <div className="flex items-center gap-2">
+                  <Award className="text-primary h-5 w-5" />
+                  <h2 className="text-xl font-semibold">
+                    Awards & Achievements
+                  </h2>
+                </div>
+                <div className="grid gap-3 pl-8">
+                  {doctor.achievements.map((achievement, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <div className="bg-primary mt-2 h-1.5 w-1.5 rounded-full"></div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">
+                          {achievement.title}{" "}
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className="text-xs font-normal"
+                        >
+                          {achievement.year}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </section>
     </>
   );

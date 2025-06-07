@@ -66,7 +66,7 @@ export interface Doctor {
   location: string | null;
   name: string;
   phoneNumber: string | null;
-  photoFileId: number;
+  photoFileId: number | null;
   role: string;
   slug: string;
   updatedAt: Generated<Timestamp>;

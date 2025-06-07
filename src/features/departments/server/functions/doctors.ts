@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { createServerFn } from "@tanstack/react-start";
 
-import { doctorSchema } from "../../doctors.schema";
+import { doctorSchema, getAllDoctorsSchema } from "../../doctors.schema";
 
 import { db } from "@/config/db";
 import { ensureAdmin } from "@/features/auth/server/middlewares/ensure-admin";
@@ -287,28 +287,50 @@ function getDoctorBasicQuery() {
       jsonArrayFrom(
         eb
           .selectFrom("doctorsAppointmentHours")
-          .selectAll()
+          .select([
+            "doctorsAppointmentHours.id",
+            "doctorsAppointmentHours.day",
+            "doctorsAppointmentHours.timeEnd",
+            "doctorsAppointmentHours.timeStart",
+            "doctorsAppointmentHours.displayOrder",
+          ])
           .whereRef("doctorsAppointmentHours.doctorId", "=", "d.id")
           .orderBy("doctorsAppointmentHours.displayOrder", "asc"),
       ).as("appointmentHours"),
       jsonArrayFrom(
         eb
           .selectFrom("doctorsEducation")
-          .selectAll()
+          .select([
+            "doctorsEducation.id",
+            "doctorsEducation.institution",
+            "doctorsEducation.degree",
+            "doctorsEducation.yearOfCompletion",
+            "doctorsEducation.displayOrder",
+          ])
           .whereRef("doctorsEducation.doctorId", "=", "d.id")
           .orderBy("doctorsEducation.displayOrder", "asc"),
       ).as("education"),
       jsonArrayFrom(
         eb
           .selectFrom("doctorsExperiences")
-          .selectAll()
+          .select([
+            "doctorsExperiences.id",
+            "doctorsExperiences.role",
+            "doctorsExperiences.shortDescription",
+            "doctorsExperiences.displayOrder",
+          ])
           .whereRef("doctorsExperiences.doctorId", "=", "d.id")
           .orderBy("doctorsExperiences.displayOrder", "asc"),
       ).as("experiences"),
       jsonArrayFrom(
         eb
           .selectFrom("doctorsAchievements")
-          .selectAll()
+          .select([
+            "doctorsAchievements.id",
+            "doctorsAchievements.title",
+            "doctorsAchievements.year",
+            "doctorsAchievements.displayOrder",
+          ])
           .whereRef("doctorsAchievements.doctorId", "=", "d.id")
           .orderBy("doctorsAchievements.displayOrder", "asc"),
       ).as("achievements"),
@@ -342,4 +364,96 @@ export const deleteDoctorFn = createServerFn()
     await db.deleteFrom("doctors").where("doctors.id", "=", data).execute();
 
     return { status: "SUCCESS", message: "Deleted doctor successfully!" };
+  });
+
+export const getAllDoctorsFn = createServerFn({ method: "GET" })
+  .validator(getAllDoctorsSchema)
+  .handler(async ({ data }) => {
+    const { sort, page, pageSize, search, departments } = data;
+
+    function createBaseQuery() {
+      let query = db
+        .selectFrom("doctors")
+        .innerJoin("departments", "departments.id", "doctors.departmentId");
+
+      if (search?.trim()) {
+        const searchTerm = `%${search.trim()}%`;
+
+        query = query.where((eb) =>
+          eb.or([
+            eb("doctors.name", "ilike", searchTerm),
+            eb("doctors.slug", "ilike", searchTerm),
+            eb("doctors.role", "ilike", searchTerm),
+            eb("doctors.email", "ilike", searchTerm),
+          ]),
+        );
+      }
+
+      if (departments.length > 0) {
+        query = query.where("departments.slug", "in", departments);
+      }
+
+      return query;
+    }
+
+    let doctorsQuery = createBaseQuery()
+      .select([
+        "doctors.name",
+        "doctors.id",
+        "doctors.slug",
+        "doctors.role",
+        "doctors.email",
+        "doctors.createdAt",
+        "doctors.updatedAt",
+        "departments.id as departmentId",
+        "departments.name as departmentName",
+        "departments.slug as departmentSlug",
+      ])
+      .select((eb) => [
+        jsonObjectFrom(
+          eb
+            .selectFrom("uploadedFiles")
+            .select([
+              "uploadedFiles.id",
+              "uploadedFiles.name",
+              "uploadedFiles.url",
+              "uploadedFiles.fileType",
+            ])
+            .whereRef("uploadedFiles.id", "=", "doctors.photoFileId"),
+        ).as("photo"),
+      ]);
+
+    Object.entries(sort).forEach(([column, direction]) => {
+      if (!direction) return;
+
+      const columnName = column as keyof (typeof data)["sort"];
+      if (columnName === "department") {
+        doctorsQuery = doctorsQuery.orderBy("departments.name", direction);
+      } else {
+        doctorsQuery = doctorsQuery.orderBy(columnName, direction);
+      }
+    });
+
+    const offset = Math.max(0, (page - 1) * pageSize);
+    doctorsQuery = doctorsQuery.limit(pageSize).offset(offset);
+
+    const countQuery = createBaseQuery().select(db.fn.countAll().as("count"));
+
+    const [doctors, countResult] = await Promise.all([
+      doctorsQuery.execute(),
+      countQuery.executeTakeFirst(),
+    ]);
+
+    const totalCount = Number(countResult?.count || 0);
+    const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
+    return {
+      doctors,
+      pagination: {
+        currentPage: page,
+        pageSize,
+        totalItems: totalCount,
+        totalPages,
+      },
+    };
   });

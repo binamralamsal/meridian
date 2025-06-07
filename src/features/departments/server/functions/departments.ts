@@ -273,7 +273,7 @@ export const deleteDepartmentFn = createServerFn()
     return { status: "SUCCESS", message: "Deleted department successfully!" };
   });
 
-export const getAllDepartments = createServerFn({ method: "GET" })
+export const getAllDepartmentsFn = createServerFn({ method: "GET" })
   .validator(getAllDepartmentsSchema)
   .middleware([ensureAdmin])
   .handler(async ({ data }) => {

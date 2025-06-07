@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { DATATABLE_PAGE_SIZE } from "@/config/constants";
 import { coerceToNumberSchema } from "@/util/src/util/zod-coerce-to-number-schema";
 
 const timeRegex = /^(0?[1-9]|1[0-2]):[0-5]\d\s?(AM|PM)$/i;
@@ -151,3 +152,34 @@ export const doctorSchema = z.object({
 });
 export type DoctorSchema = z.infer<typeof doctorSchema>;
 export type DoctorSchemaInput = z.input<typeof doctorSchema>;
+
+export const getAllDoctorsSchema = z.object({
+  page: z.number().int().min(1).optional().default(1).catch(1),
+  pageSize: z
+    .number()
+    .int()
+    .min(5)
+    .optional()
+    .default(DATATABLE_PAGE_SIZE)
+    .catch(DATATABLE_PAGE_SIZE),
+  search: z.string().optional(),
+  sort: z
+    .record(
+      z.enum([
+        "id",
+        "name",
+        "slug",
+        "role",
+        "email",
+        "department",
+        "createdAt",
+        "updatedAt",
+      ]),
+      z.enum(["asc", "desc"]),
+    )
+    .optional()
+    .default({ createdAt: "desc" })
+    .catch({ createdAt: "desc" }),
+  departments: z.array(z.string()).optional().default([]).catch([]),
+});
+export type GetAllDoctorsSchema = z.input<typeof getAllDoctorsSchema>;

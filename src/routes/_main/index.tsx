@@ -33,7 +33,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+import { DoctorCard } from "@/features/departments/components/doctor-card";
 import { allDepartmentsOptions } from "@/features/departments/departments.queries";
+import { allDoctorsOptions } from "@/features/departments/doctors.queries";
 import { DynamicIcon } from "@/lib/load-icon";
 
 export const Route = createFileRoute("/_main/")({
@@ -42,35 +44,10 @@ export const Route = createFileRoute("/_main/")({
     queryClient.prefetchQuery(
       allDepartmentsOptions({ values: { page: 1, pageSize: 20 } }),
     );
+
+    queryClient.prefetchQuery(allDoctorsOptions({ page: 1, pageSize: 4 }));
   },
 });
-
-const doctors = [
-  {
-    name: "Dr. Sarah Johnson",
-    specialty: "Cardiologist",
-    image:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&h=400&auto=format&fit=crop",
-  },
-  {
-    name: "Dr. Michael Chen",
-    specialty: "Neurologist",
-    image:
-      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=300&h=400&auto=format&fit=crop",
-  },
-  {
-    name: "Dr. Amanda Rodriguez",
-    specialty: "Pediatrician",
-    image:
-      "https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=300&h=400&auto=format&fit=crop",
-  },
-  {
-    name: "Dr. James Wilson",
-    specialty: "Orthopedic Surgeon",
-    image:
-      "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=300&h=400&auto=format&fit=crop",
-  },
-];
 
 const blogPosts = [
   {
@@ -479,51 +456,17 @@ function Home() {
                 provide exceptional care tailored to your individual needs.
               </p>
             </div>
-            <Button variant="outline" className="group" size="lg">
-              <span>View all doctors</span>
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <Button variant="outline" className="group" size="lg" asChild>
+              <Link to="/doctors">
+                <span>View all doctors</span>
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {doctors.map((doctor, index) => (
-              <div key={index} className="group">
-                <div className="relative mb-4 overflow-hidden rounded-xl shadow-sm">
-                  <img
-                    src={doctor.image}
-                    alt={doctor.name}
-                    className="h-[350px] w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="from-primary/70 absolute inset-0 flex items-end justify-center bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="mb-6 flex space-x-4">
-                      <a
-                        href="#"
-                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
-                      >
-                        <Facebook className="h-4 w-4" />
-                      </a>
-                      <a
-                        href="#"
-                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
-                      >
-                        <Twitter className="h-4 w-4" />
-                      </a>
-                      <a
-                        href="#"
-                        className="hover:bg-primary bg-background hover:text-primary-foreground rounded-full p-2 transition-all"
-                      >
-                        <Linkedin className="h-4 w-4" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-primary text-xl font-semibold">
-                  {doctor.name}
-                </h3>
-                <p className="text-foreground/80">{doctor.specialty}</p>
-              </div>
-            ))}
-          </div>
+          <Suspense fallback={<div>Loading</div>}>
+            <DoctorsList />
+          </Suspense>
         </div>
 
         <div className="absolute inset-0 overflow-hidden">
@@ -764,5 +707,25 @@ function DepartmentsSection() {
         <CarouselNext className="hover:bg-background right-0 h-12 rounded-md opacity-100 transition-all group-hover/carousel:opacity-100 md:opacity-0" />
       </Carousel>
     </section>
+  );
+}
+
+function DoctorsList() {
+  const {
+    data: { doctors },
+  } = useSuspenseQuery(allDoctorsOptions({ page: 1, pageSize: 4 }));
+
+  return (
+    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {doctors.map((doctor) => (
+        <DoctorCard
+          name={doctor.name}
+          role={doctor.role}
+          slug={doctor.slug}
+          photo={doctor.photo?.url}
+          key={doctor.id}
+        />
+      ))}
+    </div>
   );
 }

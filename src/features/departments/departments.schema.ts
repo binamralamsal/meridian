@@ -79,4 +79,4 @@ export const getAllDepartmentsSchema = z.object({
     .default({ createdAt: "desc" })
     .catch({ createdAt: "desc" }),
 });
-export type GetAllDepartmentsSchema = z.infer<typeof getAllDepartmentsSchema>;
+export type GetAllDepartmentsSchema = z.input<typeof getAllDepartmentsSchema>;

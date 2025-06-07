@@ -2,7 +2,7 @@ import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 
 import { GetAllDepartmentsSchema } from "./departments.schema";
 import {
-  getAllDepartments,
+  getAllDepartmentsFn,
   getDepartmentByIdFn,
   getDepartmentBySlugFn,
 } from "./server/functions/departments";
@@ -22,10 +22,10 @@ export const departmentBySlugOptions = ({ slug }: { slug: string }) =>
 export const allDepartmentsOptions = ({
   values,
 }: {
-  values: Partial<GetAllDepartmentsSchema>;
+  values: GetAllDepartmentsSchema;
 }) =>
   queryOptions({
     queryKey: ["departments", values],
-    queryFn: () => getAllDepartments({ data: values }),
+    queryFn: () => getAllDepartmentsFn({ data: values }),
     placeholderData: keepPreviousData,
   });
