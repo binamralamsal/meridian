@@ -275,7 +275,6 @@ export const deleteDepartmentFn = createServerFn()
 
 export const getAllDepartmentsFn = createServerFn({ method: "GET" })
   .validator(getAllDepartmentsSchema)
-  .middleware([ensureAdmin])
   .handler(async ({ data }) => {
     const { sort, page, pageSize, search } = data;
 
