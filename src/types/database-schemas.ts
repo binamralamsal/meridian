@@ -15,6 +15,28 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export type UserRole = "admin" | "user";
 
+export interface BlogCategory {
+  createdAt: Generated<Timestamp>;
+  id: Generated<number>;
+  name: string;
+  slug: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface Blog {
+  authorId: number | null;
+  categoryId: number | null;
+  content: string;
+  createdAt: Generated<Timestamp>;
+  id: Generated<number>;
+  seoDescription: string | null;
+  seoKeywords: string | null;
+  seoTitle: string | null;
+  slug: string;
+  title: string;
+  updatedAt: Generated<Timestamp>;
+}
+
 export interface ContactEntry {
   createdAt: Generated<Timestamp>;
   email: string;
@@ -155,6 +177,8 @@ export interface User {
 }
 
 export interface DB {
+  blogCategories: BlogCategory;
+  blogs: Blog;
   contactEntries: ContactEntry;
   departments: Department;
   departmentSectionCards: DepartmentSectionCard;
