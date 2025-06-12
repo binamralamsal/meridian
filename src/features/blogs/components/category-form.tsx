@@ -109,7 +109,7 @@ export function CategoryForm(props: {
                     <field.FormControl>
                       <Input
                         type="text"
-                        placeholder="Fresh Vegetables"
+                        placeholder="Psychiatry"
                         name={field.name}
                         value={field.state.value}
                         onBlur={field.handleBlur}
@@ -133,7 +133,7 @@ export function CategoryForm(props: {
                     <field.FormControl>
                       <Input
                         type="text"
-                        placeholder="fresh-vegetables"
+                        placeholder="psychiatry"
                         name={field.name}
                         value={field.state.value}
                         onBlur={field.handleBlur}

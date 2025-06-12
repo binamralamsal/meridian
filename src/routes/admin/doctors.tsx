@@ -30,7 +30,7 @@ function RouteComponent() {
   const { data, isPending } = useQuery(allDoctorsOptions(searchParams));
 
   return (
-    <AdminPageWrapper pageTitle="All Departments">
+    <AdminPageWrapper pageTitle="All Doctors">
       <Card className="container px-0">
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="space-y-2">

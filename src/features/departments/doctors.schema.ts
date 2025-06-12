@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import { DATATABLE_PAGE_SIZE } from "@/config/constants";
-import { coerceToNumberSchema } from "@/util/src/util/zod-coerce-to-number-schema";
+import { coerceToNumberSchema } from "@/util/zod-coerce-to-number-schema";
+import { emptyStringAsOptionalSchema } from "@/util/zod-empty-string-as-optional-schema";
 
 const timeRegex = /^(0?[1-9]|1[0-2]):[0-5]\d\s?(AM|PM)$/i;
 
@@ -126,14 +127,15 @@ export const doctorSchema = z.object({
     invalid_type_error: "Invalid photo",
     required_error: "Photo is required",
   }),
-  departmentId: z.number({
-    required_error: "Department ID is required",
-    invalid_type_error: "Department ID must be a number",
-  }),
+  departmentId: z
+    .number({
+      invalid_type_error: "Department ID must be a number",
+    })
+    .optional()
+    .nullable()
+    .default(null),
   phoneNumber: z.string().nullable().optional(),
-  email: z.preprocess(
-    (val) =>
-      typeof val === "string" && val.trim().length === 0 ? undefined : val,
+  email: emptyStringAsOptionalSchema(
     z.string().trim().email("Invalid email format").nullable().optional(),
   ),
   location: z.string().nullable().optional(),

@@ -69,6 +69,7 @@ export function DataTableToolbar<TData>({
                   column={table.getColumn(filter.accessorKey)}
                   title={filter.title}
                   options={filter.options}
+                  queryKey={filter.queryKey}
                 />
               )}
             </Fragment>

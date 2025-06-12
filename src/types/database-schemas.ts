@@ -5,6 +5,8 @@
 
 import type { ColumnType } from "kysely";
 
+export type BlogStatus = "archived" | "draft" | "published";
+
 export type DayOfWeek = "friday" | "monday" | "saturday" | "sunday" | "thursday" | "tuesday" | "wednesday";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
@@ -27,12 +29,14 @@ export interface Blog {
   authorId: number | null;
   categoryId: number | null;
   content: string;
+  coverFileId: number | null;
   createdAt: Generated<Timestamp>;
   id: Generated<number>;
   seoDescription: string | null;
   seoKeywords: string | null;
   seoTitle: string | null;
   slug: string;
+  status: Generated<BlogStatus>;
   title: string;
   updatedAt: Generated<Timestamp>;
 }
@@ -81,7 +85,7 @@ export interface DepartmentSection {
 
 export interface Doctor {
   createdAt: Generated<Timestamp>;
-  departmentId: number;
+  departmentId: number | null;
   description: string;
   email: string | null;
   id: Generated<number>;

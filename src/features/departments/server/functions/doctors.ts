@@ -374,7 +374,7 @@ export const getAllDoctorsFn = createServerFn({ method: "GET" })
     function createBaseQuery() {
       let query = db
         .selectFrom("doctors")
-        .innerJoin("departments", "departments.id", "doctors.departmentId");
+        .leftJoin("departments", "departments.id", "doctors.departmentId");
 
       if (search?.trim()) {
         const searchTerm = `%${search.trim()}%`;

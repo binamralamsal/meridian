@@ -4,12 +4,13 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { Link, useSearch } from "@tanstack/react-router";
+import { useSearch } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ColumnDef } from "@tanstack/react-table";
 
-import { allDoctorsOptions } from "../doctors.queries";
-import { deleteDoctorFn } from "../server/functions/doctors";
+import { allBlogsOptions } from "../blogs.queries";
+import { deleteBlogFn } from "../server/functions/blogs";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import {
@@ -22,6 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -38,18 +40,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type Doctor = {
+export type Blog = {
   id: number;
-  role: string;
-  name: string;
+  title: string;
   slug: string;
-  email: string | null;
-  department: string | null;
+  status: string;
+  category: string | null;
+  author: string | null | undefined;
   createdAt: Date;
   updatedAt: Date;
 };
 
-export const doctorsTableColumns: ColumnDef<Doctor>[] = [
+export const blogsTableColumns: ColumnDef<Blog>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -57,9 +59,9 @@ export const doctorsTableColumns: ColumnDef<Doctor>[] = [
     ),
   },
   {
-    accessorKey: "name",
+    accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Title" />
     ),
   },
   {
@@ -69,21 +71,24 @@ export const doctorsTableColumns: ColumnDef<Doctor>[] = [
     ),
   },
   {
-    accessorKey: "role",
+    accessorKey: "status",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Role" />
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => (
+      <Badge className="capitalize">{row.original.status}</Badge>
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "category",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title="Category" />
     ),
   },
   {
-    accessorKey: "department",
+    accessorKey: "author",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Department" />
+      <DataTableColumnHeader column={column} title="Author" />
     ),
   },
   {
@@ -125,26 +130,26 @@ export const doctorsTableColumns: ColumnDef<Doctor>[] = [
   {
     id: "actions",
     cell: function CellComponent({ row }) {
-      const doctor = row.original;
+      const blog = row.original;
 
       const queryClient = useQueryClient();
-      const deleteDoctor = useServerFn(deleteDoctorFn);
-      const searchParams = useSearch({ from: "/admin/doctors" });
+      const deleteBlog = useServerFn(deleteBlogFn);
+      const searchParams = useSearch({ from: "/admin/blogs" });
 
       const [deleteDialogOpened, setDeleteDialogOpened] = useState(false);
       const [actionsDropdownOpened, setActionsDropdownOpened] = useState(false);
 
-      const nameWithId = `${row.original.name} #${row.original.id}`;
+      const titleWithId = `${row.original.title} #${row.original.id}`;
 
-      async function handleDeleteDoctor() {
+      async function handleDeleteBlog() {
         setDeleteDialogOpened(false);
         setActionsDropdownOpened(false);
 
-        const response = await deleteDoctor({ data: doctor.id });
+        const response = await deleteBlog({ data: blog.id });
 
         if (response.status === "SUCCESS") {
           toast.success(response.message);
-          await queryClient.invalidateQueries(allDoctorsOptions(searchParams));
+          await queryClient.invalidateQueries(allBlogsOptions(searchParams));
         } else {
           toast.error(response.message);
         }
@@ -166,8 +171,8 @@ export const doctorsTableColumns: ColumnDef<Doctor>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link
-                to="/admin/doctors/$id/edit"
-                params={{ id: doctor.id.toString() }}
+                to="/admin/blogs/$id/edit"
+                params={{ id: blog.id.toString() }}
               >
                 Edit
               </Link>
@@ -186,11 +191,11 @@ export const doctorsTableColumns: ColumnDef<Doctor>[] = [
                 <AlertDialogHeader>
                   <AlertDialogTitle>
                     Are you absolutely sure you want to delete{" "}
-                    <strong>{nameWithId} doctor?</strong>
+                    <strong>{titleWithId} blog?</strong>
                   </AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete{" "}
-                    <strong>{nameWithId}</strong> from our servers.
+                    <strong>{titleWithId}</strong> from our servers.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -199,7 +204,7 @@ export const doctorsTableColumns: ColumnDef<Doctor>[] = [
                   >
                     Cancel
                   </AlertDialogCancel>
-                  <Button variant="destructive" onClick={handleDeleteDoctor}>
+                  <Button variant="destructive" onClick={handleDeleteBlog}>
                     Delete
                   </Button>
                 </AlertDialogFooter>

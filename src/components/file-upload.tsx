@@ -25,7 +25,6 @@ import {
   ReactNode,
   createContext,
   useContext,
-  useEffect,
   useState,
 } from "react";
 
@@ -50,7 +49,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { useCallbackRef } from "@/hooks/use-callback-ref";
 import { useConfirm } from "@/stores/confirm-alert";
 import { AcceptEntry } from "@/types/file-upload";
 import { cn } from "@/util/cn";

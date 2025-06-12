@@ -24,12 +24,23 @@ export async function up(db: Kysely<any>): Promise<void> {
   `.execute(db);
 
   await db.schema
+    .createType("blog_status")
+    .asEnum(["draft", "published", "archived"])
+    .execute();
+
+  await db.schema
     .createTable("blogs")
     .addColumn("id", "integer", (col) =>
       col.generatedAlwaysAsIdentity().primaryKey(),
     )
     .addColumn("title", "text", (col) => col.notNull())
     .addColumn("slug", "text", (col) => col.notNull().unique())
+    .addColumn("status", sql`blog_status`, (col) =>
+      col.defaultTo("draft").notNull(),
+    )
+    .addColumn("cover_file_id", "integer", (col) =>
+      col.references("uploaded_files.id").onDelete("set null"),
+    )
     .addColumn("content", "text", (col) => col.notNull())
     .addColumn("seo_title", "text")
     .addColumn("seo_description", "text")
@@ -57,6 +68,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("blog_categories").ifExists().execute();
   await db.schema.dropTable("blogs").ifExists().execute();
+  await db.schema.dropTable("blog_categories").ifExists().execute();
+  await db.schema.dropType("blog_status").ifExists().execute();
 }

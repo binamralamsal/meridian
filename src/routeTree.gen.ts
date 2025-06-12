@@ -38,6 +38,7 @@ import { Route as MainDoctorsSlugImport } from './routes/_main/doctors_.$slug'
 import { Route as MainDepartmentsSlugImport } from './routes/_main/departments_.$slug'
 import { Route as AdminDoctorsIdEditImport } from './routes/admin/doctors_.$id.edit'
 import { Route as AdminDepartmentsIdEditImport } from './routes/admin/departments_.$id.edit'
+import { Route as AdminBlogsIdEditImport } from './routes/admin/blogs_.$id.edit'
 import { Route as AdminBlogCategoriesIdEditImport } from './routes/admin/blog-categories_.$id.edit'
 
 // Create/Update Routes
@@ -200,6 +201,12 @@ const AdminDoctorsIdEditRoute = AdminDoctorsIdEditImport.update({
 const AdminDepartmentsIdEditRoute = AdminDepartmentsIdEditImport.update({
   id: '/departments_/$id/edit',
   path: '/departments/$id/edit',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+
+const AdminBlogsIdEditRoute = AdminBlogsIdEditImport.update({
+  id: '/blogs_/$id/edit',
+  path: '/blogs/$id/edit',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
@@ -395,6 +402,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogCategoriesIdEditImport
       parentRoute: typeof AdminRouteImport
     }
+    '/admin/blogs_/$id/edit': {
+      id: '/admin/blogs_/$id/edit'
+      path: '/blogs/$id/edit'
+      fullPath: '/admin/blogs/$id/edit'
+      preLoaderRoute: typeof AdminBlogsIdEditImport
+      parentRoute: typeof AdminRouteImport
+    }
     '/admin/departments_/$id/edit': {
       id: '/admin/departments_/$id/edit'
       path: '/departments/$id/edit'
@@ -459,6 +473,7 @@ interface AdminRouteRouteChildren {
   AdminUsersIdRoute: typeof AdminUsersIdRoute
   AdminUsersNewRoute: typeof AdminUsersNewRoute
   AdminBlogCategoriesIdEditRoute: typeof AdminBlogCategoriesIdEditRoute
+  AdminBlogsIdEditRoute: typeof AdminBlogsIdEditRoute
   AdminDepartmentsIdEditRoute: typeof AdminDepartmentsIdEditRoute
   AdminDoctorsIdEditRoute: typeof AdminDoctorsIdEditRoute
 }
@@ -478,6 +493,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminUsersIdRoute: AdminUsersIdRoute,
   AdminUsersNewRoute: AdminUsersNewRoute,
   AdminBlogCategoriesIdEditRoute: AdminBlogCategoriesIdEditRoute,
+  AdminBlogsIdEditRoute: AdminBlogsIdEditRoute,
   AdminDepartmentsIdEditRoute: AdminDepartmentsIdEditRoute,
   AdminDoctorsIdEditRoute: AdminDoctorsIdEditRoute,
 }
@@ -513,6 +529,7 @@ export interface FileRoutesByFullPath {
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
   '/admin/blog-categories/$id/edit': typeof AdminBlogCategoriesIdEditRoute
+  '/admin/blogs/$id/edit': typeof AdminBlogsIdEditRoute
   '/admin/departments/$id/edit': typeof AdminDepartmentsIdEditRoute
   '/admin/doctors/$id/edit': typeof AdminDoctorsIdEditRoute
 }
@@ -542,6 +559,7 @@ export interface FileRoutesByTo {
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
   '/admin/blog-categories/$id/edit': typeof AdminBlogCategoriesIdEditRoute
+  '/admin/blogs/$id/edit': typeof AdminBlogsIdEditRoute
   '/admin/departments/$id/edit': typeof AdminDepartmentsIdEditRoute
   '/admin/doctors/$id/edit': typeof AdminDoctorsIdEditRoute
 }
@@ -574,6 +592,7 @@ export interface FileRoutesById {
   '/admin/users_/$id': typeof AdminUsersIdRoute
   '/admin/users_/new': typeof AdminUsersNewRoute
   '/admin/blog-categories_/$id/edit': typeof AdminBlogCategoriesIdEditRoute
+  '/admin/blogs_/$id/edit': typeof AdminBlogsIdEditRoute
   '/admin/departments_/$id/edit': typeof AdminDepartmentsIdEditRoute
   '/admin/doctors_/$id/edit': typeof AdminDoctorsIdEditRoute
 }
@@ -607,6 +626,7 @@ export interface FileRouteTypes {
     | '/admin/users/$id'
     | '/admin/users/new'
     | '/admin/blog-categories/$id/edit'
+    | '/admin/blogs/$id/edit'
     | '/admin/departments/$id/edit'
     | '/admin/doctors/$id/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -635,6 +655,7 @@ export interface FileRouteTypes {
     | '/admin/users/$id'
     | '/admin/users/new'
     | '/admin/blog-categories/$id/edit'
+    | '/admin/blogs/$id/edit'
     | '/admin/departments/$id/edit'
     | '/admin/doctors/$id/edit'
   id:
@@ -665,6 +686,7 @@ export interface FileRouteTypes {
     | '/admin/users_/$id'
     | '/admin/users_/new'
     | '/admin/blog-categories_/$id/edit'
+    | '/admin/blogs_/$id/edit'
     | '/admin/departments_/$id/edit'
     | '/admin/doctors_/$id/edit'
   fileRoutesById: FileRoutesById
@@ -726,6 +748,7 @@ export const routeTree = rootRoute
         "/admin/users_/$id",
         "/admin/users_/new",
         "/admin/blog-categories_/$id/edit",
+        "/admin/blogs_/$id/edit",
         "/admin/departments_/$id/edit",
         "/admin/doctors_/$id/edit"
       ]
@@ -824,6 +847,10 @@ export const routeTree = rootRoute
     },
     "/admin/blog-categories_/$id/edit": {
       "filePath": "admin/blog-categories_.$id.edit.tsx",
+      "parent": "/admin"
+    },
+    "/admin/blogs_/$id/edit": {
+      "filePath": "admin/blogs_.$id.edit.tsx",
       "parent": "/admin"
     },
     "/admin/departments_/$id/edit": {

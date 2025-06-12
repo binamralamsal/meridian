@@ -1,6 +1,11 @@
 import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 
-import { GetAllCategoriesSchema } from "./blogs.schema";
+import { GetAllBlogsSchema, GetAllCategoriesSchema } from "./blogs.schema";
+import {
+  getAllBlogsFn,
+  getBlogByIdFn,
+  getBlogBySlugFn,
+} from "./server/functions/blogs";
 import {
   getAllCategoriesFn,
   getCategoryByIdFn,
@@ -21,4 +26,23 @@ export const categoryByIdOptions = ({ id }: { id: number }) =>
   queryOptions({
     queryKey: ["category", id],
     queryFn: () => getCategoryByIdFn({ data: id }),
+  });
+
+export const blogByIdOptions = ({ id }: { id: number }) =>
+  queryOptions({
+    queryKey: ["blog", id],
+    queryFn: () => getBlogByIdFn({ data: id }),
+  });
+
+export const blogBySlugOptions = ({ slug }: { slug: string }) =>
+  queryOptions({
+    queryKey: ["blog", slug],
+    queryFn: () => getBlogBySlugFn({ data: slug }),
+  });
+
+export const allBlogsOptions = (values: GetAllBlogsSchema) =>
+  queryOptions({
+    queryKey: ["blogs", values],
+    queryFn: () => getAllBlogsFn({ data: values }),
+    placeholderData: keepPreviousData,
   });

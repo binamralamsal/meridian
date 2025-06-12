@@ -95,24 +95,40 @@ export const sidebarItems: SidebarGroupItem[] = [
     action: <Link to="/admin">+</Link>,
     items: [
       {
-        title: "All Departments",
+        title: "Departments",
         url: "/admin/departments",
         icon: ClipboardIcon,
+        exact: false,
+        items: [
+          {
+            title: "All Departments",
+            url: "/admin/departments",
+            icon: ClipboardIcon,
+          },
+          {
+            title: "Add New Department",
+            url: "/admin/departments/new",
+            icon: ClipboardPlusIcon,
+          },
+        ],
       },
       {
-        title: "Add New Department",
-        url: "/admin/departments/new",
-        icon: ClipboardPlusIcon,
-      },
-      {
-        title: "All Doctors",
+        title: "Doctors",
         url: "/admin/doctors",
         icon: StethoscopeIcon,
-      },
-      {
-        title: "Add New Doctor",
-        url: "/admin/doctors/new",
-        icon: HeartPlusIcon,
+        exact: false,
+        items: [
+          {
+            title: "All Doctors",
+            url: "/admin/doctors",
+            icon: StethoscopeIcon,
+          },
+          {
+            title: "Add New Doctor",
+            url: "/admin/doctors/new",
+            icon: HeartPlusIcon,
+          },
+        ],
       },
     ],
   },

@@ -31,6 +31,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   title?: string;
   options: FiltersOptionsType[];
+  queryKey: string;
 }
 
 function areSetsEqual<T>(a: Set<T>, b: Set<T>): boolean {
@@ -44,6 +45,7 @@ function areSetsEqual<T>(a: Set<T>, b: Set<T>): boolean {
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
+  queryKey,
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
@@ -81,7 +83,7 @@ export function DataTableFacetedFilter<TData, TValue>({
       search: (prev) => {
         return {
           ...prev,
-          [column.id]:
+          [queryKey]:
             selectedValues.size === 0 ? undefined : Array.from(selectedValues),
         };
       },
@@ -170,7 +172,9 @@ export function DataTableFacetedFilter<TData, TValue>({
                           : "opacity-50 [&_svg]:invisible",
                       )}
                     >
-                      <Check />
+                      <Check
+                        className={cn(isSelected && "text-primary-foreground")}
+                      />
                     </div>
                     {option.icon && (
                       <option.icon className="text-muted-foreground mr-2 h-4 w-4" />

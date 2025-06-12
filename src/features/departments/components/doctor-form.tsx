@@ -71,7 +71,7 @@ const initialValues = {
   email: "",
   location: undefined,
   phoneNumber: undefined,
-  departmentId: undefined as unknown as number,
+  departmentId: undefined,
 } as DoctorSchemaInput;
 
 const formOpts = formOptions({
@@ -295,7 +295,11 @@ const DoctorDetails = withForm({
 
                 <Select
                   value={field.state.value ? field.state.value.toString() : ""}
-                  onValueChange={(value) => field.handleChange(parseInt(value))}
+                  onValueChange={(value) =>
+                    field.handleChange(
+                      isNaN(parseInt(value)) ? undefined : parseInt(value),
+                    )
+                  }
                 >
                   <field.FormControl>
                     <SelectTrigger
@@ -317,9 +321,6 @@ const DoctorDetails = withForm({
                   </SelectContent>
                 </Select>
                 <field.FormMessage />
-                <field.FormDescription>
-                  Admins can access the admin panel, and do whatever they want.
-                </field.FormDescription>
               </field.FormItem>
             )}
           />
@@ -372,7 +373,7 @@ const DoctorDetails = withForm({
                     type="text"
                     placeholder="john@smith.com"
                     name={field.name}
-                    value={field.state.value}
+                    value={field.state.value ? field.state.value : ""}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />

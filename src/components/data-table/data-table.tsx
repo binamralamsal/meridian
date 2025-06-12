@@ -33,6 +33,7 @@ export interface FiltersOptionsType {
 
 export interface FiltersType {
   accessorKey: string;
+  queryKey: string;
   title: string;
   options: FiltersOptionsType[];
 }
