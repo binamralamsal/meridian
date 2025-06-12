@@ -165,4 +165,4 @@ export const getAllBlogsSchema = z.object({
     .catch({ createdAt: "desc" }),
   categories: z.array(z.string()).optional().default([]).catch([]),
 });
-export type GetAllBlogsSchema = z.input<typeof getAllBlogsSchema>;
+export type GetAllBlogsSchema = z.infer<typeof getAllBlogsSchema>;

@@ -40,7 +40,7 @@ export const blogBySlugOptions = ({ slug }: { slug: string }) =>
     queryFn: () => getBlogBySlugFn({ data: slug }),
   });
 
-export const allBlogsOptions = (values: GetAllBlogsSchema) =>
+export const allBlogsOptions = (values: Partial<GetAllBlogsSchema>) =>
   queryOptions({
     queryKey: ["blogs", values],
     queryFn: () => getAllBlogsFn({ data: values }),

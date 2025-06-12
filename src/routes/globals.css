@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 @source inline("{dark:,}bg-{purple,teal,blue,amber,rose,indigo,emerald}-{50,500}");
@@ -155,4 +156,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.prose {
+  --tw-prose-body: var(--color-foreground);
 }

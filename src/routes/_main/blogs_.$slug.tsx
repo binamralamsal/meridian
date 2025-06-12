@@ -1,0 +1,175 @@
+import { Calendar, ChevronRight, Link2 } from "lucide-react";
+import { toast } from "sonner";
+
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, createFileRoute, notFound } from "@tanstack/react-router";
+
+import { Button } from "@/components/ui/button";
+
+import { blogBySlugOptions } from "@/features/blogs/blogs.queries";
+
+export const Route = createFileRoute("/_main/blogs_/$slug")({
+  component: RouteComponent,
+  loader: async ({ params: { slug }, context: { queryClient } }) => {
+    const blog = await queryClient.ensureQueryData(blogBySlugOptions({ slug }));
+    if (!blog) throw notFound();
+  },
+});
+function RouteComponent() {
+  const { slug } = Route.useParams();
+  const { data: blog } = useSuspenseQuery(blogBySlugOptions({ slug }));
+
+  if (!blog) return null;
+
+  function handleCopyButtonClick() {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("URL copied to clipboard");
+  }
+
+  return (
+    <div className="mx-auto max-w-4xl px-6 py-14 md:py-20 lg:py-28">
+      <header className="mb-12">
+        <nav className="text-muted-foreground mb-8 flex items-center gap-2 text-sm">
+          <Link className="hover:text-primary transition-colors" to="/blogs">
+            Blogs
+          </Link>
+          <ChevronRight className="h-4 w-4" />
+          {blog.category && (
+            <>
+              <Link
+                className="hover:text-primary cursor-pointer transition-colors"
+                to="/blogs"
+                search={{ categories: [blog.category.slug] }}
+              >
+                {blog.category.name}
+              </Link>
+              <ChevronRight className="h-4 w-4" />
+            </>
+          )}
+          <span className="text-foreground font-medium">{blog.title}</span>
+        </nav>
+
+        {blog.category && (
+          <div className="mb-6">
+            <Link
+              className="bg-primary/10 text-primary inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+              to="/blogs"
+              search={{ categories: [blog.category.slug] }}
+            >
+              {blog.category.name}
+            </Link>
+          </div>
+        )}
+
+        <h1 className="mb-8 text-4xl leading-tight font-bold text-balance md:text-5xl lg:text-6xl">
+          {blog.title}
+        </h1>
+
+        <div className="text-muted-foreground mb-8 flex flex-wrap items-center gap-4 text-sm">
+          {blog.author && (
+            <div className="flex items-center gap-2">
+              <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
+                <span className="text-primary text-xs font-semibold">
+                  {blog.author.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <span className="text-foreground font-medium">
+                {blog.author.name}
+              </span>
+            </div>
+          )}
+          <div className="flex items-center gap-1">
+            <Calendar className="h-4 w-4" />
+            <span>{blog.createdAt.toLocaleDateString()}</span>
+          </div>
+          <Button
+            variant="link"
+            className="cursor-pointer hover:no-underline"
+            size="sm"
+            onClick={handleCopyButtonClick}
+          >
+            <Link2 className="mr-1 h-4 w-4" />
+            Copy link
+          </Button>
+        </div>
+
+        <div className="bg-muted relative overflow-hidden rounded-lg">
+          <img
+            src={blog.coverPhoto?.url || "/placeholder.svg"}
+            alt={blog.title}
+            className="h-auto w-full object-cover"
+          />
+        </div>
+      </header>
+
+      <article className="prose prose-lg max-w-none">{blog.content}</article>
+
+      <div className="my-16">
+        <div className="border-border border-t"></div>
+      </div>
+
+      <footer className="space-y-6">
+        {blog.author && (
+          <div className="border-border bg-muted/30 flex items-center gap-4 rounded-lg border p-6">
+            <div className="bg-primary/10 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full">
+              <span className="text-primary text-lg font-semibold">
+                {blog.author.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-foreground font-semibold">
+                Written by {blog.author.name}
+              </h3>
+              <Link to="/blogs" className="text-muted-foreground mt-1 text-sm">
+                Published on {blog.createdAt.toLocaleDateString()}
+                {blog.category && (
+                  <span>
+                    {" "}
+                    in{" "}
+                    <Link
+                      className="text-primary font-medium"
+                      to="/blogs"
+                      search={{ categories: [blog.category.slug] }}
+                    >
+                      {blog.category.name}
+                    </Link>
+                  </span>
+                )}
+              </Link>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCopyButtonClick}
+              className="flex-shrink-0"
+            >
+              <Link2 className="mr-2 h-4 w-4" />
+              Share
+            </Button>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between pt-4">
+          <div className="text-muted-foreground flex items-center gap-4 text-sm">
+            <span>{blog.createdAt.toLocaleDateString()}</span>
+            {blog.category && (
+              <Link
+                to="/blogs"
+                search={{ categories: [blog.category.slug] }}
+                className="text-primary font-medium"
+              >
+                {blog.category.name}
+              </Link>
+            )}
+          </div>
+          <Link
+            to="/blogs"
+            className="text-primary hover:text-primary/80 flex gap-2 text-sm font-medium transition-colors"
+          >
+            <span>←</span> Back to all blogs
+          </Link>
+        </div>
+      </footer>
+    </div>
+  );
+}

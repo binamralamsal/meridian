@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import { jsonObjectFrom } from "kysely/helpers/postgres";
 import pg from "pg";
 import { z } from "zod";
@@ -60,6 +61,7 @@ function getBlogBasicQuery() {
       "b.seoTitle",
       "b.seoKeywords",
       "b.status",
+      "b.createdAt",
     ])
     .select((eb) => [
       jsonObjectFrom(
@@ -181,7 +183,7 @@ export const getAllBlogsFn = createServerFn({ method: "GET" })
               "uploadedFiles.fileType",
             ])
             .whereRef("uploadedFiles.id", "=", "blogs.coverFileId"),
-        ).as("photo"),
+        ).as("coverPhoto"),
         jsonObjectFrom(
           eb
             .selectFrom("users")
@@ -189,6 +191,9 @@ export const getAllBlogsFn = createServerFn({ method: "GET" })
             .whereRef("users.id", "=", "blogs.authorId")
             .limit(1),
         ).as("author"),
+        sql<string>`left(${eb.ref("blogs.content")}, 125)`.as(
+          "truncatedContent",
+        ),
       ]);
 
     Object.entries(sort).forEach(([column, direction]) => {
