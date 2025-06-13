@@ -23,6 +23,7 @@ import {
   useFileUploader,
 } from "@/components/file-upload";
 import { FormNavigationBlocker } from "@/components/form-navigation-blocker";
+import { TextEditor } from "@/components/text-editor";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -460,14 +461,11 @@ const BlogContent = withForm({
             name="content"
             children={(field) => (
               <field.FormItem>
-                <field.FormLabel>Content</field.FormLabel>
                 <field.FormControl>
-                  <Textarea
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className="h-full"
+                  <TextEditor
+                    content={field.state.value}
+                    onChange={(value) => field.handleChange(value)}
+                    toolbarClassName="top-16"
                   />
                 </field.FormControl>
                 <field.FormMessage />

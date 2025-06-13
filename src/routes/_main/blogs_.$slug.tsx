@@ -102,7 +102,10 @@ function RouteComponent() {
         </div>
       </header>
 
-      <article className="prose prose-lg max-w-none">{blog.content}</article>
+      <article
+        className="prose prose-lg max-w-none"
+        dangerouslySetInnerHTML={{ __html: blog.content }}
+      ></article>
 
       <div className="my-16">
         <div className="border-border border-t"></div>
