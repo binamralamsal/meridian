@@ -11,7 +11,7 @@ export const APIRoute = createAPIFileRoute("/api/public/$")({
     if (!pathname)
       return json({ status: "ERROR", message: "NOT FOUND" }, { status: 404 });
 
-    const filePath = path.join(process.cwd(), "public", pathname);
+    const filePath = path.join(process.cwd(), "public", decodeURI(pathname));
     const mimeType = mime.lookup(filePath);
 
     try {

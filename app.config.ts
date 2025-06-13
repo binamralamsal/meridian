@@ -21,10 +21,10 @@ export default defineConfig({
       },
     },
   },
-  server: {
-    prerender: {
-      routes: ["/", "/about", "/blogs", "/contact", "/services"],
-      crawlLinks: true,
-    },
-  },
+  // server: {
+  //   prerender: {
+  //     routes: ["/", "/about", "/blogs", "/contact", "/services"],
+  //     crawlLinks: true,
+  //   },
+  // },
 });
