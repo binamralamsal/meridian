@@ -17,7 +17,11 @@ export const currentUserOptions = () =>
     queryFn: getCurrentUserFn,
   });
 
-export const allUsersOptions = ({ values }: { values: GetAllUsersSchema }) =>
+export const allUsersOptions = ({
+  values,
+}: {
+  values: Partial<GetAllUsersSchema>;
+}) =>
   queryOptions({
     queryKey: ["users", values],
     queryFn: () => getAllUsersFn({ data: values }),

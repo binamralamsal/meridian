@@ -7,6 +7,7 @@ import { Link } from "@tanstack/react-router";
 import { AdminPageWrapper } from "@/components/admin-page-wrapper";
 import { Button } from "@/components/ui/button";
 
+import { allUsersOptions } from "@/features/auth/auth.queries";
 import {
   allCategoriesOptions,
   blogByIdOptions,
@@ -25,6 +26,9 @@ export const Route = createFileRoute("/admin/blogs_/$id/edit")({
     queryClient.prefetchQuery(
       allCategoriesOptions({ values: { page: 1, pageSize: 100 } }),
     );
+    queryClient.prefetchQuery(
+      allUsersOptions({ values: { page: 1, pageSize: 100, role: ["admin"] } }),
+    );
   },
   notFoundComponent: () => <BlogNotFound />,
 });
@@ -40,13 +44,21 @@ function RouteComponent() {
   const {
     data: { categories },
   } = useSuspenseQuery(
-    allCategoriesOptions({ values: { page: 1, pageSize: 100 } }),
+    allCategoriesOptions({
+      values: { page: 1, pageSize: 100 },
+    }),
+  );
+  const {
+    data: { users },
+  } = useSuspenseQuery(
+    allUsersOptions({ values: { page: 1, pageSize: 100, role: ["admin"] } }),
   );
 
   return (
     <BlogForm
       id={blog.id}
       photo={blog?.coverPhoto}
+      users={users}
       categories={categories}
       defaultValues={{
         title: blog.title,

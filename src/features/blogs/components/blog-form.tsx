@@ -62,6 +62,8 @@ const formOpts = formOptions({
   defaultValues: initialValues,
 });
 
+type User = { id: number; name: string };
+
 export function BlogForm(
   props: {
     defaultValues?: BlogSchemaInput;
@@ -70,10 +72,12 @@ export function BlogForm(
     | {
         id: number;
         photo: UploadedFile | null;
+        users: User[];
       }
     | {
         id?: undefined;
         photo?: undefined;
+        users?: undefined;
       }
   ),
 ) {
@@ -128,6 +132,7 @@ export function BlogForm(
                 categories={props.categories}
                 form={form}
                 photo={props.photo}
+                users={props.users}
               />
             </div>
             <div className="lg:col-span-2">
@@ -162,9 +167,10 @@ const BlogDetails = withForm({
   ...formOpts,
   props: {} as {
     categories: { id: number; name: string }[];
+    users?: User[];
     photo?: UploadedFile | null;
   },
-  render: ({ form, categories, photo }) => {
+  render: ({ form, categories, photo, users }) => {
     const titleValue = useStore(form.store, (store) => store.values.title);
 
     useEffect(() => {
@@ -282,6 +288,42 @@ const BlogDetails = withForm({
               </field.FormItem>
             )}
           />
+          {users ? (
+            <form.AppField
+              name="authorId"
+              children={(field) => (
+                <field.FormItem>
+                  <field.FormLabel>Author</field.FormLabel>
+
+                  <Select
+                    value={
+                      field.state.value ? field.state.value.toString() : ""
+                    }
+                    onValueChange={(value) =>
+                      field.handleChange(parseInt(value))
+                    }
+                  >
+                    <field.FormControl>
+                      <SelectTrigger
+                        aria-label="Select an author"
+                        className="w-full"
+                      >
+                        <SelectValue placeholder="Select author" />
+                      </SelectTrigger>
+                    </field.FormControl>
+                    <SelectContent>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.id.toString()}>
+                          {user.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <field.FormMessage />
+                </field.FormItem>
+              )}
+            />
+          ) : null}
           <form.AppField
             name="status"
             children={(field) => (
