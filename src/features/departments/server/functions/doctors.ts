@@ -369,91 +369,96 @@ export const deleteDoctorFn = createServerFn()
 export const getAllDoctorsFn = createServerFn({ method: "GET" })
   .validator(getAllDoctorsSchema)
   .handler(async ({ data }) => {
-    const { sort, page, pageSize, search, departments } = data;
+    try {
+      const { sort, page, pageSize, search, departments } = data;
 
-    function createBaseQuery() {
-      let query = db
-        .selectFrom("doctors")
-        .leftJoin("departments", "departments.id", "doctors.departmentId");
+      function createBaseQuery() {
+        let query = db
+          .selectFrom("doctors")
+          .leftJoin("departments", "departments.id", "doctors.departmentId");
 
-      if (search?.trim()) {
-        const searchTerm = `%${search.trim()}%`;
+        if (search?.trim()) {
+          const searchTerm = `%${search.trim()}%`;
 
-        query = query.where((eb) =>
-          eb.or([
-            eb("doctors.name", "ilike", searchTerm),
-            eb("doctors.slug", "ilike", searchTerm),
-            eb("doctors.role", "ilike", searchTerm),
-            eb("doctors.email", "ilike", searchTerm),
-          ]),
-        );
+          query = query.where((eb) =>
+            eb.or([
+              eb("doctors.name", "ilike", searchTerm),
+              eb("doctors.slug", "ilike", searchTerm),
+              eb("doctors.role", "ilike", searchTerm),
+              eb("doctors.email", "ilike", searchTerm),
+            ]),
+          );
+        }
+
+        if (departments.length > 0) {
+          query = query.where("departments.slug", "in", departments);
+        }
+
+        return query;
       }
 
-      if (departments.length > 0) {
-        query = query.where("departments.slug", "in", departments);
-      }
+      let doctorsQuery = createBaseQuery()
+        .select([
+          "doctors.name",
+          "doctors.id",
+          "doctors.slug",
+          "doctors.role",
+          "doctors.email",
+          "doctors.createdAt",
+          "doctors.updatedAt",
+          "departments.id as departmentId",
+          "departments.name as departmentName",
+          "departments.slug as departmentSlug",
+        ])
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("uploadedFiles")
+              .select([
+                "uploadedFiles.id",
+                "uploadedFiles.name",
+                "uploadedFiles.url",
+                "uploadedFiles.fileType",
+              ])
+              .whereRef("uploadedFiles.id", "=", "doctors.photoFileId"),
+          ).as("photo"),
+        ]);
 
-      return query;
-    }
+      Object.entries(sort).forEach(([column, direction]) => {
+        if (!direction) return;
 
-    let doctorsQuery = createBaseQuery()
-      .select([
-        "doctors.name",
-        "doctors.id",
-        "doctors.slug",
-        "doctors.role",
-        "doctors.email",
-        "doctors.createdAt",
-        "doctors.updatedAt",
-        "departments.id as departmentId",
-        "departments.name as departmentName",
-        "departments.slug as departmentSlug",
-      ])
-      .select((eb) => [
-        jsonObjectFrom(
-          eb
-            .selectFrom("uploadedFiles")
-            .select([
-              "uploadedFiles.id",
-              "uploadedFiles.name",
-              "uploadedFiles.url",
-              "uploadedFiles.fileType",
-            ])
-            .whereRef("uploadedFiles.id", "=", "doctors.photoFileId"),
-        ).as("photo"),
+        const columnName = column as keyof (typeof data)["sort"];
+        if (columnName === "department") {
+          doctorsQuery = doctorsQuery.orderBy("departments.name", direction);
+        } else {
+          doctorsQuery = doctorsQuery.orderBy(columnName, direction);
+        }
+      });
+
+      const offset = Math.max(0, (page - 1) * pageSize);
+      doctorsQuery = doctorsQuery.limit(pageSize).offset(offset);
+
+      const countQuery = createBaseQuery().select(db.fn.countAll().as("count"));
+
+      const [doctors, countResult] = await Promise.all([
+        doctorsQuery.execute(),
+        countQuery.executeTakeFirst(),
       ]);
 
-    Object.entries(sort).forEach(([column, direction]) => {
-      if (!direction) return;
+      const totalCount = Number(countResult?.count || 0);
+      const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
-      const columnName = column as keyof (typeof data)["sort"];
-      if (columnName === "department") {
-        doctorsQuery = doctorsQuery.orderBy("departments.name", direction);
-      } else {
-        doctorsQuery = doctorsQuery.orderBy(columnName, direction);
-      }
-    });
-
-    const offset = Math.max(0, (page - 1) * pageSize);
-    doctorsQuery = doctorsQuery.limit(pageSize).offset(offset);
-
-    const countQuery = createBaseQuery().select(db.fn.countAll().as("count"));
-
-    const [doctors, countResult] = await Promise.all([
-      doctorsQuery.execute(),
-      countQuery.executeTakeFirst(),
-    ]);
-
-    const totalCount = Number(countResult?.count || 0);
-    const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-
-    return {
-      doctors,
-      pagination: {
-        currentPage: page,
-        pageSize,
-        totalItems: totalCount,
-        totalPages,
-      },
-    };
+      return {
+        doctors,
+        pagination: {
+          currentPage: page,
+          pageSize,
+          totalItems: totalCount,
+          totalPages,
+        },
+      };
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   });

@@ -65,6 +65,8 @@ export function CategoryForm(props: {
   const nameValue = useStore(form.store, (store) => store.values.name);
 
   useEffect(() => {
+    if (!nameValue) return;
+
     const slug = slugify(nameValue);
 
     form.setFieldValue("slug", slug);
