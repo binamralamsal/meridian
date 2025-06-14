@@ -1,4 +1,5 @@
 import Highlight from "@tiptap/extension-highlight";
+import TiptapImage from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import {
@@ -12,6 +13,7 @@ import {
   BoldIcon,
   CodeIcon,
   HighlighterIcon,
+  ImageIcon,
   ItalicIcon,
   LinkIcon,
   ListIcon,
@@ -27,6 +29,7 @@ import { useState } from "react";
 
 import { ReactNode } from "@tanstack/react-router";
 
+import { FileUpload, FileUploader } from "./file-upload";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -50,6 +53,7 @@ const extensions = [
   Underline,
   Link.configure(),
   Highlight.configure(),
+  TiptapImage,
 ];
 
 export function TextEditor({
@@ -143,6 +147,36 @@ function LinkComponent({
             <Button onClick={handleSetLink}>Save</Button>
           </div>
         </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function ImageComponent({
+  editor,
+  children,
+}: {
+  editor: Editor;
+  children: ReactNode;
+}) {
+  const [isImagePopoverOpen, setIsImagePopoverOpen] = useState(false);
+
+  return (
+    <Popover open={isImagePopoverOpen} onOpenChange={setIsImagePopoverOpen}>
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
+      <PopoverContent className="w-80 p-4">
+        <FileUploader
+          maxFilesCount={1}
+          maxFileSize="5mb"
+          accept={["image/*"]}
+          onChange={(files) => {
+            editor.chain().focus().setImage({ src: files[0].url }).run();
+
+            setIsImagePopoverOpen(false);
+          }}
+        >
+          <FileUpload />
+        </FileUploader>
       </PopoverContent>
     </Popover>
   );
@@ -302,6 +336,16 @@ export function Toolbar({
           <LinkIcon className="h-4 w-4" />
         </Toggle>
       </LinkComponent>
+
+      <ImageComponent editor={editor}>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("image")}
+          aria-label="Toggle link"
+        >
+          <ImageIcon className="h-4 w-4" />
+        </Toggle>
+      </ImageComponent>
 
       <div className="bg-border mx-1 h-6 w-px" />
 

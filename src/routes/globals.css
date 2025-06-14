@@ -160,4 +160,8 @@
 
 .prose {
   --tw-prose-body: var(--color-foreground);
+
+  img {
+    width: 100%;
+  }
 }
