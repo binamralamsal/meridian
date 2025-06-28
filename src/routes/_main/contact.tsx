@@ -11,9 +11,24 @@ import { Button } from "@/components/ui/button";
 
 import { site } from "@/config/site";
 import { ContactForm } from "@/features/contact-entries/components/contact-form";
+import { seo } from "@/util/seo";
 
 export const Route = createFileRoute("/_main/contact")({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      ...seo({
+        title: `Contact Us | ${site.name}`,
+        description:
+          "Have questions or need assistance? Contact our team at your convenience. We're here to help with appointments, inquiries, and support.",
+        keywords: `contact, contact us, get in touch, support, ${site.name}`,
+      }),
+      { name: "creator", content: site.name },
+      { name: "publisher", content: site.name },
+      { name: "robot", content: "index, follow" },
+      { rel: "canonical", href: `${site.url}/contact` },
+    ],
+  }),
 });
 
 function RouteComponent() {
@@ -59,7 +74,9 @@ function RouteComponent() {
             <div className="bg-primary/10 flex h-full flex-col justify-center gap-4 rounded-md border p-6 shadow-sm lg:p-8">
               <MapPinIcon className="text-primary" />
               <h3 className="text-lg font-bold">Office Address</h3>
-              <div>{site.streetAddress}</div>
+              <div>
+                {site.addressLocality} - {site.streetAddress}
+              </div>
             </div>
             <div className="bg-primary/10 flex h-full flex-col justify-center gap-4 rounded-md border p-6 shadow-sm lg:p-8">
               <PhoneIcon className="text-primary" />
@@ -68,7 +85,7 @@ function RouteComponent() {
                 Let&apos;s work together towards a common goal - get in touch!
               </div>
               <div className="flex flex-wrap gap-1">
-                <Button
+                {/* <Button
                   variant="link"
                   className="inline-block h-auto px-1 py-2"
                   asChild
@@ -77,16 +94,10 @@ function RouteComponent() {
                     to="."
                     href="https://api.whatsapp.com/send?phone=9779800000000"
                     target="_blank"
-                  >
-                    +977 9800000000{" "}
-                  </Link>
-                </Button>
-                <Button
-                  variant="link"
-                  className="inline-block h-auto px-1 py-2"
-                >
-                  01-000000{" "}
-                </Button>
+                  > */}
+                {site.telephone}
+                {/* </Link>
+                </Button> */}
               </div>
             </div>
             <div className="bg-primary/10 flex h-full flex-col justify-center gap-4 rounded-md border p-6 shadow-sm lg:col-span-2 lg:p-8">
@@ -97,9 +108,7 @@ function RouteComponent() {
                 within 24 hours.
               </div>
               <Button variant="link" className="inline-block p-0" asChild>
-                <Link to="." href="mailto:test@website.com">
-                  test@website.com
-                </Link>
+                <a href={`mailto:${site.email}`}>{site.email}</a>
               </Button>
             </div>
           </div>
@@ -111,7 +120,7 @@ function RouteComponent() {
 
       <section className="w-full">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1838367786397!2d-73.96519668459418!3d40.75889797932764!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f07d5da561%3A0x61f6aa300ba8339d!2sGrand%20Central%20Terminal!5e0!3m2!1sen!2sus!4v1645564756670!5w=100%25"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3531.3090306846375!2d85.33298177546851!3d27.73861277616474!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1947a2746d3b%3A0x8e1b4bf90fd7f4e!2sMeridian%20Health%20care%20Center%20Pvt.%20Ltd.!5e0!3m2!1sen!2snp!4v1713343133788!5m2!1sen!2snp"
           className="h-[400px] w-full border-0"
           allowFullScreen
           loading="lazy"

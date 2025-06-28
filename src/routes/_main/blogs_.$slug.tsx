@@ -1,4 +1,5 @@
 import { Calendar, ChevronRight, Link2 } from "lucide-react";
+import { BlogPosting, WithContext } from "schema-dts";
 import { toast } from "sonner";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -6,20 +7,74 @@ import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
+import { site } from "@/config/site";
 import { blogBySlugOptions } from "@/features/blogs/blogs.queries";
+import { seo } from "@/util/seo";
 
 export const Route = createFileRoute("/_main/blogs_/$slug")({
   component: RouteComponent,
   loader: async ({ params: { slug }, context: { queryClient } }) => {
     const blog = await queryClient.ensureQueryData(blogBySlugOptions({ slug }));
     if (!blog) throw notFound();
+
+    return blog;
   },
+  head: ({ loaderData }) => ({
+    meta: [
+      ...seo({
+        title: loaderData?.seoTitle || `${loaderData?.title} | ${site.name}`,
+        description: loaderData?.seoDescription || loaderData?.truncatedContent,
+        image: loaderData?.coverPhoto?.url || "/placeholder.svg",
+        keywords:
+          loaderData?.seoKeywords ||
+          `${loaderData?.category?.name || ""}, health blog, medical tips, ${site.name}`,
+      }),
+      { name: "author", content: loaderData?.author?.name || site.name },
+      { name: "robot", content: "index, follow" },
+      { name: "canonical", content: `${site.url}/blogs/${loaderData?.slug}` },
+    ],
+  }),
 });
 function RouteComponent() {
   const { slug } = Route.useParams();
   const { data: blog } = useSuspenseQuery(blogBySlugOptions({ slug }));
 
   if (!blog) return null;
+
+  const blogJsonLd: WithContext<BlogPosting> = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: blog.title,
+    description: blog.truncatedContent,
+    url: `${site.url}/blogs/${blog.slug}`,
+    datePublished: blog.createdAt.toISOString(),
+    author: blog.author
+      ? {
+          "@type": "Person",
+          name: blog.author.name,
+        }
+      : undefined,
+    image: blog.coverPhoto?.url
+      ? {
+          "@type": "ImageObject",
+          url: `${site.url}${blog.coverPhoto.url}`,
+        }
+      : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+      logo: {
+        "@type": "ImageObject",
+        url: `${site.url}/logo.png`,
+      },
+    },
+    articleSection: blog.category?.name || undefined,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${site.url}/blogs/${blog.slug}`,
+    },
+  };
 
   function handleCopyButtonClick() {
     navigator.clipboard.writeText(window.location.href);
@@ -28,6 +83,11 @@ function RouteComponent() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-14 md:py-20 lg:py-28">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
+
       <header className="mb-12">
         <nav className="text-muted-foreground mb-8 flex items-center gap-2 text-sm">
           <Link className="hover:text-primary transition-colors" to="/blogs">

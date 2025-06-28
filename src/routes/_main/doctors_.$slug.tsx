@@ -8,13 +8,21 @@ import {
   MapPin,
   Phone,
 } from "lucide-react";
+import {
+  EducationalOccupationalCredential,
+  EducationalOrganization,
+  Person,
+  WithContext,
+} from "schema-dts";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { Badge } from "@/components/ui/badge";
 
+import { site } from "@/config/site";
 import { doctorBySlugOptions } from "@/features/departments/doctors.queries";
+import { seo } from "@/util/seo";
 
 export const Route = createFileRoute("/_main/doctors_/$slug")({
   component: RouteComponent,
@@ -23,7 +31,25 @@ export const Route = createFileRoute("/_main/doctors_/$slug")({
       doctorBySlugOptions({ slug }),
     );
     if (!doctor) throw notFound();
+
+    return doctor;
   },
+  head: ({ loaderData }) => ({
+    meta: [
+      ...seo({
+        title: `${loaderData?.name} - ${loaderData?.role} | ${site.name}`,
+        description:
+          loaderData?.description ||
+          `${loaderData?.name} is a ${loaderData?.role} at ${site.name}. View education, experience, and appointment hours.`,
+        image: loaderData?.photo?.url || "/placeholder.svg",
+        keywords: `${loaderData?.name}, ${loaderData?.role}, ${loaderData?.department?.name || ""}, doctor, specialist, healthcare, ${site.name}`,
+      }),
+      { name: "creator", content: site.name },
+      { name: "publisher", content: site.name },
+      { name: "robot", content: "index, follow" },
+      { rel: "canonical", href: `${site.url}/doctors/${loaderData?.slug}` },
+    ],
+  }),
 });
 
 export default function RouteComponent() {
@@ -32,8 +58,65 @@ export default function RouteComponent() {
 
   if (!doctor) return null;
 
+  const doctorJsonLd: WithContext<Person> = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: doctor.name,
+    url: `${site.url}/doctors/${doctor.slug}`,
+    image: doctor.photo?.url ? [`${site.url}${doctor.photo.url}`] : undefined,
+    jobTitle: doctor.role,
+    description: doctor.description,
+    telephone: doctor.phoneNumber || undefined,
+    email: doctor.email || undefined,
+    hasCredential: doctor.education.map((edu) => ({
+      "@type": "EducationalOccupationalCredential",
+      credentialCategory: "Educational",
+      educationalLevel: edu.degree,
+      issuedBy: {
+        "@type": "EducationalOrganization",
+        name: edu.institution,
+      },
+    })) as EducationalOccupationalCredential[],
+    address: doctor.location
+      ? {
+          "@type": "PostalAddress",
+          streetAddress: doctor.location,
+          addressLocality: site.addressLocality,
+          addressRegion: site.addressRegion,
+          postalCode: site.postalCode,
+          addressCountry: site.addressCountry,
+        }
+      : undefined,
+    worksFor: {
+      "@type": "MedicalClinic",
+      name: site.name,
+      url: site.url,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: site.streetAddress,
+        addressLocality: site.addressLocality,
+        addressRegion: site.addressRegion,
+        postalCode: site.postalCode,
+        addressCountry: site.addressCountry,
+      },
+    },
+    alumniOf: doctor.education.map((edu) => ({
+      "@type": "EducationalOrganization",
+      name: edu.institution,
+    })) as EducationalOrganization[],
+    award:
+      doctor.achievements.length > 0
+        ? doctor.achievements.map((ach) => `${ach.title} (${ach.year})`)
+        : undefined,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(doctorJsonLd) }}
+      />
+
       <section className="bg-primary/5 relative overflow-hidden">
         <div className="bg-grid-white/10 dark:bg-grid-black/10 absolute inset-0 [mask-image:linear-gradient(0deg,transparent,black)]"></div>
         <div className="relative container py-8 md:py-10 lg:py-12">

@@ -89,6 +89,7 @@ function getBlogBasicQuery() {
           ])
           .whereRef("uploadedFiles.id", "=", "b.coverFileId"),
       ).as("coverPhoto"),
+      sql<string>`left(${eb.ref("b.content")}, 125)`.as("truncatedContent"),
     ]);
 }
 

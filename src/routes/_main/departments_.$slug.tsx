@@ -5,11 +5,13 @@ import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
+import { site } from "@/config/site";
 import { DoctorCard } from "@/features/departments/components/doctor-card";
 import { departmentBySlugOptions } from "@/features/departments/departments.queries";
 import { allDoctorsOptions } from "@/features/departments/doctors.queries";
 import { DynamicIcon } from "@/lib/load-icon";
 import { cn } from "@/util/cn";
+import { seo } from "@/util/seo";
 
 export const Route = createFileRoute("/_main/departments_/$slug")({
   component: RouteComponent,
@@ -23,7 +25,22 @@ export const Route = createFileRoute("/_main/departments_/$slug")({
     queryClient.prefetchQuery(
       allDoctorsOptions({ page: 1, pageSize: 4, departments: [slug] }),
     );
+
+    return data;
   },
+  head: ({ loaderData }) => ({
+    meta: [
+      ...seo({
+        title: `${loaderData?.title} | ${site.name}`,
+        description: loaderData?.description,
+        keywords: `${loaderData?.title}, ${loaderData?.title} department, health care, medical services, ${site.name}`,
+      }),
+      { name: "creator", content: site.name },
+      { name: "publisher", content: site.name },
+      { name: "robots", content: "index, follow" },
+      { rel: "canonical", href: `${site.url}/departments/${loaderData?.slug}` },
+    ],
+  }),
 });
 
 function RouteComponent() {

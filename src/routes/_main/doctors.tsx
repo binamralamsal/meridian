@@ -9,10 +9,12 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { site } from "@/config/site";
 import { DoctorCard } from "@/features/departments/components/doctor-card";
 import { allDepartmentsOptions } from "@/features/departments/departments.queries";
 import { allDoctorsOptions } from "@/features/departments/doctors.queries";
 import { cn } from "@/util/cn";
+import { seo } from "@/util/seo";
 
 export const Route = createFileRoute("/_main/doctors")({
   component: RouteComponent,
@@ -29,6 +31,20 @@ export const Route = createFileRoute("/_main/doctors")({
       allDepartmentsOptions({ values: { page: 1, pageSize: 12 } }),
     );
   },
+  head: () => ({
+    meta: [
+      ...seo({
+        title: `Doctors | ${site.name}`,
+        description:
+          "Explore our directory of certified doctors and medical specialists with years of professional experience to guide your health journey.",
+        keywords: `doctors, medical specialists, healthcare, health experts, ${site.name}`,
+      }),
+      { name: "creator", content: site.name },
+      { name: "publisher", content: site.name },
+      { name: "robot", content: "index, follow" },
+      { rel: "canonical", href: `${site.url}/doctors` },
+    ],
+  }),
 });
 
 function RouteComponent() {

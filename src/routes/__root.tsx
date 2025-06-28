@@ -16,6 +16,7 @@ import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
+import { site } from "@/config/site";
 import { seo } from "@/util/seo";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
@@ -30,9 +31,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           content: "width=device-width, initial-scale=1",
         },
         ...seo({
-          title:
-            "TanStack Start | Type-Safe, Client-First, Full-Stack React Framework",
-          description: `TanStack Start is a type-safe, client-first, full-stack React framework. `,
+          title: site.name,
+          description: site.description,
+          keywords: site.keywords,
         }),
       ],
       links: [

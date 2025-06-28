@@ -1,6 +1,9 @@
 import { ArrowRight, Calendar, Share2, User } from "lucide-react";
+import { BlogPosting, WithContext } from "schema-dts";
 
 import { Link } from "@tanstack/react-router";
+
+import { site } from "@/config/site";
 
 export function BlogCard({
   title,
@@ -19,8 +22,38 @@ export function BlogCard({
   author?: string | null;
   category: string | null;
 }) {
+  const blogJsonLd: WithContext<BlogPosting> = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description: excerpt,
+    url: `${site.url}/blogs/${slug}`,
+    datePublished: date.toISOString(),
+    author: author
+      ? {
+          "@type": "Person",
+          name: author,
+        }
+      : undefined,
+    image: image ? [`${site.url}${image}`] : undefined,
+    articleSection: category || undefined,
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+      logo: {
+        "@type": "ImageObject",
+        url: `${site.url}/logo.png`,
+      },
+    },
+  };
   return (
     <div className="group dark:bg-muted/20 dark:hover:bg-muted/50 rounded-md border shadow-slate-100 transition-all duration-300 hover:shadow-lg dark:shadow-slate-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
+
       <div className="relative overflow-hidden">
         <Link to="/blogs/$slug" params={{ slug }}>
           <img

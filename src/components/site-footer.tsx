@@ -1,17 +1,19 @@
 import {
   Facebook,
   Instagram,
-  Linkedin,
+  // Linkedin,
   Mail,
   MapPin,
   Phone,
-  Twitter,
+  // Twitter,
 } from "lucide-react";
 
 import { Link } from "@tanstack/react-router";
 
 import { Logo } from "./icons/logo";
 import { Button } from "./ui/button";
+
+import { site } from "@/config/site";
 
 export function SiteFooter() {
   return (
@@ -58,12 +60,14 @@ export function SiteFooter() {
               </p>
               <div className="flex space-x-4">
                 <a
-                  href="#"
+                  href={site.facebook}
                   className="hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors"
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   <Facebook className="h-4 w-4" />
                 </a>
-                <a
+                {/* <a
                   href="#"
                   className="hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors"
                 >
@@ -74,10 +78,12 @@ export function SiteFooter() {
                   className="hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors"
                 >
                   <Linkedin className="h-4 w-4" />
-                </a>
+                </a> */}
                 <a
-                  href="#"
+                  href={site.instagram}
                   className="hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors"
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   <Instagram className="h-4 w-4" />
                 </a>
@@ -97,10 +103,18 @@ export function SiteFooter() {
                 </li>
                 <li>
                   <Link
-                    to="/about"
+                    to="/doctors"
                     className="hover:text-primary-foreground text-primary-foreground/80 dark:text-foreground/80 dark:hover:text-primary transition-colors"
                   >
-                    About Us
+                    Doctors
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/blogs"
+                    className="hover:text-primary-foreground text-primary-foreground/80 dark:text-foreground/80 dark:hover:text-primary transition-colors"
+                  >
+                    Blogs
                   </Link>
                 </li>
                 <li>
@@ -109,6 +123,14 @@ export function SiteFooter() {
                     className="hover:text-primary-foreground text-primary-foreground/80 dark:text-foreground/80 dark:hover:text-primary transition-colors"
                   >
                     Services
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/about"
+                    className="hover:text-primary-foreground text-primary-foreground/80 dark:text-foreground/80 dark:hover:text-primary transition-colors"
+                  >
+                    About
                   </Link>
                 </li>
                 <li>
@@ -174,20 +196,22 @@ export function SiteFooter() {
                 <li className="flex">
                   <MapPin className="text-primary-foreground dark:text-foreground mr-3 h-5 w-5 flex-shrink-0" />
                   <span className="text-primary-foreground/80 dark:text-foreground/80">
-                    123 Business Avenue, Suite 500, New York, NY 10001
+                    {site.addressLocality} - {site.streetAddress}
                   </span>
                 </li>
                 <li className="flex">
                   <Phone className="text-primary-foreground dark:text-foreground mr-3 h-5 w-5 flex-shrink-0" />
                   <span className="text-primary-foreground/80 dark:text-foreground/80">
-                    +1 (555) 123-4567
+                    {site.telephone}
                   </span>
                 </li>
-                <li className="flex">
-                  <Mail className="text-primary-foreground dark:text-foreground mr-3 h-5 w-5 flex-shrink-0" />
-                  <span className="text-primary-foreground/80 dark:text-foreground/80">
-                    meridian.sewa@gmail.com
-                  </span>
+                <li>
+                  <a href={`mailto:${site.email}`} className="flex">
+                    <Mail className="text-primary-foreground dark:text-foreground mr-3 h-5 w-5 flex-shrink-0" />
+                    <span className="text-primary-foreground/80 dark:text-foreground/80">
+                      {site.email}
+                    </span>
+                  </a>
                 </li>
               </ul>
             </div>

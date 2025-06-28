@@ -22,8 +22,25 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+import { site } from "@/config/site";
+import { seo } from "@/util/seo";
+
 export const Route = createFileRoute("/_main/appointment")({
   component: RouteComponent,
+
+  head: () => ({
+    meta: [
+      ...seo({
+        title: `Book an Appointment | ${site.name}`,
+        description: `Easily schedule your medical appointments with ${site.name}. Choose your doctor, preferred time, and get the care you need without hassle.`,
+        keywords: `book appointment, schedule doctor, medical appointment, online booking, ${site.name}`,
+      }),
+      { name: "creator", content: site.name },
+      { name: "publisher", content: site.name },
+      { name: "robots", content: "index, follow" },
+      { rel: "canonical", href: `${site.url}/appointments` },
+    ],
+  }),
 });
 
 function RouteComponent() {

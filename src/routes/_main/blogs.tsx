@@ -11,11 +11,13 @@ import { BlogCard } from "@/components/blog-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { site } from "@/config/site";
 import {
   allBlogsOptions,
   allCategoriesOptions,
 } from "@/features/blogs/blogs.queries";
 import { cn } from "@/util/cn";
+import { seo } from "@/util/seo";
 
 export const Route = createFileRoute("/_main/blogs")({
   component: RouteComponent,
@@ -34,6 +36,20 @@ export const Route = createFileRoute("/_main/blogs")({
       allCategoriesOptions({ values: { page: 1, pageSize: 100 } }),
     );
   },
+  head: () => ({
+    meta: [
+      ...seo({
+        title: `Blogs | ${site.name}`,
+        description:
+          "Explore our collection of health and medical blogs, providing expert insights, wellness tips, and the latest updates in the healthcare field.",
+        keywords: `health, medical blogs, wellness tips, healthcare, ${site.name}`,
+      }),
+      { name: "creator", content: site.name },
+      { name: "publisher", content: site.name },
+      { name: "robot", content: "index, follow" },
+      { rel: "canonical", href: `${site.url}/blogs` },
+    ],
+  }),
 });
 
 function RouteComponent() {

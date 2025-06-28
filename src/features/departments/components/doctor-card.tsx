@@ -1,5 +1,9 @@
 // import { FacebookIcon, LinkedinIcon, TwitterIcon } from "lucide-react";
+import { Thing, WithContext } from "schema-dts";
+
 import { Link } from "@tanstack/react-router";
+
+import { site } from "@/config/site";
 
 export function DoctorCard({
   name,
@@ -12,8 +16,21 @@ export function DoctorCard({
   photo?: string;
   role: string;
 }) {
+  const doctorJsonLd: WithContext<Thing> = {
+    "@context": "https://schema.org",
+    "@type": "IndividualPhysician",
+    name: name,
+    image: photo ? [`${site.url}${photo}`] : [`${site.url}/placeholder.svg`],
+    url: `${site.url}/doctors/${slug}`,
+    description: role,
+  };
+
   return (
     <div className="group">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(doctorJsonLd) }}
+      />
       <div className="relative mb-4 overflow-hidden rounded-xl shadow-sm">
         <Link to="/doctors/$slug" params={{ slug }} className="block">
           <img

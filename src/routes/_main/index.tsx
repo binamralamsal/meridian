@@ -14,6 +14,7 @@ import {
   Stethoscope,
   User,
 } from "lucide-react";
+import { MedicalClinic } from "schema-dts";
 
 import { Suspense, useEffect, useRef, useState } from "react";
 
@@ -30,11 +31,37 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+import { site } from "@/config/site";
 import { allBlogsOptions } from "@/features/blogs/blogs.queries";
 import { DoctorCard } from "@/features/departments/components/doctor-card";
 import { allDepartmentsOptions } from "@/features/departments/departments.queries";
 import { allDoctorsOptions } from "@/features/departments/doctors.queries";
 import { DynamicIcon } from "@/lib/load-icon";
+import { seo } from "@/util/seo";
+
+const jsonLdHomePage: MedicalClinic = {
+  "@type": "MedicalClinic",
+  name: site.name,
+  alternateName: site.previousName,
+  url: site.url,
+  logo: `${site.url}/logo.png`,
+  image: [`${site.url}/hero-doctors.jpg`],
+  description: site.description,
+  telephone: site.telephone,
+  email: site.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: site.streetAddress,
+    addressLocality: site.addressLocality,
+    addressRegion: site.addressRegion,
+    postalCode: site.postalCode,
+    addressCountry: site.addressCountry,
+  },
+  openingHours: "Mo-Su 07:00-20:00",
+  foundingDate: site.since,
+  sameAs: [site.facebook, site.instagram],
+  keywords: site.keywords,
+};
 
 export const Route = createFileRoute("/_main/")({
   component: Home,
@@ -48,11 +75,21 @@ export const Route = createFileRoute("/_main/")({
       allBlogsOptions({ page: 1, pageSize: 3, status: ["published"] }),
     );
   },
+  head: () => ({
+    meta: [
+      ...seo({ title: `Home | ${site.name}`, image: "/hero-doctors.jpg" }),
+    ],
+  }),
 });
 
 function Home() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdHomePage) }}
+      />
+
       <section className="bg-muted relative">
         <div className="relative z-10 container space-y-8 py-14 md:space-y-10 md:py-20 lg:space-y-12 lg:py-28">
           <div className="grid items-center gap-8 md:gap-10 lg:grid-cols-2 lg:gap-12">
@@ -109,7 +146,7 @@ function Home() {
                       Years of Excellence
                     </p>
                     <p className="text-muted-foreground text-sm">
-                      Serving since 1994
+                      Serving since 2002
                     </p>
                   </div>
                 </div>
@@ -132,7 +169,7 @@ function Home() {
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm">Call Us</p>
-                    <p className="font-medium">01-4720116/ 01-4720117</p>
+                    <p className="font-medium">{site.telephone}</p>
                   </div>
                 </div>
 
@@ -142,7 +179,9 @@ function Home() {
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm">Email Us</p>
-                    <p className="font-medium">meridian.sewa@gmail.com</p>
+                    <a className="font-medium" href={`mailto:${site.email}`}>
+                      {site.email}
+                    </a>
                   </div>
                 </div>
 
@@ -152,9 +191,7 @@ function Home() {
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm">Location</p>
-                    <p className="font-medium">
-                      Maharajgunj, Chakrapath, Kathmandu
-                    </p>
+                    <p className="font-medium">{site.addressLocality}</p>
                   </div>
                 </div>
               </div>
