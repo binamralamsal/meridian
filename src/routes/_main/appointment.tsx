@@ -1,8 +1,20 @@
-import { Calendar, ChevronRightIcon, Clock, MapPin, Phone } from "lucide-react";
+import {
+  AlertCircleIcon,
+  Calendar,
+  ChevronRightIcon,
+  LoaderCircleIcon,
+  MapPin,
+  Phone,
+  RefreshCwIcon,
+} from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 
+import { FormNavigationBlocker } from "@/components/form-navigation-blocker";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +23,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAppForm } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -24,10 +36,52 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { site } from "@/config/site";
 import { seo } from "@/util/seo";
+import { emptyStringAsOptionalSchema } from "@/util/zod-empty-string-as-optional-schema";
+
+const getAppointmentDoctorsFn = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const response = await fetch(
+      "https://api.dgcloudapp.com/api/appointment/getAllDoctors",
+      {
+        headers: {
+          "remote-user": "EZGOldZxU2VstPb",
+          Authorization: `Basic ${btoa("7U8KznoMtlt2QA2:3JbLFHGpYrB7YyX")}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch doctors");
+    }
+
+    const data = await response.json();
+
+    const doctorsSchema = z.object({
+      status: z.boolean(),
+      message: z.string(),
+      data: z.array(
+        z.object({
+          doctorId: z.string(),
+          doctorName: z.string(),
+          sex: z.enum(["Male", "Female"]),
+          phone: z.string().nullable(),
+          email: z.string().nullable(),
+          qualification1: z.string(),
+          qualification2: z.string().nullable(),
+        }),
+      ),
+    });
+
+    return doctorsSchema.parse(data).data;
+  },
+);
 
 export const Route = createFileRoute("/_main/appointment")({
   component: RouteComponent,
-
+  loader: async () => {
+    const doctors = await getAppointmentDoctorsFn();
+    return { doctors };
+  },
   head: () => ({
     meta: [
       ...seo({
@@ -41,9 +95,87 @@ export const Route = createFileRoute("/_main/appointment")({
       { rel: "canonical", href: `${site.url}/appointments` },
     ],
   }),
+  errorComponent: ({ reset }) => (
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+            <AlertCircleIcon className="h-8 w-8 text-red-600" />
+          </div>
+          <CardTitle className="text-xl font-semibold text-gray-900">
+            Server Error
+          </CardTitle>
+          <CardDescription className="text-gray-600">
+            A server error occurred while loading the appointment page. Please
+            try again later.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="text-center">
+          <Button onClick={reset} className="w-full" variant="default">
+            <RefreshCwIcon className="mr-2 h-4 w-4" />
+            Try Again
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  ),
 });
 
 function RouteComponent() {
+  const { doctors } = Route.useLoaderData();
+
+  const form = useAppForm({
+    defaultValues: {
+      doctorId: "" as unknown as number,
+      appointmentDate: "",
+      dob: "",
+      firstName: "",
+      middleName: undefined,
+      lastName: "",
+      address: "",
+      mobile: "",
+      complain: "",
+      remarks: "",
+    } as AppointmentSchema,
+    validators: {
+      onChange: appointmentSchema,
+    },
+    onSubmit: async ({ value }) => {
+      console.log(value);
+
+      const response = await fetch(
+        "https://api.dgcloudapp.com/api/Appointment/create",
+        {
+          method: "POST",
+          body: JSON.stringify(value),
+          headers: {
+            "Content-Type": "application/json",
+            "remote-user": "EZGOldZxU2VstPb",
+            Authorization: `Basic ${btoa("7U8KznoMtlt2QA2:3JbLFHGpYrB7YyX")}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+      const responseSchema = z.object({
+        status: z.boolean(),
+        message: z.string(),
+      });
+
+      try {
+        const parsedData = responseSchema.parse(data);
+        if (parsedData.status) {
+          toast.success(parsedData.message);
+          form.reset();
+        } else {
+          toast.error(parsedData.message);
+        }
+      } catch {
+        toast.error("Failed to book appointment. Please try again.");
+      }
+    },
+  });
+
   return (
     <div className="min-h-screen">
       <section className="bg-primary/5 relative overflow-hidden">
@@ -143,187 +275,406 @@ function RouteComponent() {
           </CardHeader>
 
           <CardContent>
-            <form className="space-y-8">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="doctor"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Select Doctor <span className="text-red-500">*</span>
-                </Label>
-                <Select required>
-                  <SelectTrigger id="doctor" className="h-12 w-full">
-                    <SelectValue placeholder="Choose your preferred doctor" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="dr-smith">
-                      Dr. Sarah Smith – General Medicine
-                    </SelectItem>
-                    <SelectItem value="dr-johnson">
-                      Dr. Michael Johnson – Cardiology
-                    </SelectItem>
-                    <SelectItem value="dr-williams">
-                      Dr. Emily Williams – Pediatrics
-                    </SelectItem>
-                    <SelectItem value="dr-brown">
-                      Dr. David Brown – Orthopedics
-                    </SelectItem>
-                    <SelectItem value="dr-davis">
-                      Dr. Lisa Davis – Dermatology
-                    </SelectItem>
-                    <SelectItem value="dr-wilson">
-                      Dr. James Wilson – Internal Medicine
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <form.AppForm>
+              <form
+                className="space-y-8"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  form.handleSubmit();
+                }}
+              >
+                <FormNavigationBlocker />
+                <form.AppField
+                  name="doctorId"
+                  children={(field) => (
+                    <field.FormItem>
+                      <field.FormLabel>
+                        Select Doctor <span className="text-red-500">*</span>
+                      </field.FormLabel>
+                      <field.FormControl>
+                        <Select
+                          value={field.state.value.toString()}
+                          onValueChange={(v) => field.handleChange(Number(v))}
+                          required
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Choose your preferred doctor" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {doctors.map((doctor) => (
+                              <SelectItem
+                                key={doctor.doctorId}
+                                value={doctor.doctorId}
+                              >
+                                {doctor.doctorName} – {doctor.qualification1}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </field.FormControl>
+                    </field.FormItem>
+                  )}
+                />
+                <form.AppField
+                  name="appointmentDate"
+                  children={(field) => (
+                    <field.FormItem>
+                      <field.FormLabel>
+                        <Calendar className="mr-1 h-4 w-4" />
+                        Appointment Date <span className="text-red-500">*</span>
+                      </field.FormLabel>
+                      <field.FormControl>
+                        <Input
+                          type="date"
+                          name={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          min={new Date().toISOString().split("T")[0]}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
+                      </field.FormControl>
+                      <field.FormMessage />
+                    </field.FormItem>
+                  )}
+                />
 
-              {/* Date & Time */}
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="date"
-                    className="flex items-center text-sm font-medium text-gray-700"
-                  >
-                    <Calendar className="mr-1 h-4 w-4" />
-                    Appointment Date <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    min={new Date().toISOString().split("T")[0]}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="time"
-                    className="flex items-center text-sm font-medium text-gray-700"
-                  >
-                    <Clock className="mr-1 h-4 w-4" />
-                    Preferred Time <span className="text-red-500">*</span>
-                  </Label>
-                  <Select required>
-                    <SelectTrigger id="time" className="w-full">
-                      <SelectValue placeholder="Select a time slot" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[
-                        "09:00",
-                        "09:30",
-                        "10:00",
-                        "10:30",
-                        "11:00",
-                        "11:30",
-                        "14:00",
-                        "14:30",
-                        "15:00",
-                        "15:30",
-                        "16:00",
-                        "16:30",
-                      ].map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {new Date(`1970-01-01T${time}`).toLocaleTimeString(
-                            [],
-                            { hour: "2-digit", minute: "2-digit" },
-                          )}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="border-b pb-2 text-lg font-semibold text-gray-900">
-                  Personal Information
-                </h3>
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="firstName"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      First Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input id="firstName" placeholder="John" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="lastName"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Last Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input id="lastName" placeholder="Doe" required />
-                  </div>
-                </div>
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="mobile"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Mobile Number <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="mobile"
-                      type="tel"
-                      placeholder="98XXXXXXXX"
-                      required
+                <div className="space-y-4">
+                  <h3 className="border-b pb-2 text-lg font-semibold text-gray-900">
+                    Personal Information
+                  </h3>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <form.AppField
+                      name="firstName"
+                      children={(field) => (
+                        <field.FormItem>
+                          <field.FormLabel>
+                            First Name <span className="text-red-500">*</span>
+                          </field.FormLabel>
+                          <field.FormControl>
+                            <Input
+                              type="text"
+                              placeholder="John"
+                              name={field.name}
+                              value={field.state.value}
+                              onBlur={field.handleBlur}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                            />
+                          </field.FormControl>
+                          <field.FormMessage />
+                        </field.FormItem>
+                      )}
+                    />
+                    <form.AppField
+                      name="middleName"
+                      children={(field) => (
+                        <field.FormItem>
+                          <field.FormLabel>Middle Name</field.FormLabel>
+                          <field.FormControl>
+                            <Input
+                              type="text"
+                              placeholder="Sr."
+                              name={field.name}
+                              value={field.state.value ? field.state.value : ""}
+                              onBlur={field.handleBlur}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                            />
+                          </field.FormControl>
+                          <field.FormMessage />
+                        </field.FormItem>
+                      )}
+                    />
+                    <form.AppField
+                      name="lastName"
+                      children={(field) => (
+                        <field.FormItem>
+                          <field.FormLabel>
+                            Last Name <span className="text-red-500">*</span>
+                          </field.FormLabel>
+                          <field.FormControl>
+                            <Input
+                              type="text"
+                              placeholder="Smith"
+                              name={field.name}
+                              value={field.state.value}
+                              onBlur={field.handleBlur}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                            />
+                          </field.FormControl>
+                          <field.FormMessage />
+                        </field.FormItem>
+                      )}
+                    />
+                    <form.AppField
+                      name="sex"
+                      children={(field) => (
+                        <field.FormItem>
+                          <field.FormLabel>
+                            Gender <span className="text-red-500">*</span>
+                          </field.FormLabel>
+                          <field.FormControl>
+                            <Select
+                              value={field.state.value}
+                              onValueChange={(v) =>
+                                field.handleChange(
+                                  v as "Male" | "Female" | "Others",
+                                )
+                              }
+                              required
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Choose your gender" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Male">Male</SelectItem>
+                                <SelectItem value="Female">Female</SelectItem>
+                                <SelectItem value="Others">Others</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </field.FormControl>
+                        </field.FormItem>
+                      )}
+                    />
+                    <form.AppField
+                      name="maritalStatus"
+                      children={(field) => (
+                        <field.FormItem>
+                          <field.FormLabel>
+                            Marrital Status{" "}
+                            <span className="text-red-500">*</span>
+                          </field.FormLabel>
+                          <field.FormControl>
+                            <Select
+                              value={field.state.value}
+                              onValueChange={(v) =>
+                                field.handleChange(
+                                  v as "Married" | "UnMarried" | "Others",
+                                )
+                              }
+                              required
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Choose your gender" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Married">Married</SelectItem>
+                                <SelectItem value="UnMarried">
+                                  Unmarried
+                                </SelectItem>
+                                <SelectItem value="Others">Others</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </field.FormControl>
+                        </field.FormItem>
+                      )}
+                    />
+                    <form.AppField
+                      name="dob"
+                      children={(field) => (
+                        <field.FormItem>
+                          <field.FormLabel>
+                            <Calendar className="mr-1 h-4 w-4" />
+                            Date of Birth{" "}
+                            <span className="text-red-500">*</span>
+                          </field.FormLabel>
+                          <field.FormControl>
+                            <Input
+                              type="date"
+                              name={field.name}
+                              value={field.state.value}
+                              onBlur={field.handleBlur}
+                              max={new Date().toISOString().split("T")[0]}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                            />
+                          </field.FormControl>
+                          <field.FormMessage />
+                        </field.FormItem>
+                      )}
+                    />
+                    <form.AppField
+                      name="address"
+                      children={(field) => (
+                        <field.FormItem>
+                          <field.FormLabel>
+                            Address <span className="text-red-500">*</span>
+                          </field.FormLabel>
+                          <field.FormControl>
+                            <Input
+                              type="text"
+                              placeholder="Kathmandu"
+                              name={field.name}
+                              value={field.state.value}
+                              onBlur={field.handleBlur}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                            />
+                          </field.FormControl>
+                          <field.FormMessage />
+                        </field.FormItem>
+                      )}
+                    />
+                    <form.AppField
+                      name="mobile"
+                      children={(field) => (
+                        <field.FormItem>
+                          <field.FormLabel>
+                            Mobile Number{" "}
+                            <span className="text-red-500">*</span>
+                          </field.FormLabel>
+                          <field.FormControl>
+                            <Input
+                              type="text"
+                              placeholder="98XXXXXXXX"
+                              name={field.name}
+                              value={field.state.value}
+                              onBlur={field.handleBlur}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                            />
+                          </field.FormControl>
+                          <field.FormMessage />
+                        </field.FormItem>
+                      )}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="address"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Address <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="address"
-                      placeholder="Street, City, Area"
-                      required
-                    />
-                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-4">
-                <h3 className="border-b pb-2 text-lg font-semibold text-gray-900">
-                  Medical Details
-                </h3>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="complaint"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Your Concern / Symptoms{" "}
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Textarea
-                    id="complaint"
-                    placeholder="Briefly describe your concern"
-                    className="min-h-[120px] resize-none"
-                    required
+                <div className="space-y-4">
+                  <h3 className="border-b pb-2 text-lg font-semibold text-gray-900">
+                    Medical Details
+                  </h3>
+                  <form.AppField
+                    name="complain"
+                    children={(field) => (
+                      <field.FormItem>
+                        <field.FormLabel>
+                          Complain <span className="text-red-500">*</span>
+                        </field.FormLabel>
+                        <field.FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Headache"
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                          />
+                        </field.FormControl>
+                        <field.FormMessage />
+                      </field.FormItem>
+                    )}
+                  />
+                  <form.AppField
+                    name="remarks"
+                    children={(field) => (
+                      <field.FormItem>
+                        <field.FormLabel>
+                          Remarks <span className="text-red-500">*</span>
+                        </field.FormLabel>
+                        <field.FormControl>
+                          <Textarea
+                            placeholder="Briefly describe your concern"
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            className="min-h-[100px]"
+                            onChange={(e) => field.handleChange(e.target.value)}
+                          />
+                        </field.FormControl>
+                        <field.FormMessage />
+                      </field.FormItem>
+                    )}
                   />
                 </div>
-              </div>
 
-              {/* Submit */}
-              <div className="pb-6">
-                <Button type="submit" size="lg" className="w-full">
-                  Confirm Booking
-                </Button>
-                <p className="mt-4 text-center text-sm text-gray-500">
-                  For urgent medical needs, please visit our emergency
-                  department or call emergency services.
-                </p>
-              </div>
-            </form>
+                {/* Submit */}
+                <div className="pb-6">
+                  <Button
+                    size="lg"
+                    type="submit"
+                    className="w-full"
+                    disabled={form.state.isSubmitting}
+                  >
+                    {form.state.isSubmitting && (
+                      <LoaderCircleIcon className="animate-spin" />
+                    )}
+                    Confirm Booking
+                  </Button>
+                  <p className="mt-4 text-center text-sm text-gray-500">
+                    For urgent medical needs, please visit our emergency
+                    department or call emergency services.
+                  </p>
+                </div>
+              </form>
+            </form.AppForm>
           </CardContent>
         </Card>
       </section>
     </div>
   );
 }
+
+const phoneNumberSchema = z
+  .string({
+    required_error: "Mobile number is required",
+    invalid_type_error: "Mobile number must be a string",
+  })
+  .refine((val) => /^\d+$/.test(val), {
+    message: "Mobile number must contain only digits",
+  })
+  .refine((val) => val.length === 10, {
+    message: "Mobile number must be exactly 10 digits long",
+  })
+  .refine((val) => val.startsWith("97") || val.startsWith("98"), {
+    message: "Mobile number must start with 97 or 98",
+  });
+
+const appointmentSchema = z.object({
+  doctorId: z.number({
+    required_error: "Doctor is required",
+    invalid_type_error: "Doctor is required",
+  }),
+  appointmentDate: z.string({ required_error: "Appointment Date is required" }),
+  dob: z.string({ required_error: "DOB is required" }),
+  firstName: z
+    .string({ required_error: "FirstName is required" })
+    .min(2, { message: "FirstName must be at least 2 characters long" }),
+  middleName: emptyStringAsOptionalSchema(
+    z
+      .string()
+      .trim()
+      .min(2, { message: "Middle name must be at least 2 characters long." })
+      .optional(),
+  ),
+  lastName: z
+    .string({ required_error: "LastName is required" })
+    .min(2, { message: "LastName must be at least 2 characters long" }),
+  address: z
+    .string({ required_error: "Address is required" })
+    .min(5, { message: "Address must be at least 5 characters long" }),
+  mobile: phoneNumberSchema,
+  complain: z
+    .string({ required_error: "Complain is required" })
+    .min(3, { message: "Complain must be at least 3 characters long" }),
+  remarks: z
+    .string({ required_error: "Remarks is required" })
+    .min(3, { message: "Remarks must be at least 3 characters long" }),
+  sex: z.enum(["Male", "Female", "Others"], {
+    required_error: "Sex is required",
+  }),
+  maritalStatus: z.enum(["UnMarried", "Married", "Others"], {
+    required_error: "Marital Status is required",
+  }),
+});
+
+type AppointmentSchema = z.input<typeof appointmentSchema>;
