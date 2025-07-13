@@ -123,7 +123,7 @@ export function BlogForm(
         <FormNavigationBlocker />
         <AdminPageWrapper
           pageTitle={pageTitle}
-          breadcrumbs={[{ href: "/admin/doctors", label: "All Doctors" }]}
+          breadcrumbs={[{ href: "/admin/blogs", label: "All Blogs" }]}
           rightSideContent={<ActionButtons isEditing={!!props.id} />}
         >
           <div className="container grid grid-cols-1 gap-6 px-0 lg:grid-cols-3">
@@ -494,7 +494,7 @@ const BlogContent = withForm({
   ...formOpts,
   render: ({ form }) => {
     return (
-      <Card>
+      <Card className="gap-2">
         <CardHeader>
           <CardTitle className="text-lg">Content</CardTitle>
         </CardHeader>

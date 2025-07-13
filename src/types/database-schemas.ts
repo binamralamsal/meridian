@@ -150,6 +150,28 @@ export interface Email {
   userId: number;
 }
 
+export interface Gallery {
+  authorId: number | null;
+  content: string;
+  coverFileId: number | null;
+  createdAt: Generated<Timestamp>;
+  id: Generated<number>;
+  seoDescription: string | null;
+  seoKeywords: string | null;
+  seoTitle: string | null;
+  slug: string;
+  status: Generated<BlogStatus>;
+  title: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface GalleryImage {
+  caption: string;
+  displayOrder: number;
+  fileId: number;
+  galleryId: number;
+}
+
 export interface Session {
   city: string | null;
   country: Generated<string>;
@@ -193,6 +215,8 @@ export interface DB {
   doctorsEducation: DoctorsEducation;
   doctorsExperiences: DoctorsExperience;
   emails: Email;
+  galleries: Gallery;
+  galleryImages: GalleryImage;
   sessions: Session;
   uploadedFiles: UploadedFile;
   users: User;

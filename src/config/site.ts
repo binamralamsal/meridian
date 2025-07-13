@@ -4,6 +4,7 @@ export const navLinks: { href: LinkProps["to"]; label: string }[] = [
   { href: "/", label: "Home" },
   { href: "/doctors", label: "Doctors" },
   { href: "/blogs", label: "Blogs" },
+  { href: "/galleries", label: "Galleries" },
   // { href: "/services", label: "Services" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },

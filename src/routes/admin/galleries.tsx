@@ -17,59 +17,49 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import {
-  allBlogsOptions,
-  allCategoriesOptions,
-} from "@/features/blogs/blogs.queries";
-import { getAllBlogsSchema } from "@/features/blogs/blogs.schema";
-import { blogsTableColumns } from "@/features/blogs/components/blogs-table-columns";
+import { galleriesTableColumns } from "@/features/galleries/components/galleries-table-columns";
+import { allGalleriesOptions } from "@/features/galleries/galleries.queries";
+import { getAllGalleriesSchema } from "@/features/galleries/galleries.schema";
 
-export const Route = createFileRoute("/admin/blogs")({
+export const Route = createFileRoute("/admin/galleries")({
   component: RouteComponent,
-  validateSearch: getAllBlogsSchema,
+  validateSearch: getAllGalleriesSchema,
   loaderDeps: ({ search }) => ({ search }),
   loader: async ({ context, deps: { search } }) => {
-    context.queryClient.prefetchQuery(allBlogsOptions(search));
-    context.queryClient.prefetchQuery(
-      allCategoriesOptions({ values: { page: 1, pageSize: 1000 } }),
-    );
+    context.queryClient.prefetchQuery(allGalleriesOptions(search));
   },
 });
 
 function RouteComponent() {
   const searchParams = Route.useSearch();
-  const { data, isPending } = useQuery(allBlogsOptions(searchParams));
-  const { data: categoriesData } = useQuery(
-    allCategoriesOptions({ values: { page: 1, pageSize: 1000 } }),
-  );
+  const { data, isPending } = useQuery(allGalleriesOptions(searchParams));
 
   return (
-    <AdminPageWrapper pageTitle="All Blogs">
+    <AdminPageWrapper pageTitle="All Doctors">
       <Card className="container px-0">
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="space-y-2">
-            <CardTitle>Blogs</CardTitle>
+            <CardTitle>Galleries</CardTitle>
             <CardDescription>
-              <p>Here are the list of blogs</p>
+              <p>Here are the list of galleries</p>
             </CardDescription>
           </div>
           <Button asChild>
-            <Link to="/admin/blogs/new">Add new</Link>
+            <Link to="/admin/galleries/new">Add new</Link>
           </Button>
         </CardHeader>
         <CardContent>
           <DataTable
-            columns={blogsTableColumns}
+            columns={galleriesTableColumns}
             data={
-              data?.blogs.map((blog) => ({
-                createdAt: blog.createdAt,
-                updatedAt: blog.updatedAt,
-                id: blog.id,
-                slug: blog.slug,
-                title: blog.title,
-                status: blog.status,
-                category: blog.categoryName,
-                author: blog.author?.name,
+              data?.galleries.map((gallery) => ({
+                createdAt: gallery.createdAt,
+                updatedAt: gallery.updatedAt,
+                id: gallery.id,
+                slug: gallery.slug,
+                title: gallery.title,
+                status: gallery.status,
+                author: gallery.author?.name,
               })) || []
             }
             isLoading={isPending}
@@ -79,15 +69,6 @@ function RouteComponent() {
                 queryKey: "status",
                 title: "Status",
                 options: statuses,
-              },
-              {
-                accessorKey: "category",
-                queryKey: "categories",
-                title: "Category",
-                options: (categoriesData?.categories || []).map((c) => ({
-                  value: c.slug,
-                  label: c.name,
-                })),
               },
             ]}
             options={{
@@ -109,10 +90,10 @@ function RouteComponent() {
   );
 }
 
-const blogStatus = ["published", "archived", "draft"];
+const galleryStatus = ["published", "archived", "draft"];
 
-const blogStatusIcons: Record<
-  (typeof blogStatus)[number],
+const productStatusIcons: Record<
+  (typeof galleryStatus)[number],
   ComponentType<{ className?: string }>
 > = {
   draft: FileIcon,
@@ -120,8 +101,8 @@ const blogStatusIcons: Record<
   archived: ArchiveIcon,
 };
 
-const statuses = blogStatus.map((status) => ({
+const statuses = galleryStatus.map((status) => ({
   value: status,
   label: status.charAt(0).toUpperCase() + status.slice(1),
-  icon: blogStatusIcons[status],
+  icon: productStatusIcons[status],
 }));

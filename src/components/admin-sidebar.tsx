@@ -5,8 +5,10 @@ import {
   ClipboardPlusIcon,
   Contact2Icon,
   FilePlus2Icon,
+  GalleryVerticalIcon,
   HeartPlusIcon,
   HomeIcon,
+  ImagePlusIcon,
   NewspaperIcon,
   PackagePlusIcon,
   StethoscopeIcon,
@@ -136,6 +138,24 @@ export const sidebarItems: SidebarGroupItem[] = [
     label: "Content Management",
     items: [
       {
+        title: "Blog Categories",
+        url: "/admin/blog-categories",
+        icon: BoxesIcon,
+        exact: false,
+        items: [
+          {
+            title: "All Categories",
+            url: "/admin/blog-categories",
+            icon: BoxesIcon,
+          },
+          {
+            title: "Add New Category",
+            url: "/admin/blog-categories/new",
+            icon: PackagePlusIcon,
+          },
+        ],
+      },
+      {
         title: "Blogs",
         url: "/admin/blogs",
         icon: NewspaperIcon,
@@ -150,20 +170,20 @@ export const sidebarItems: SidebarGroupItem[] = [
         ],
       },
       {
-        title: "Categories",
-        url: "/admin/blog-categories",
-        icon: BoxesIcon,
+        title: "Galleries",
+        url: "/admin/galleries",
+        icon: GalleryVerticalIcon,
         exact: false,
         items: [
           {
-            title: "All Categories",
-            url: "/admin/blog-categories",
-            icon: BoxesIcon,
+            title: "All Galleries",
+            url: "/admin/galleries",
+            icon: GalleryVerticalIcon,
           },
           {
-            title: "Add New Category",
-            url: "/admin/blog-categories/new",
-            icon: PackagePlusIcon,
+            title: "Add New Gallery",
+            url: "/admin/galleries/new",
+            icon: ImagePlusIcon,
           },
         ],
       },

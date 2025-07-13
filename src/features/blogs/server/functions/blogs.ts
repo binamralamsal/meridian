@@ -89,7 +89,9 @@ function getBlogBasicQuery() {
           ])
           .whereRef("uploadedFiles.id", "=", "b.coverFileId"),
       ).as("coverPhoto"),
-      sql<string>`left(regexp_replace(${eb.ref("b.content")}, '<[^>]*>', '', 'g'), 125)`.as("truncatedContent"),
+      sql<string>`left(regexp_replace(${eb.ref("b.content")}, '<[^>]*>', '', 'g'), 125)`.as(
+        "truncatedContent",
+      ),
     ]);
 }
 
@@ -192,7 +194,7 @@ export const getAllBlogsFn = createServerFn({ method: "GET" })
             .whereRef("users.id", "=", "blogs.authorId")
             .limit(1),
         ).as("author"),
-        sql<string>`left(${eb.ref("blogs.content")}, 125)`.as(
+        sql<string>`left(regexp_replace(${eb.ref("blogs.content")}, '<[^>]*>', '', 'g'), 125)`.as(
           "truncatedContent",
         ),
       ]);

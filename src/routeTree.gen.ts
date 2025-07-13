@@ -16,6 +16,7 @@ import { Route as MainRouteImport } from './routes/_main/route'
 import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as MainIndexImport } from './routes/_main/index'
 import { Route as AdminUsersImport } from './routes/admin/users'
+import { Route as AdminGalleriesImport } from './routes/admin/galleries'
 import { Route as AdminDoctorsImport } from './routes/admin/doctors'
 import { Route as AdminDepartmentsImport } from './routes/admin/departments'
 import { Route as AdminContactEntriesImport } from './routes/admin/contact-entries'
@@ -23,6 +24,7 @@ import { Route as AdminBlogsImport } from './routes/admin/blogs'
 import { Route as AdminBlogCategoriesImport } from './routes/admin/blog-categories'
 import { Route as MainServicesImport } from './routes/_main/services'
 import { Route as MainLoginImport } from './routes/_main/login'
+import { Route as MainGalleriesImport } from './routes/_main/galleries'
 import { Route as MainDoctorsImport } from './routes/_main/doctors'
 import { Route as MainContactImport } from './routes/_main/contact'
 import { Route as MainBlogsImport } from './routes/_main/blogs'
@@ -30,13 +32,16 @@ import { Route as MainAppointmentImport } from './routes/_main/appointment'
 import { Route as MainAboutImport } from './routes/_main/about'
 import { Route as AdminUsersNewImport } from './routes/admin/users_.new'
 import { Route as AdminUsersIdImport } from './routes/admin/users_.$id'
+import { Route as AdminGalleriesNewImport } from './routes/admin/galleries_.new'
 import { Route as AdminDoctorsNewImport } from './routes/admin/doctors_.new'
 import { Route as AdminDepartmentsNewImport } from './routes/admin/departments_.new'
 import { Route as AdminBlogsNewImport } from './routes/admin/blogs_.new'
 import { Route as AdminBlogCategoriesNewImport } from './routes/admin/blog-categories_.new'
+import { Route as MainGalleriesSlugImport } from './routes/_main/galleries_.$slug'
 import { Route as MainDoctorsSlugImport } from './routes/_main/doctors_.$slug'
 import { Route as MainDepartmentsSlugImport } from './routes/_main/departments_.$slug'
 import { Route as MainBlogsSlugImport } from './routes/_main/blogs_.$slug'
+import { Route as AdminGalleriesIdEditImport } from './routes/admin/galleries_.$id.edit'
 import { Route as AdminDoctorsIdEditImport } from './routes/admin/doctors_.$id.edit'
 import { Route as AdminDepartmentsIdEditImport } from './routes/admin/departments_.$id.edit'
 import { Route as AdminBlogsIdEditImport } from './routes/admin/blogs_.$id.edit'
@@ -70,6 +75,12 @@ const MainIndexRoute = MainIndexImport.update({
 const AdminUsersRoute = AdminUsersImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+
+const AdminGalleriesRoute = AdminGalleriesImport.update({
+  id: '/galleries',
+  path: '/galleries',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
@@ -115,6 +126,12 @@ const MainLoginRoute = MainLoginImport.update({
   getParentRoute: () => MainRouteRoute,
 } as any)
 
+const MainGalleriesRoute = MainGalleriesImport.update({
+  id: '/galleries',
+  path: '/galleries',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+
 const MainDoctorsRoute = MainDoctorsImport.update({
   id: '/doctors',
   path: '/doctors',
@@ -157,6 +174,12 @@ const AdminUsersIdRoute = AdminUsersIdImport.update({
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
+const AdminGalleriesNewRoute = AdminGalleriesNewImport.update({
+  id: '/galleries_/new',
+  path: '/galleries/new',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+
 const AdminDoctorsNewRoute = AdminDoctorsNewImport.update({
   id: '/doctors_/new',
   path: '/doctors/new',
@@ -181,6 +204,12 @@ const AdminBlogCategoriesNewRoute = AdminBlogCategoriesNewImport.update({
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
+const MainGalleriesSlugRoute = MainGalleriesSlugImport.update({
+  id: '/galleries_/$slug',
+  path: '/galleries/$slug',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+
 const MainDoctorsSlugRoute = MainDoctorsSlugImport.update({
   id: '/doctors_/$slug',
   path: '/doctors/$slug',
@@ -197,6 +226,12 @@ const MainBlogsSlugRoute = MainBlogsSlugImport.update({
   id: '/blogs_/$slug',
   path: '/blogs/$slug',
   getParentRoute: () => MainRouteRoute,
+} as any)
+
+const AdminGalleriesIdEditRoute = AdminGalleriesIdEditImport.update({
+  id: '/galleries_/$id/edit',
+  path: '/galleries/$id/edit',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 const AdminDoctorsIdEditRoute = AdminDoctorsIdEditImport.update({
@@ -276,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainDoctorsImport
       parentRoute: typeof MainRouteImport
     }
+    '/_main/galleries': {
+      id: '/_main/galleries'
+      path: '/galleries'
+      fullPath: '/galleries'
+      preLoaderRoute: typeof MainGalleriesImport
+      parentRoute: typeof MainRouteImport
+    }
     '/_main/login': {
       id: '/_main/login'
       path: '/login'
@@ -325,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDoctorsImport
       parentRoute: typeof AdminRouteImport
     }
+    '/admin/galleries': {
+      id: '/admin/galleries'
+      path: '/galleries'
+      fullPath: '/admin/galleries'
+      preLoaderRoute: typeof AdminGalleriesImport
+      parentRoute: typeof AdminRouteImport
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -367,6 +416,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainDoctorsSlugImport
       parentRoute: typeof MainRouteImport
     }
+    '/_main/galleries_/$slug': {
+      id: '/_main/galleries_/$slug'
+      path: '/galleries/$slug'
+      fullPath: '/galleries/$slug'
+      preLoaderRoute: typeof MainGalleriesSlugImport
+      parentRoute: typeof MainRouteImport
+    }
     '/admin/blog-categories_/new': {
       id: '/admin/blog-categories_/new'
       path: '/blog-categories/new'
@@ -393,6 +449,13 @@ declare module '@tanstack/react-router' {
       path: '/doctors/new'
       fullPath: '/admin/doctors/new'
       preLoaderRoute: typeof AdminDoctorsNewImport
+      parentRoute: typeof AdminRouteImport
+    }
+    '/admin/galleries_/new': {
+      id: '/admin/galleries_/new'
+      path: '/galleries/new'
+      fullPath: '/admin/galleries/new'
+      preLoaderRoute: typeof AdminGalleriesNewImport
       parentRoute: typeof AdminRouteImport
     }
     '/admin/users_/$id': {
@@ -437,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDoctorsIdEditImport
       parentRoute: typeof AdminRouteImport
     }
+    '/admin/galleries_/$id/edit': {
+      id: '/admin/galleries_/$id/edit'
+      path: '/galleries/$id/edit'
+      fullPath: '/admin/galleries/$id/edit'
+      preLoaderRoute: typeof AdminGalleriesIdEditImport
+      parentRoute: typeof AdminRouteImport
+    }
   }
 }
 
@@ -448,12 +518,14 @@ interface MainRouteRouteChildren {
   MainBlogsRoute: typeof MainBlogsRoute
   MainContactRoute: typeof MainContactRoute
   MainDoctorsRoute: typeof MainDoctorsRoute
+  MainGalleriesRoute: typeof MainGalleriesRoute
   MainLoginRoute: typeof MainLoginRoute
   MainServicesRoute: typeof MainServicesRoute
   MainIndexRoute: typeof MainIndexRoute
   MainBlogsSlugRoute: typeof MainBlogsSlugRoute
   MainDepartmentsSlugRoute: typeof MainDepartmentsSlugRoute
   MainDoctorsSlugRoute: typeof MainDoctorsSlugRoute
+  MainGalleriesSlugRoute: typeof MainGalleriesSlugRoute
 }
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
@@ -462,12 +534,14 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainBlogsRoute: MainBlogsRoute,
   MainContactRoute: MainContactRoute,
   MainDoctorsRoute: MainDoctorsRoute,
+  MainGalleriesRoute: MainGalleriesRoute,
   MainLoginRoute: MainLoginRoute,
   MainServicesRoute: MainServicesRoute,
   MainIndexRoute: MainIndexRoute,
   MainBlogsSlugRoute: MainBlogsSlugRoute,
   MainDepartmentsSlugRoute: MainDepartmentsSlugRoute,
   MainDoctorsSlugRoute: MainDoctorsSlugRoute,
+  MainGalleriesSlugRoute: MainGalleriesSlugRoute,
 }
 
 const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(
@@ -480,18 +554,21 @@ interface AdminRouteRouteChildren {
   AdminContactEntriesRoute: typeof AdminContactEntriesRoute
   AdminDepartmentsRoute: typeof AdminDepartmentsRoute
   AdminDoctorsRoute: typeof AdminDoctorsRoute
+  AdminGalleriesRoute: typeof AdminGalleriesRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBlogCategoriesNewRoute: typeof AdminBlogCategoriesNewRoute
   AdminBlogsNewRoute: typeof AdminBlogsNewRoute
   AdminDepartmentsNewRoute: typeof AdminDepartmentsNewRoute
   AdminDoctorsNewRoute: typeof AdminDoctorsNewRoute
+  AdminGalleriesNewRoute: typeof AdminGalleriesNewRoute
   AdminUsersIdRoute: typeof AdminUsersIdRoute
   AdminUsersNewRoute: typeof AdminUsersNewRoute
   AdminBlogCategoriesIdEditRoute: typeof AdminBlogCategoriesIdEditRoute
   AdminBlogsIdEditRoute: typeof AdminBlogsIdEditRoute
   AdminDepartmentsIdEditRoute: typeof AdminDepartmentsIdEditRoute
   AdminDoctorsIdEditRoute: typeof AdminDoctorsIdEditRoute
+  AdminGalleriesIdEditRoute: typeof AdminGalleriesIdEditRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -500,18 +577,21 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminContactEntriesRoute: AdminContactEntriesRoute,
   AdminDepartmentsRoute: AdminDepartmentsRoute,
   AdminDoctorsRoute: AdminDoctorsRoute,
+  AdminGalleriesRoute: AdminGalleriesRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminBlogCategoriesNewRoute: AdminBlogCategoriesNewRoute,
   AdminBlogsNewRoute: AdminBlogsNewRoute,
   AdminDepartmentsNewRoute: AdminDepartmentsNewRoute,
   AdminDoctorsNewRoute: AdminDoctorsNewRoute,
+  AdminGalleriesNewRoute: AdminGalleriesNewRoute,
   AdminUsersIdRoute: AdminUsersIdRoute,
   AdminUsersNewRoute: AdminUsersNewRoute,
   AdminBlogCategoriesIdEditRoute: AdminBlogCategoriesIdEditRoute,
   AdminBlogsIdEditRoute: AdminBlogsIdEditRoute,
   AdminDepartmentsIdEditRoute: AdminDepartmentsIdEditRoute,
   AdminDoctorsIdEditRoute: AdminDoctorsIdEditRoute,
+  AdminGalleriesIdEditRoute: AdminGalleriesIdEditRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
@@ -526,6 +606,7 @@ export interface FileRoutesByFullPath {
   '/blogs': typeof MainBlogsRoute
   '/contact': typeof MainContactRoute
   '/doctors': typeof MainDoctorsRoute
+  '/galleries': typeof MainGalleriesRoute
   '/login': typeof MainLoginRoute
   '/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
@@ -533,22 +614,26 @@ export interface FileRoutesByFullPath {
   '/admin/contact-entries': typeof AdminContactEntriesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
+  '/admin/galleries': typeof AdminGalleriesRoute
   '/admin/users': typeof AdminUsersRoute
   '/': typeof MainIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/blogs/$slug': typeof MainBlogsSlugRoute
   '/departments/$slug': typeof MainDepartmentsSlugRoute
   '/doctors/$slug': typeof MainDoctorsSlugRoute
+  '/galleries/$slug': typeof MainGalleriesSlugRoute
   '/admin/blog-categories/new': typeof AdminBlogCategoriesNewRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
   '/admin/departments/new': typeof AdminDepartmentsNewRoute
   '/admin/doctors/new': typeof AdminDoctorsNewRoute
+  '/admin/galleries/new': typeof AdminGalleriesNewRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
   '/admin/blog-categories/$id/edit': typeof AdminBlogCategoriesIdEditRoute
   '/admin/blogs/$id/edit': typeof AdminBlogsIdEditRoute
   '/admin/departments/$id/edit': typeof AdminDepartmentsIdEditRoute
   '/admin/doctors/$id/edit': typeof AdminDoctorsIdEditRoute
+  '/admin/galleries/$id/edit': typeof AdminGalleriesIdEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -557,6 +642,7 @@ export interface FileRoutesByTo {
   '/blogs': typeof MainBlogsRoute
   '/contact': typeof MainContactRoute
   '/doctors': typeof MainDoctorsRoute
+  '/galleries': typeof MainGalleriesRoute
   '/login': typeof MainLoginRoute
   '/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
@@ -564,22 +650,26 @@ export interface FileRoutesByTo {
   '/admin/contact-entries': typeof AdminContactEntriesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
+  '/admin/galleries': typeof AdminGalleriesRoute
   '/admin/users': typeof AdminUsersRoute
   '/': typeof MainIndexRoute
   '/admin': typeof AdminIndexRoute
   '/blogs/$slug': typeof MainBlogsSlugRoute
   '/departments/$slug': typeof MainDepartmentsSlugRoute
   '/doctors/$slug': typeof MainDoctorsSlugRoute
+  '/galleries/$slug': typeof MainGalleriesSlugRoute
   '/admin/blog-categories/new': typeof AdminBlogCategoriesNewRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
   '/admin/departments/new': typeof AdminDepartmentsNewRoute
   '/admin/doctors/new': typeof AdminDoctorsNewRoute
+  '/admin/galleries/new': typeof AdminGalleriesNewRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/users/new': typeof AdminUsersNewRoute
   '/admin/blog-categories/$id/edit': typeof AdminBlogCategoriesIdEditRoute
   '/admin/blogs/$id/edit': typeof AdminBlogsIdEditRoute
   '/admin/departments/$id/edit': typeof AdminDepartmentsIdEditRoute
   '/admin/doctors/$id/edit': typeof AdminDoctorsIdEditRoute
+  '/admin/galleries/$id/edit': typeof AdminGalleriesIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -591,6 +681,7 @@ export interface FileRoutesById {
   '/_main/blogs': typeof MainBlogsRoute
   '/_main/contact': typeof MainContactRoute
   '/_main/doctors': typeof MainDoctorsRoute
+  '/_main/galleries': typeof MainGalleriesRoute
   '/_main/login': typeof MainLoginRoute
   '/_main/services': typeof MainServicesRoute
   '/admin/blog-categories': typeof AdminBlogCategoriesRoute
@@ -598,22 +689,26 @@ export interface FileRoutesById {
   '/admin/contact-entries': typeof AdminContactEntriesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/doctors': typeof AdminDoctorsRoute
+  '/admin/galleries': typeof AdminGalleriesRoute
   '/admin/users': typeof AdminUsersRoute
   '/_main/': typeof MainIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_main/blogs_/$slug': typeof MainBlogsSlugRoute
   '/_main/departments_/$slug': typeof MainDepartmentsSlugRoute
   '/_main/doctors_/$slug': typeof MainDoctorsSlugRoute
+  '/_main/galleries_/$slug': typeof MainGalleriesSlugRoute
   '/admin/blog-categories_/new': typeof AdminBlogCategoriesNewRoute
   '/admin/blogs_/new': typeof AdminBlogsNewRoute
   '/admin/departments_/new': typeof AdminDepartmentsNewRoute
   '/admin/doctors_/new': typeof AdminDoctorsNewRoute
+  '/admin/galleries_/new': typeof AdminGalleriesNewRoute
   '/admin/users_/$id': typeof AdminUsersIdRoute
   '/admin/users_/new': typeof AdminUsersNewRoute
   '/admin/blog-categories_/$id/edit': typeof AdminBlogCategoriesIdEditRoute
   '/admin/blogs_/$id/edit': typeof AdminBlogsIdEditRoute
   '/admin/departments_/$id/edit': typeof AdminDepartmentsIdEditRoute
   '/admin/doctors_/$id/edit': typeof AdminDoctorsIdEditRoute
+  '/admin/galleries_/$id/edit': typeof AdminGalleriesIdEditRoute
 }
 
 export interface FileRouteTypes {
@@ -626,6 +721,7 @@ export interface FileRouteTypes {
     | '/blogs'
     | '/contact'
     | '/doctors'
+    | '/galleries'
     | '/login'
     | '/services'
     | '/admin/blog-categories'
@@ -633,22 +729,26 @@ export interface FileRouteTypes {
     | '/admin/contact-entries'
     | '/admin/departments'
     | '/admin/doctors'
+    | '/admin/galleries'
     | '/admin/users'
     | '/'
     | '/admin/'
     | '/blogs/$slug'
     | '/departments/$slug'
     | '/doctors/$slug'
+    | '/galleries/$slug'
     | '/admin/blog-categories/new'
     | '/admin/blogs/new'
     | '/admin/departments/new'
     | '/admin/doctors/new'
+    | '/admin/galleries/new'
     | '/admin/users/$id'
     | '/admin/users/new'
     | '/admin/blog-categories/$id/edit'
     | '/admin/blogs/$id/edit'
     | '/admin/departments/$id/edit'
     | '/admin/doctors/$id/edit'
+    | '/admin/galleries/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
@@ -656,6 +756,7 @@ export interface FileRouteTypes {
     | '/blogs'
     | '/contact'
     | '/doctors'
+    | '/galleries'
     | '/login'
     | '/services'
     | '/admin/blog-categories'
@@ -663,22 +764,26 @@ export interface FileRouteTypes {
     | '/admin/contact-entries'
     | '/admin/departments'
     | '/admin/doctors'
+    | '/admin/galleries'
     | '/admin/users'
     | '/'
     | '/admin'
     | '/blogs/$slug'
     | '/departments/$slug'
     | '/doctors/$slug'
+    | '/galleries/$slug'
     | '/admin/blog-categories/new'
     | '/admin/blogs/new'
     | '/admin/departments/new'
     | '/admin/doctors/new'
+    | '/admin/galleries/new'
     | '/admin/users/$id'
     | '/admin/users/new'
     | '/admin/blog-categories/$id/edit'
     | '/admin/blogs/$id/edit'
     | '/admin/departments/$id/edit'
     | '/admin/doctors/$id/edit'
+    | '/admin/galleries/$id/edit'
   id:
     | '__root__'
     | '/_main'
@@ -688,6 +793,7 @@ export interface FileRouteTypes {
     | '/_main/blogs'
     | '/_main/contact'
     | '/_main/doctors'
+    | '/_main/galleries'
     | '/_main/login'
     | '/_main/services'
     | '/admin/blog-categories'
@@ -695,22 +801,26 @@ export interface FileRouteTypes {
     | '/admin/contact-entries'
     | '/admin/departments'
     | '/admin/doctors'
+    | '/admin/galleries'
     | '/admin/users'
     | '/_main/'
     | '/admin/'
     | '/_main/blogs_/$slug'
     | '/_main/departments_/$slug'
     | '/_main/doctors_/$slug'
+    | '/_main/galleries_/$slug'
     | '/admin/blog-categories_/new'
     | '/admin/blogs_/new'
     | '/admin/departments_/new'
     | '/admin/doctors_/new'
+    | '/admin/galleries_/new'
     | '/admin/users_/$id'
     | '/admin/users_/new'
     | '/admin/blog-categories_/$id/edit'
     | '/admin/blogs_/$id/edit'
     | '/admin/departments_/$id/edit'
     | '/admin/doctors_/$id/edit'
+    | '/admin/galleries_/$id/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -746,12 +856,14 @@ export const routeTree = rootRoute
         "/_main/blogs",
         "/_main/contact",
         "/_main/doctors",
+        "/_main/galleries",
         "/_main/login",
         "/_main/services",
         "/_main/",
         "/_main/blogs_/$slug",
         "/_main/departments_/$slug",
-        "/_main/doctors_/$slug"
+        "/_main/doctors_/$slug",
+        "/_main/galleries_/$slug"
       ]
     },
     "/admin": {
@@ -762,18 +874,21 @@ export const routeTree = rootRoute
         "/admin/contact-entries",
         "/admin/departments",
         "/admin/doctors",
+        "/admin/galleries",
         "/admin/users",
         "/admin/",
         "/admin/blog-categories_/new",
         "/admin/blogs_/new",
         "/admin/departments_/new",
         "/admin/doctors_/new",
+        "/admin/galleries_/new",
         "/admin/users_/$id",
         "/admin/users_/new",
         "/admin/blog-categories_/$id/edit",
         "/admin/blogs_/$id/edit",
         "/admin/departments_/$id/edit",
-        "/admin/doctors_/$id/edit"
+        "/admin/doctors_/$id/edit",
+        "/admin/galleries_/$id/edit"
       ]
     },
     "/_main/about": {
@@ -794,6 +909,10 @@ export const routeTree = rootRoute
     },
     "/_main/doctors": {
       "filePath": "_main/doctors.tsx",
+      "parent": "/_main"
+    },
+    "/_main/galleries": {
+      "filePath": "_main/galleries.tsx",
       "parent": "/_main"
     },
     "/_main/login": {
@@ -824,6 +943,10 @@ export const routeTree = rootRoute
       "filePath": "admin/doctors.tsx",
       "parent": "/admin"
     },
+    "/admin/galleries": {
+      "filePath": "admin/galleries.tsx",
+      "parent": "/admin"
+    },
     "/admin/users": {
       "filePath": "admin/users.tsx",
       "parent": "/admin"
@@ -848,6 +971,10 @@ export const routeTree = rootRoute
       "filePath": "_main/doctors_.$slug.tsx",
       "parent": "/_main"
     },
+    "/_main/galleries_/$slug": {
+      "filePath": "_main/galleries_.$slug.tsx",
+      "parent": "/_main"
+    },
     "/admin/blog-categories_/new": {
       "filePath": "admin/blog-categories_.new.tsx",
       "parent": "/admin"
@@ -862,6 +989,10 @@ export const routeTree = rootRoute
     },
     "/admin/doctors_/new": {
       "filePath": "admin/doctors_.new.tsx",
+      "parent": "/admin"
+    },
+    "/admin/galleries_/new": {
+      "filePath": "admin/galleries_.new.tsx",
       "parent": "/admin"
     },
     "/admin/users_/$id": {
@@ -886,6 +1017,10 @@ export const routeTree = rootRoute
     },
     "/admin/doctors_/$id/edit": {
       "filePath": "admin/doctors_.$id.edit.tsx",
+      "parent": "/admin"
+    },
+    "/admin/galleries_/$id/edit": {
+      "filePath": "admin/galleries_.$id.edit.tsx",
       "parent": "/admin"
     }
   }

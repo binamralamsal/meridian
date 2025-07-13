@@ -1,4 +1,4 @@
-import { Calendar, ChevronRight, Link2 } from "lucide-react";
+import { Calendar, ChevronRight, Share2Icon } from "lucide-react";
 import { BlogPosting, WithContext } from "schema-dts";
 import { toast } from "sonner";
 
@@ -76,9 +76,22 @@ function RouteComponent() {
     },
   };
 
-  function handleCopyButtonClick() {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success("URL copied to clipboard");
+  function handleShareButtonClick() {
+    if (!blog) return;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `${blog.title} | ${site.name}`,
+          text: `Checkout this wonderful article`,
+          url: window.location.href,
+        })
+        .then(() => console.log("Shared successfully"))
+        .catch((error) => console.error("Error sharing:", error));
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("URL copied to clipboard");
+    }
   }
 
   return (
@@ -146,10 +159,10 @@ function RouteComponent() {
             variant="link"
             className="cursor-pointer hover:no-underline"
             size="sm"
-            onClick={handleCopyButtonClick}
+            onClick={handleShareButtonClick}
           >
-            <Link2 className="mr-1 h-4 w-4" />
-            Copy link
+            <Share2Icon className="mr-1 h-4 w-4" />
+            Share
           </Button>
         </div>
 
@@ -203,10 +216,9 @@ function RouteComponent() {
             <Button
               variant="outline"
               size="sm"
-              onClick={handleCopyButtonClick}
-              className="flex-shrink-0"
+              onClick={handleShareButtonClick}
             >
-              <Link2 className="mr-2 h-4 w-4" />
+              <Share2Icon className="h-4 w-4" />
               Share
             </Button>
           </div>
