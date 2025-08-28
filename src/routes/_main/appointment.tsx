@@ -233,10 +233,10 @@ function RouteComponent() {
 
         {/* Contact Info Cards */}
         <div className="mx-auto mb-8 grid max-w-3xl gap-6 md:grid-cols-2">
-          <Card className="border border-blue-100 shadow-sm transition-shadow hover:shadow-md">
-            <CardContent className="flex items-start gap-4 p-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <Phone className="h-5 w-5 text-blue-600" />
+          <Card className="border-primary/10 flex justify-center border shadow-sm transition-shadow hover:shadow-md">
+            <CardContent className="grid grid-cols-[1fr_10fr] items-start gap-4">
+              <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
+                <Phone className="text-primary h-5 w-5" />
               </div>
               <div>
                 <p className="text-lg font-semibold text-gray-900">Phone</p>
@@ -247,16 +247,20 @@ function RouteComponent() {
             </CardContent>
           </Card>
 
-          <Card className="border border-blue-100 shadow-sm transition-shadow hover:shadow-md">
-            <CardContent className="flex items-start gap-4 p-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <MapPin className="h-5 w-5 text-blue-600" />
+          <Card className="border-primary/10 flex justify-center border shadow-sm transition-shadow hover:shadow-md">
+            <CardContent className="grid grid-cols-[1fr_10fr] items-start gap-4">
+              <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
+                <MapPin className="text-primary h-5 w-5" />
               </div>
               <div>
                 <p className="text-lg font-semibold text-gray-900">Location</p>
                 <p className="text-muted-foreground text-sm">
-                  Book your visit at our central Kathmandu clinic
+                  Maharajgunj, Chakrapath, Kathmandu - Oppostite to US Embassy
                 </p>
+                <Button variant="link" asChild className="p-0">
+                  {/* @ts-expect-error -- shut up */}
+                  <Link to="/contact#map">Map</Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
