@@ -138,7 +138,7 @@ function Home() {
                 <div className="flex items-center gap-3">
                   <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full">
                     <span className="text-primary-foreground font-bold">
-                      30
+                      20
                     </span>
                   </div>
                   <div>
@@ -412,7 +412,7 @@ function Home() {
               <div className="flex items-center gap-3">
                 <CheckCircle2Icon className="text-secondary h-5 w-5" />
                 <p className="text-foreground/80">
-                  30+ Years of Excellence in Healthcare
+                  20+ Years of Excellence in Healthcare
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -516,7 +516,7 @@ interface StatsCounterProps {
   icon: string;
 }
 
-function StatsCounter({ number, label, icon }: StatsCounterProps) {
+export function StatsCounter({ number, label, icon }: StatsCounterProps) {
   const [count, setCount] = useState(0);
   const countRef = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
@@ -591,7 +591,7 @@ function StatsCounter({ number, label, icon }: StatsCounterProps) {
 
   return (
     <div className="flex flex-col items-center" ref={countRef}>
-      <div className="bg-primary mb-4 rounded-full p-4">{getIcon(icon)}</div>
+      <div className="bg-primary rounded-full p-4">{getIcon(icon)}</div>
       <div className="mb-2 text-4xl font-bold">{formatNumber(count)}</div>
       <div className="text-sky-100">{label}</div>
     </div>
