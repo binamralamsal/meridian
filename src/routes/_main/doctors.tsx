@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_main/doctors")({
   validateSearch: z.object({
     departments: z.array(z.string()).optional().default([]).catch([]),
     page: z.number().int().min(1).optional().default(1).catch(1),
-    pageSize: z.number().int().min(5).optional().default(12).catch(12),
+    pageSize: z.number().int().min(5).optional().default(100).catch(100),
     search: z.string().optional(),
   }),
   loaderDeps: ({ search }) => search,
