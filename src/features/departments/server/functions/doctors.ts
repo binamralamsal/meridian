@@ -19,183 +19,217 @@ export const saveDoctorFn = createServerFn()
     try {
       if (id) {
         await db.transaction().execute(async (trx) => {
-  await trx
-    .updateTable("doctors")
-    .where("id", "=", id)
-    .set({
-      name: values.name,
-      slug: values.slug,
-      role: values.role,
-      description: values.description,
-      email: values.email,
-      phoneNumber: values.phoneNumber,
-      location: values.location,
-      photoFileId: values.photoFileId,
-      departmentId: values.departmentId,
-    })
-    .executeTakeFirstOrThrow();
+          await trx
+            .updateTable("doctors")
+            .where("id", "=", id)
+            .set({
+              name: values.name,
+              slug: values.slug,
+              role: values.role,
+              description: values.description,
+              email: values.email,
+              phoneNumber: values.phoneNumber,
+              location: values.location,
+              photoFileId: values.photoFileId,
+              departmentId: values.departmentId,
+            })
+            .executeTakeFirstOrThrow();
 
-  const existingAppointmentHours = values.appointmentHours
-    .filter((appointmentHour) => !appointmentHour.new)
-    .map((v) => v.id);
-  
-  // Only delete if there are existing records to preserve
-  if (existingAppointmentHours.length > 0) {
-    await trx
-      .deleteFrom("doctorsAppointmentHours")
-      .where("doctorId", "=", id)
-      .where("id", "not in", existingAppointmentHours)
-      .executeTakeFirstOrThrow();
-  } else {
-    // Delete all records if no existing ones to preserve
-    await trx
-      .deleteFrom("doctorsAppointmentHours")
-      .where("doctorId", "=", id)
-      .executeTakeFirstOrThrow();
-  }
+          // Handle appointment hours
+          if (values.appointmentHours.length > 0) {
+            const existingAppointmentHours = values.appointmentHours
+              .filter((appointmentHour) => !appointmentHour.new)
+              .map((v) => v.id);
+            
+            // Only delete if there are existing records to preserve
+            if (existingAppointmentHours.length > 0) {
+              await trx
+                .deleteFrom("doctorsAppointmentHours")
+                .where("doctorId", "=", id)
+                .where("id", "not in", existingAppointmentHours)
+                .execute();
+            } else {
+              // Delete all records if no existing ones to preserve
+              await trx
+                .deleteFrom("doctorsAppointmentHours")
+                .where("doctorId", "=", id)
+                .execute();
+            }
 
-  await trx
-    .insertInto("doctorsAppointmentHours")
-    .values(
-      values.appointmentHours.map((value) => ({
-        ...(!value.new && { id: value.id }),
-        timeStart: value.timeStart,
-        timeEnd: value.timeEnd,
-        day: value.day,
-        displayOrder: value.displayOrder,
-        doctorId: id,
-      })),
-    )
-    .onConflict((oc) =>
-      oc.column("id").doUpdateSet((val) => ({
-        day: val.ref("excluded.day"),
-        timeStart: val.ref("excluded.timeStart"),
-        timeEnd: val.ref("excluded.timeEnd"),
-        displayOrder: val.ref("excluded.displayOrder"),
-      })),
-    )
-    .executeTakeFirstOrThrow();
+            await trx
+              .insertInto("doctorsAppointmentHours")
+              .values(
+                values.appointmentHours.map((value) => ({
+                  ...(!value.new && { id: value.id }),
+                  timeStart: value.timeStart,
+                  timeEnd: value.timeEnd,
+                  day: value.day,
+                  displayOrder: value.displayOrder,
+                  doctorId: id,
+                })),
+              )
+              .onConflict((oc) =>
+                oc.column("id").doUpdateSet((val) => ({
+                  day: val.ref("excluded.day"),
+                  timeStart: val.ref("excluded.timeStart"),
+                  timeEnd: val.ref("excluded.timeEnd"),
+                  displayOrder: val.ref("excluded.displayOrder"),
+                })),
+              )
+              .execute();
+          } else {
+            // If appointment hours is empty, delete all existing records
+            await trx
+              .deleteFrom("doctorsAppointmentHours")
+              .where("doctorId", "=", id)
+              .execute();
+          }
 
-  const existingEducationDetails = values.education
-    .filter((ed) => !ed.new)
-    .map((ed) => ed.id);
-  
-  if (existingEducationDetails.length > 0) {
-    await trx
-      .deleteFrom("doctorsEducation")
-      .where("doctorId", "=", id)
-      .where("id", "not in", existingEducationDetails)
-      .executeTakeFirstOrThrow();
-  } else {
-    await trx
-      .deleteFrom("doctorsEducation")
-      .where("doctorId", "=", id)
-      .executeTakeFirstOrThrow();
-  }
+          // Handle education
+          if (values.education.length > 0) {
+            const existingEducationDetails = values.education
+              .filter((ed) => !ed.new)
+              .map((ed) => ed.id);
+            
+            if (existingEducationDetails.length > 0) {
+              await trx
+                .deleteFrom("doctorsEducation")
+                .where("doctorId", "=", id)
+                .where("id", "not in", existingEducationDetails)
+                .execute();
+            } else {
+              await trx
+                .deleteFrom("doctorsEducation")
+                .where("doctorId", "=", id)
+                .execute();
+            }
 
-  await trx
-    .insertInto("doctorsEducation")
-    .values(
-      values.education.map((value) => ({
-        ...(!value.new && { id: value.id }),
-        degree: value.degree,
-        institution: value.institution,
-        displayOrder: value.displayOrder,
-        yearOfCompletion: value.yearOfCompletion,
-        doctorId: id,
-      })),
-    )
-    .onConflict((oc) =>
-      oc.column("id").doUpdateSet((val) => ({
-        degree: val.ref("excluded.degree"),
-        institution: val.ref("excluded.institution"),
-        displayOrder: val.ref("excluded.displayOrder"),
-        yearOfCompletion: val.ref("excluded.yearOfCompletion"),
-      })),
-    )
-    .executeTakeFirstOrThrow();
+            await trx
+              .insertInto("doctorsEducation")
+              .values(
+                values.education.map((value) => ({
+                  ...(!value.new && { id: value.id }),
+                  degree: value.degree,
+                  institution: value.institution,
+                  displayOrder: value.displayOrder,
+                  yearOfCompletion: value.yearOfCompletion,
+                  doctorId: id,
+                })),
+              )
+              .onConflict((oc) =>
+                oc.column("id").doUpdateSet((val) => ({
+                  degree: val.ref("excluded.degree"),
+                  institution: val.ref("excluded.institution"),
+                  displayOrder: val.ref("excluded.displayOrder"),
+                  yearOfCompletion: val.ref("excluded.yearOfCompletion"),
+                })),
+              )
+              .execute();
+          } else {
+            // If education is empty, delete all existing records
+            await trx
+              .deleteFrom("doctorsEducation")
+              .where("doctorId", "=", id)
+              .execute();
+          }
 
-  const existingExperiences = values.experiences
-    .filter((ex) => !ex.new)
-    .map((ex) => ex.id);
-  
-  if (existingExperiences.length > 0) {
-    await trx
-      .deleteFrom("doctorsExperiences")
-      .where("doctorId", "=", id)
-      .where("id", "not in", existingExperiences)
-      .executeTakeFirstOrThrow();
-  } else {
-    await trx
-      .deleteFrom("doctorsExperiences")
-      .where("doctorId", "=", id)
-      .executeTakeFirstOrThrow();
-  }
+          // Handle experiences
+          if (values.experiences.length > 0) {
+            const existingExperiences = values.experiences
+              .filter((ex) => !ex.new)
+              .map((ex) => ex.id);
+            
+            if (existingExperiences.length > 0) {
+              await trx
+                .deleteFrom("doctorsExperiences")
+                .where("doctorId", "=", id)
+                .where("id", "not in", existingExperiences)
+                .execute();
+            } else {
+              await trx
+                .deleteFrom("doctorsExperiences")
+                .where("doctorId", "=", id)
+                .execute();
+            }
 
-  await trx
-    .insertInto("doctorsExperiences")
-    .values(
-      values.experiences.map((value) => ({
-        ...(!value.new && { id: value.id }),
-        role: value.role,
-        shortDescription: value.shortDescription,
-        displayOrder: value.displayOrder,
-        doctorId: id,
-      })),
-    )
-    .onConflict((oc) =>
-      oc.column("id").doUpdateSet((val) => ({
-        role: val.ref("excluded.role"),
-        shortDescription: val.ref("excluded.shortDescription"),
-        displayOrder: val.ref("excluded.displayOrder"),
-      })),
-    )
-    .executeTakeFirstOrThrow();
+            await trx
+              .insertInto("doctorsExperiences")
+              .values(
+                values.experiences.map((value) => ({
+                  ...(!value.new && { id: value.id }),
+                  role: value.role,
+                  shortDescription: value.shortDescription,
+                  displayOrder: value.displayOrder,
+                  doctorId: id,
+                })),
+              )
+              .onConflict((oc) =>
+                oc.column("id").doUpdateSet((val) => ({
+                  role: val.ref("excluded.role"),
+                  shortDescription: val.ref("excluded.shortDescription"),
+                  displayOrder: val.ref("excluded.displayOrder"),
+                })),
+              )
+              .execute();
+          } else {
+            // If experiences is empty, delete all existing records
+            await trx
+              .deleteFrom("doctorsExperiences")
+              .where("doctorId", "=", id)
+              .execute();
+          }
 
-  const existingAchievements = values.achievements
-    .filter((ex) => !ex.new)
-    .map((ex) => ex.id);
-  
-  if (existingAchievements.length > 0) {
-    await trx
-      .deleteFrom("doctorsAchievements")
-      .where("doctorId", "=", id)
-      .where("id", "not in", existingAchievements)
-      .executeTakeFirstOrThrow();
-  } else {
-    await trx
-      .deleteFrom("doctorsAchievements")
-      .where("doctorId", "=", id)
-      .executeTakeFirstOrThrow();
-  }
+          // Handle achievements
+          if (values.achievements.length > 0) {
+            const existingAchievements = values.achievements
+              .filter((ex) => !ex.new)
+              .map((ex) => ex.id);
+            
+            if (existingAchievements.length > 0) {
+              await trx
+                .deleteFrom("doctorsAchievements")
+                .where("doctorId", "=", id)
+                .where("id", "not in", existingAchievements)
+                .execute();
+            } else {
+              await trx
+                .deleteFrom("doctorsAchievements")
+                .where("doctorId", "=", id)
+                .execute();
+            }
 
-  if (values.achievements.length > 0) {
-    await trx
-      .insertInto("doctorsAchievements")
-      .values(
-        values.achievements.map((value) => ({
-          ...(!value.new && { id: value.id }),
-          title: value.title,
-          year: value.year,
-          doctorId: id,
-          displayOrder: value.displayOrder,
-        })),
-      )
-      .onConflict((oc) =>
-        oc.column("id").doUpdateSet((val) => ({
-          title: val.ref("excluded.title"),
-          year: val.ref("excluded.year"),
-          displayOrder: val.ref("excluded.displayOrder"),
-        })),
-      )
-      .executeTakeFirstOrThrow();
-  }
-});
+            await trx
+              .insertInto("doctorsAchievements")
+              .values(
+                values.achievements.map((value) => ({
+                  ...(!value.new && { id: value.id }),
+                  title: value.title,
+                  year: value.year,
+                  doctorId: id,
+                  displayOrder: value.displayOrder,
+                })),
+              )
+              .onConflict((oc) =>
+                oc.column("id").doUpdateSet((val) => ({
+                  title: val.ref("excluded.title"),
+                  year: val.ref("excluded.year"),
+                  displayOrder: val.ref("excluded.displayOrder"),
+                })),
+              )
+              .execute();
+          } else {
+            // If achievements is empty, delete all existing records
+            await trx
+              .deleteFrom("doctorsAchievements")
+              .where("doctorId", "=", id)
+              .execute();
+          }
+        });
 
-return {
-  status: "SUCCESS",
-  message: "Updated doctor successfully!",
-};
+        return {
+          status: "SUCCESS",
+          message: "Updated doctor successfully!",
+        };
       } else {
         await db.transaction().execute(async (trx) => {
           const response = await trx
@@ -214,45 +248,55 @@ return {
             .returning("id")
             .executeTakeFirstOrThrow();
 
-          await trx
-            .insertInto("doctorsAppointmentHours")
-            .values(
-              values.appointmentHours.map((value) => ({
-                timeStart: value.timeStart,
-                timeEnd: value.timeEnd,
-                day: value.day,
-                displayOrder: value.displayOrder,
-                doctorId: response.id,
-              })),
-            )
-            .executeTakeFirstOrThrow();
+          // Only insert appointment hours if the array is not empty
+          if (values.appointmentHours.length > 0) {
+            await trx
+              .insertInto("doctorsAppointmentHours")
+              .values(
+                values.appointmentHours.map((value) => ({
+                  timeStart: value.timeStart,
+                  timeEnd: value.timeEnd,
+                  day: value.day,
+                  displayOrder: value.displayOrder,
+                  doctorId: response.id,
+                })),
+              )
+              .execute();
+          }
 
-          await trx
-            .insertInto("doctorsEducation")
-            .values(
-              values.education.map((value) => ({
-                degree: value.degree,
-                institution: value.institution,
-                displayOrder: value.displayOrder,
-                yearOfCompletion: value.yearOfCompletion,
-                doctorId: response.id,
-              })),
-            )
-            .executeTakeFirstOrThrow();
+          // Only insert education if the array is not empty
+          if (values.education.length > 0) {
+            await trx
+              .insertInto("doctorsEducation")
+              .values(
+                values.education.map((value) => ({
+                  degree: value.degree,
+                  institution: value.institution,
+                  displayOrder: value.displayOrder,
+                  yearOfCompletion: value.yearOfCompletion,
+                  doctorId: response.id,
+                })),
+              )
+              .execute();
+          }
 
-          await trx
-            .insertInto("doctorsExperiences")
-            .values(
-              values.experiences.map((value) => ({
-                role: value.role,
-                shortDescription: value.shortDescription,
-                displayOrder: value.displayOrder,
-                doctorId: response.id,
-              })),
-            )
-            .executeTakeFirstOrThrow();
+          // Only insert experiences if the array is not empty
+          if (values.experiences.length > 0) {
+            await trx
+              .insertInto("doctorsExperiences")
+              .values(
+                values.experiences.map((value) => ({
+                  role: value.role,
+                  shortDescription: value.shortDescription,
+                  displayOrder: value.displayOrder,
+                  doctorId: response.id,
+                })),
+              )
+              .execute();
+          }
 
-          if (values.achievements.length > 0)
+          // Only insert achievements if the array is not empty
+          if (values.achievements.length > 0) {
             await trx
               .insertInto("doctorsAchievements")
               .values(
@@ -263,7 +307,8 @@ return {
                   doctorId: response.id,
                 })),
               )
-              .executeTakeFirstOrThrow();
+              .execute();
+          }
         });
 
         return {
