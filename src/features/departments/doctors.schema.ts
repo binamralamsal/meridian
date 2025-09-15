@@ -140,10 +140,9 @@ export const doctorSchema = z.object({
   ),
   location: z.string().nullable().optional(),
   appointmentHours: z
-    .array(appointmentHourSchema, {
-      required_error: "Appointment hours are required",
-    })
-    .min(1, "At least one appointment hour is required"),
+    .array(appointmentHourSchema)
+    .optional()
+    .default([]),
   education: z
     .array(educationSchema, {
       required_error: "Education history is required",
