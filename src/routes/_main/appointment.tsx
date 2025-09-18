@@ -223,8 +223,8 @@ function RouteComponent() {
           </p>
           <p className="mx-auto mt-6 max-w-3xl text-balance">
             Simply fill out the form below or call us at{" "}
-            <span className="font-semibold text-blue-600">
-              01-000000 / 01-000000
+            <span className="font-semibold text-primary">
+              01-4720116 / 01-4720117
             </span>{" "}
             to book your visit. Our friendly staff will assist you in finding a
             convenient time that fits your schedule.
@@ -300,7 +300,6 @@ function RouteComponent() {
                         <Select
                           value={field.state.value.toString()}
                           onValueChange={(v) => field.handleChange(Number(v))}
-                          required
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Choose your preferred doctor" />
@@ -461,7 +460,6 @@ function RouteComponent() {
                                   v as "Married" | "UnMarried" | "Others",
                                 )
                               }
-                              required
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Choose your gender" />
