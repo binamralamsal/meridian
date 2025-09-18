@@ -380,7 +380,7 @@ function Home() {
             </div>
 
             <div className="p animate-float bg-primary/80 text-primary-foreground absolute right-4 bottom-4 rounded-lg p-6 shadow-lg backdrop-blur-md lg:-right-6 lg:-bottom-6">
-              <div className="text-4xl font-bold">30+</div>
+              <div className="text-4xl font-bold">20+</div>
               <div className="text-sm">Years of Experience</div>
             </div>
 
