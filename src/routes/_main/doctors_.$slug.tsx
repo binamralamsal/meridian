@@ -186,31 +186,32 @@ export default function RouteComponent() {
                 </div>
               ) : null}
 
-              <div className="grid gap-3">
-                <h3 className="text-lg font-semibold">Appointment Hours</h3>
-                <div className="bg-muted/40 rounded-xl p-4">
-                  {doctor.appointmentHours.map((appointmentHour) => (
-                    <div
-                      key={appointmentHour.id}
-                      className="border-muted-foreground/10 grid gap-1 border-b py-2 first:pt-0 last:border-0 last:pb-0"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Calendar className="text-primary h-4 w-4" />
-                        <span className="text-sm font-medium capitalize">
-                          {appointmentHour.day}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="text-primary h-4 w-4" />
-                        <span className="text-muted-foreground text-sm">
-                          {appointmentHour.timeStart} -{" "}
-                          {appointmentHour.timeEnd}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {doctor.appointmentHours.length > 0 && (
+  <div className="grid gap-3">
+    <h3 className="text-lg font-semibold">Appointment Hours</h3>
+    <div className="bg-muted/40 rounded-xl p-4">
+      {doctor.appointmentHours.map((appointmentHour) => (
+        <div
+          key={appointmentHour.id}
+          className="border-muted-foreground/10 grid gap-1 border-b py-2 first:pt-0 last:border-0 last:pb-0"
+        >
+          <div className="flex items-center gap-2">
+            <Calendar className="text-primary h-4 w-4" />
+            <span className="text-sm font-medium capitalize">
+              {appointmentHour.day}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Clock className="text-primary h-4 w-4" />
+            <span className="text-muted-foreground text-sm">
+              {appointmentHour.timeStart} - {appointmentHour.timeEnd}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
             </div>
           </div>
 
