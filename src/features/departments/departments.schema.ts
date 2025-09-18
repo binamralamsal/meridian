@@ -55,8 +55,9 @@ export const departmentSchema = z.object({
     .string({ required_error: "Description is required" })
     .min(3, "Description must be at least 3 characters"),
   sections: z
-    .array(sectionSchema, { required_error: "Sections are required" })
-    .min(1, "There must be at least one section"),
+    .array(sectionSchema)
+    .optional()
+    .default([]),
 });
 export type DepartmentSchema = z.infer<typeof departmentSchema>;
 
