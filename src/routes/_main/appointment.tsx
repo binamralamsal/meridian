@@ -429,7 +429,6 @@ function RouteComponent() {
                                   v as "Male" | "Female" | "Others",
                                 )
                               }
-                              required
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Choose your gender" />
