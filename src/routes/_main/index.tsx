@@ -351,16 +351,16 @@ function Home() {
 
       <section className="bg-primary dark:bg-muted py-14 text-white">
         <div className="container">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <StatsCounter number={870} label="Expert Doctors" icon="user-md" />
             <StatsCounter
               number={150000}
               label="Recovered Patients"
               icon="heart"
             />
-            <StatsCounter number={450} label="Medical Beds" icon="bed" />
+            {/*<StatsCounter number={450} label="Medical Beds" icon="bed" />*/}
             <StatsCounter
-              number={25}
+              number={20}
               label="Years Experience"
               icon="calendar"
             />

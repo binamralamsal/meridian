@@ -266,9 +266,9 @@ function RouteComponent() {
               label="Medical Specialists"
               icon="stethoscope"
             />
-            <StatsCounter number={15} label="Departments" icon="building" />
+            <StatsCounter number={17} label="Departments" icon="building" />
             <StatsCounter
-              number={22}
+              number={20}
               label="Years of Service"
               icon="calendar"
             />
