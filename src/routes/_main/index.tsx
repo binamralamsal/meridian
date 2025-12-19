@@ -13,12 +13,13 @@ import {
   Phone,
   Stethoscope,
   User,
+  XIcon,
 } from "lucide-react";
 import { MedicalClinic } from "schema-dts";
 
 import { Suspense, useEffect, useRef, useState } from "react";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
 import { BlogCard } from "@/components/blog-card";
@@ -30,8 +31,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import { site } from "@/config/site";
+import { pinnedNoticesOptions } from "@/features/admin/admin.queries";
 import { allBlogsOptions } from "@/features/blogs/blogs.queries";
 import { DoctorCard } from "@/features/departments/components/doctor-card";
 import { allDepartmentsOptions } from "@/features/departments/departments.queries";
@@ -74,6 +82,7 @@ export const Route = createFileRoute("/_main/")({
     queryClient.prefetchQuery(
       allBlogsOptions({ page: 1, pageSize: 3, status: ["published"] }),
     );
+    queryClient.prefetchQuery(pinnedNoticesOptions());
   },
   head: () => ({
     meta: [
@@ -83,12 +92,95 @@ export const Route = createFileRoute("/_main/")({
 });
 
 function Home() {
+  const { data: pinnedNotices } = useQuery(pinnedNoticesOptions());
+  const [currentNoticeIndex, setCurrentNoticeIndex] = useState(0);
+  const [showNoticeDialog, setShowNoticeDialog] = useState(false);
+  const [hasShownNotices, setHasShownNotices] = useState(false);
+  const [dialogWidth, setDialogWidth] = useState("auto");
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (pinnedNotices && pinnedNotices.length > 0 && !hasShownNotices) {
+      setShowNoticeDialog(true);
+      setCurrentNoticeIndex(0);
+      setHasShownNotices(true);
+    }
+  }, [pinnedNotices, hasShownNotices]);
+
+  const handleImageLoad = () => {
+    if (imageRef.current) {
+      const img = imageRef.current;
+      const totalWidth = img.offsetWidth + 96;
+      setDialogWidth(`${Math.min(totalWidth, window.innerWidth * 0.95)}px`);
+    }
+  };
+
+  useEffect(() => {
+    setDialogWidth("auto");
+  }, [currentNoticeIndex]);
+
+  const handleCloseNotice = () => {
+    if (pinnedNotices && currentNoticeIndex < pinnedNotices.length - 1) {
+      setCurrentNoticeIndex(currentNoticeIndex + 1);
+    } else {
+      setShowNoticeDialog(false);
+    }
+  };
+
+  const currentNotice =
+    pinnedNotices && pinnedNotices[currentNoticeIndex]
+      ? pinnedNotices[currentNoticeIndex]
+      : null;
+
   return (
     <main>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdHomePage) }}
       />
+      {currentNotice && (
+        <Dialog open={showNoticeDialog} onOpenChange={setShowNoticeDialog}>
+          <DialogContent
+            style={{
+              width: dialogWidth,
+              maxWidth: "95vw",
+              maxHeight: "90vh",
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle className="text-2xl">
+                {currentNotice.title}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="mt-4">
+              {currentNotice.file && (
+                <div className="flex justify-center">
+                  <img
+                    ref={imageRef}
+                    src={currentNotice.file.url}
+                    alt={currentNotice.title}
+                    className="max-h-[60vh] w-auto rounded-lg object-contain"
+                    onLoad={handleImageLoad}
+                    style={{
+                      maxWidth: "100%",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
+              <p className="text-muted-foreground text-sm">
+                {currentNoticeIndex + 1} of {pinnedNotices?.length || 0}
+              </p>
+              <Button onClick={handleCloseNotice}>
+                {pinnedNotices && currentNoticeIndex < pinnedNotices.length - 1
+                  ? "Next"
+                  : "Close"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
 
       <section className="bg-muted relative">
         <div className="relative z-10 container space-y-8 py-14 md:space-y-10 md:py-20 lg:space-y-12 lg:py-28">

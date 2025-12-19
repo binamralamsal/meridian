@@ -172,6 +172,14 @@ export interface GalleryImage {
   galleryId: number;
 }
 
+export interface PinnedNotice {
+  createdAt: Generated<Timestamp>;
+  fileId: number | null;
+  id: Generated<number>;
+  title: string;
+  updatedAt: Generated<Timestamp>;
+}
+
 export interface Session {
   city: string | null;
   country: Generated<string>;
@@ -217,6 +225,7 @@ export interface DB {
   emails: Email;
   galleries: Gallery;
   galleryImages: GalleryImage;
+  pinnedNotices: PinnedNotice;
   sessions: Session;
   uploadedFiles: UploadedFile;
   users: User;
