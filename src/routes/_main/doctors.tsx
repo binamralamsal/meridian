@@ -104,7 +104,7 @@ function RouteComponent() {
                       </div>
                     </div>
                     <div className="text-foreground text-2xl font-bold">
-                      200+
+                      20+
                     </div>
                     <div className="text-muted-foreground text-sm">
                       Expert Doctors

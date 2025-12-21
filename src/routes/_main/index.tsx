@@ -13,7 +13,6 @@ import {
   Phone,
   Stethoscope,
   User,
-  XIcon,
 } from "lucide-react";
 import { MedicalClinic } from "schema-dts";
 
@@ -444,7 +443,12 @@ function Home() {
       <section className="bg-primary dark:bg-muted py-14 text-white">
         <div className="container">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <StatsCounter number={870} label="Expert Doctors" icon="user-md" />
+            <StatsCounter
+              number={20}
+              suffix="+"
+              label="Expert Doctors"
+              icon="user-md"
+            />
             <StatsCounter
               number={150000}
               label="Recovered Patients"
@@ -510,7 +514,7 @@ function Home() {
               <div className="flex items-center gap-3">
                 <CheckCircle2Icon className="text-secondary h-5 w-5" />
                 <p className="text-foreground/80">
-                  Team of 50+ Experienced Specialists
+                  Team of 20+ Experienced Specialists
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -606,9 +610,15 @@ interface StatsCounterProps {
   number: number;
   label: string;
   icon: string;
+  suffix?: string;
 }
 
-export function StatsCounter({ number, label, icon }: StatsCounterProps) {
+export function StatsCounter({
+  number,
+  label,
+  icon,
+  suffix,
+}: StatsCounterProps) {
   const [count, setCount] = useState(0);
   const countRef = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
@@ -684,7 +694,10 @@ export function StatsCounter({ number, label, icon }: StatsCounterProps) {
   return (
     <div className="flex flex-col items-center" ref={countRef}>
       <div className="bg-primary rounded-full p-4">{getIcon(icon)}</div>
-      <div className="mb-2 text-4xl font-bold">{formatNumber(count)}</div>
+      <div className="mb-2 text-4xl font-bold">
+        {formatNumber(count)}
+        {suffix ? suffix : ""}
+      </div>
       <div className="text-sky-100">{label}</div>
     </div>
   );

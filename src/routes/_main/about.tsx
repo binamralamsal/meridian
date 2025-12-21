@@ -262,7 +262,8 @@ function RouteComponent() {
               icon="users"
             />
             <StatsCounter
-              number={50}
+              number={20}
+              suffix="+"
               label="Medical Specialists"
               icon="stethoscope"
             />
