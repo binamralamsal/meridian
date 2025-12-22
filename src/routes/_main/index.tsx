@@ -322,13 +322,13 @@ function Home() {
               Comprehensive care for heart conditions with advanced diagnostic
               and treatment options.
             </p>
-            <Link
+            {/*<Link
               to="/"
               className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
             >
               <span>Learn more</span>
               <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
-            </Link>
+            </Link>*/}
           </div>
 
           <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
@@ -342,13 +342,13 @@ function Home() {
               Expert diagnosis and treatment of disorders of the nervous system,
               brain, and spinal cord.
             </p>
-            <Link
+            {/*<Link
               to="/"
               className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
             >
               <span>Learn more</span>
               <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
-            </Link>
+            </Link>*/}
           </div>
 
           <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
@@ -362,13 +362,13 @@ function Home() {
               Specialized care for musculoskeletal issues, including joint
               replacements and sports injuries.
             </p>
-            <Link
+            {/*<Link
               to="/"
               className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
             >
               <span>Learn more</span>
               <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
-            </Link>
+            </Link>*/}
           </div>
 
           <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
@@ -382,13 +382,13 @@ function Home() {
               Compassionate healthcare for infants, children, and adolescents to
               ensure healthy development.
             </p>
-            <Link
+            {/*<Link
               to="/"
               className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
             >
               <span>Learn more</span>
               <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
-            </Link>
+            </Link>*/}
           </div>
 
           <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
@@ -402,13 +402,13 @@ function Home() {
               Comprehensive primary healthcare services for patients of all
               ages, focusing on prevention.
             </p>
-            <Link
+            {/*<Link
               to="/"
               className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
             >
               <span>Learn more</span>
               <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
-            </Link>
+            </Link>*/}
           </div>
 
           <div className="group dark:bg-muted/20 dark:hover:bg-muted space-y-3 rounded-xl border p-6 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-sm">
@@ -422,22 +422,22 @@ function Home() {
               Advanced diagnostic testing with quick and accurate results to
               guide your treatment plan.
             </p>
-            <Link
+            {/*<Link
               to="/"
               className="text-primary group/link flex items-center gap-1 text-sm font-medium underline-offset-6 hover:underline"
             >
               <span>Learn more</span>
               <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/link:translate-x-1" />
-            </Link>
+            </Link>*/}
           </div>
         </div>
 
-        <div className="mt-12 text-center">
+        {/*<div className="mt-12 text-center">
           <Button variant="outline" size="lg" className="group">
             View All Services{" "}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
-        </div>
+        </div>*/}
       </section>
 
       <section className="bg-primary dark:bg-muted py-14 text-white">
