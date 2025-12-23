@@ -27,5 +27,5 @@ export const seo = ({
       : []),
   ];
 
-  return tags;
+  return tags.filter((tag) => !("content" in tag) || tag.content !== undefined);
 };
