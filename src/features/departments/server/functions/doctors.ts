@@ -40,7 +40,7 @@ export const saveDoctorFn = createServerFn()
             const existingAppointmentHours = values.appointmentHours
               .filter((appointmentHour) => !appointmentHour.new)
               .map((v) => v.id);
-            
+
             // Only delete if there are existing records to preserve
             if (existingAppointmentHours.length > 0) {
               await trx
@@ -90,7 +90,7 @@ export const saveDoctorFn = createServerFn()
             const existingEducationDetails = values.education
               .filter((ed) => !ed.new)
               .map((ed) => ed.id);
-            
+
             if (existingEducationDetails.length > 0) {
               await trx
                 .deleteFrom("doctorsEducation")
@@ -138,7 +138,7 @@ export const saveDoctorFn = createServerFn()
             const existingExperiences = values.experiences
               .filter((ex) => !ex.new)
               .map((ex) => ex.id);
-            
+
             if (existingExperiences.length > 0) {
               await trx
                 .deleteFrom("doctorsExperiences")
@@ -184,7 +184,7 @@ export const saveDoctorFn = createServerFn()
             const existingAchievements = values.achievements
               .filter((ex) => !ex.new)
               .map((ex) => ex.id);
-            
+
             if (existingAchievements.length > 0) {
               await trx
                 .deleteFrom("doctorsAchievements")
@@ -449,6 +449,7 @@ export const getAllDoctorsFn = createServerFn({ method: "GET" })
   .validator(getAllDoctorsSchema)
   .handler(async ({ data }) => {
     const { sort, page, pageSize, search, departments } = data;
+    console.log({ page, pageSize });
 
     function createBaseQuery() {
       let query = db

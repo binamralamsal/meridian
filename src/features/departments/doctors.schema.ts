@@ -139,10 +139,7 @@ export const doctorSchema = z.object({
     z.string().trim().email("Invalid email format").nullable().optional(),
   ),
   location: z.string().nullable().optional(),
-  appointmentHours: z
-    .array(appointmentHourSchema)
-    .optional()
-    .default([]),
+  appointmentHours: z.array(appointmentHourSchema).optional().default([]),
   education: z
     .array(educationSchema, {
       required_error: "Education history is required",
@@ -163,7 +160,7 @@ export const getAllDoctorsSchema = z.object({
   pageSize: z
     .number()
     .int()
-    .min(5)
+    .min(4)
     .optional()
     .default(DATATABLE_PAGE_SIZE)
     .catch(DATATABLE_PAGE_SIZE),

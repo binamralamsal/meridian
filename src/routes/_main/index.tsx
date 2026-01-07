@@ -77,7 +77,7 @@ export const Route = createFileRoute("/_main/")({
       allDepartmentsOptions({ values: { page: 1, pageSize: 20 } }),
     );
 
-    queryClient.prefetchQuery(allDoctorsOptions({ page: 1, pageSize: 4 }));
+    queryClient.prefetchQuery(allDoctorsOptions({ page: 1, pageSize: 8 }));
     queryClient.prefetchQuery(
       allBlogsOptions({ page: 1, pageSize: 3, status: ["published"] }),
     );
@@ -752,7 +752,7 @@ function DepartmentsSection() {
 function DoctorsList() {
   const {
     data: { doctors },
-  } = useSuspenseQuery(allDoctorsOptions({ page: 1, pageSize: 4 }));
+  } = useSuspenseQuery(allDoctorsOptions({ page: 1, pageSize: 8 }));
 
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
