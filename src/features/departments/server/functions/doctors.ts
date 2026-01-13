@@ -449,6 +449,7 @@ export const getAllDoctorsFn = createServerFn({ method: "GET" })
   .validator(getAllDoctorsSchema)
   .handler(async ({ data }) => {
     const { sort, page, pageSize, search, departments } = data;
+    console.log({ page, pageSize });
 
     function createBaseQuery() {
       let query = db

@@ -80,7 +80,7 @@ export const Route = createFileRoute("/_main/")({
     queryClient.prefetchQuery(
       allDoctorsOptions({
         page: 1,
-        pageSize: 4,
+        pageSize: 8,
         sort: { displayOrder: "asc" },
       }),
     );
@@ -761,7 +761,7 @@ function DoctorsList() {
   } = useSuspenseQuery(
     allDoctorsOptions({
       page: 1,
-      pageSize: 4,
+      pageSize: 8,
       sort: { displayOrder: "asc" },
     }),
   );

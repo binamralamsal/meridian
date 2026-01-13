@@ -136,7 +136,7 @@ export const getAllBlogsSchema = z.object({
   pageSize: z
     .number()
     .int()
-    .min(5)
+    .min(3)
     .optional()
     .default(DATATABLE_PAGE_SIZE)
     .catch(DATATABLE_PAGE_SIZE),

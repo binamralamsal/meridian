@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  AwardIcon,
   CheckCircle2Icon,
   ClockIcon,
   EyeIcon,
@@ -71,7 +70,7 @@ function RouteComponent() {
                 <div className="from-primary/30 absolute inset-0 bg-gradient-to-t to-transparent"></div>
               </div>
 
-              <div className="animate-float bg-background/90 absolute right-4 bottom-4 max-w-xs rounded-lg p-4 shadow-lg backdrop-blur-md lg:-right-8 lg:bottom-14">
+              {/* <div className="animate-float bg-background/90 absolute right-4 bottom-4 max-w-xs rounded-lg p-4 shadow-lg backdrop-blur-md lg:-right-8 lg:bottom-14">
                 <div className="flex items-center gap-3">
                   <div className="bg-secondary flex h-8 w-8 items-center justify-center rounded-full">
                     <AwardIcon className="text-secondary-foreground h-4 w-4" />
@@ -83,7 +82,7 @@ function RouteComponent() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -172,12 +171,12 @@ function RouteComponent() {
               <div className="text-sm opacity-90">Founded</div>
             </div>
 
-            <div className="animate-float bg-secondary/90 text-secondary-foreground absolute right-4 bottom-4 rounded-lg p-4 shadow-lg backdrop-blur-md lg:-right-6 lg:-bottom-6">
+            {/* <div className="animate-float bg-secondary/90 text-secondary-foreground absolute right-4 bottom-4 rounded-lg p-4 shadow-lg backdrop-blur-md lg:-right-6 lg:-bottom-6">
               <div className="text-2xl font-bold">
                 {new Date().getFullYear()}
               </div>
               <div className="text-sm opacity-90">Transformed</div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -307,10 +306,10 @@ function RouteComponent() {
             <div className="inline-block rounded-lg bg-green-50 p-3 dark:bg-green-500/20">
               <ClockIcon className="h-6 w-6 text-green-500" />
             </div>
-            <h3 className="text-xl font-bold">24/7 Emergency Care</h3>
+            <h3 className="text-xl font-bold">Flexible Scheduling</h3>
             <p className="text-muted-foreground">
-              Round-the-clock emergency services with experienced medical staff
-              ready to handle any urgent medical situation.
+              Convenient appointment times and efficient scheduling systems to
+              accommodate your busy lifestyle and minimize wait times.
             </p>
           </div>
 
