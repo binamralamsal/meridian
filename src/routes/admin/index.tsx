@@ -1,8 +1,15 @@
 import {
+  DragDropContext,
+  Draggable,
+  DropResult,
+  Droppable,
+} from "@hello-pangea/dnd";
+import {
   Bell,
   Building2,
   Eye,
   FileText,
+  GripVertical,
   Image,
   MessageSquare,
   Stethoscope,
@@ -66,6 +73,8 @@ import {
   addPinnedNoticeFn,
   removePinnedNoticeFn,
 } from "@/features/admin/server/functions/admin-stats";
+import { allDoctorsOptions } from "@/features/departments/doctors.queries";
+import { updateDoctorsOrderFn } from "@/features/departments/server/functions/doctors";
 
 const addPinnedNoticeSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -89,7 +98,7 @@ interface PreviewModalProps {
     file?: {
       name: string;
       url: string;
-    };
+    } | null;
   } | null;
 }
 
@@ -276,11 +285,317 @@ function UploadedFilesList() {
   );
 }
 
+function DoctorOrderingSection() {
+  const queryClient = useQueryClient();
+  const { data: doctorsData } = useQuery(
+    allDoctorsOptions({
+      page: 1,
+      pageSize: 100,
+      sort: { displayOrder: "asc" },
+    }),
+  );
+
+  const [localDoctors, setLocalDoctors] = useState(doctorsData?.doctors || []);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  useEffect(() => {
+    if (doctorsData?.doctors) {
+      setLocalDoctors(doctorsData.doctors);
+      setHasChanges(false);
+    }
+  }, [doctorsData?.doctors]);
+
+  const updateOrder = useMutation({
+    mutationFn: updateDoctorsOrderFn,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      queryClient.invalidateQueries(
+        allDoctorsOptions({
+          page: 1,
+          pageSize: 100,
+          sort: { displayOrder: "asc" },
+        }),
+      );
+      setHasChanges(false);
+    },
+    onError: () => {
+      toast.error("Failed to update doctor order");
+    },
+  });
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const sourceCol = result.source.droppableId;
+    const destCol = result.destination.droppableId;
+
+    // Split doctors into two columns
+    const midpoint = Math.ceil(localDoctors.length / 2);
+    const leftDoctors = localDoctors.slice(0, midpoint);
+    const rightDoctors = localDoctors.slice(midpoint);
+
+    const newLeftDoctors = [...leftDoctors];
+    const newRightDoctors = [...rightDoctors];
+
+    // Handle drag within same column
+    if (sourceCol === destCol) {
+      if (sourceCol === "doctors-left") {
+        const [reorderedItem] = newLeftDoctors.splice(result.source.index, 1);
+        newLeftDoctors.splice(result.destination.index, 0, reorderedItem);
+      } else {
+        const [reorderedItem] = newRightDoctors.splice(result.source.index, 1);
+        newRightDoctors.splice(result.destination.index, 0, reorderedItem);
+      }
+    } else {
+      // Handle drag between columns
+      if (sourceCol === "doctors-left") {
+        const [reorderedItem] = newLeftDoctors.splice(result.source.index, 1);
+        newRightDoctors.splice(result.destination.index, 0, reorderedItem);
+      } else {
+        const [reorderedItem] = newRightDoctors.splice(result.source.index, 1);
+        newLeftDoctors.splice(result.destination.index, 0, reorderedItem);
+      }
+    }
+
+    // Combine and update display order
+    const updatedDoctors = [...newLeftDoctors, ...newRightDoctors].map(
+      (doctor, index) => ({
+        ...doctor,
+        displayOrder: index + 1,
+      }),
+    );
+
+    setLocalDoctors(updatedDoctors);
+    setHasChanges(true);
+  };
+
+  const handleSaveOrder = () => {
+    const orderData = localDoctors.map((doctor, index) => ({
+      id: doctor.id,
+      displayOrder: index + 1,
+    }));
+
+    updateOrder.mutate({ data: orderData });
+  };
+
+  const handleResetOrder = () => {
+    if (doctorsData?.doctors) {
+      setLocalDoctors(doctorsData.doctors);
+      setHasChanges(false);
+    }
+  };
+
+  // Split doctors into two columns for display
+  const midpoint = Math.ceil(localDoctors.length / 2);
+  const leftColumnDoctors = localDoctors.slice(0, midpoint);
+  const rightColumnDoctors = localDoctors.slice(midpoint);
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Doctor Display Order</CardTitle>
+            <CardDescription>
+              Drag and drop to reorder how doctors appear on the website
+            </CardDescription>
+          </div>
+          {hasChanges && (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleResetOrder}
+                disabled={updateOrder.isPending}
+              >
+                Reset
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSaveOrder}
+                disabled={updateOrder.isPending}
+              >
+                {updateOrder.isPending ? "Saving..." : "Save Order"}
+              </Button>
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {localDoctors.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <Stethoscope className="text-muted-foreground mb-3 h-12 w-12" />
+            <p className="text-muted-foreground mb-1 font-medium">
+              No doctors found
+            </p>
+            <p className="text-muted-foreground text-sm">
+              Add doctors to manage their display order
+            </p>
+          </div>
+        ) : (
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {/* Left Column */}
+              <Droppable droppableId="doctors-left">
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className={`space-y-2 rounded-lg ${
+                      snapshot.isDraggingOver ? "bg-blue-50" : ""
+                    }`}
+                  >
+                    {leftColumnDoctors.map((doctor, index) => {
+                      const globalIndex = index;
+                      return (
+                        <Draggable
+                          key={doctor.id}
+                          draggableId={doctor.id.toString()}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className={`flex items-center gap-3 rounded-lg border bg-white p-3 transition-all ${
+                                snapshot.isDragging
+                                  ? "shadow-lg ring-2 ring-blue-500"
+                                  : "hover:bg-gray-50"
+                              }`}
+                            >
+                              <div
+                                {...provided.dragHandleProps}
+                                className="cursor-grab text-gray-400 hover:text-gray-600"
+                              >
+                                <GripVertical className="h-5 w-5" />
+                              </div>
+
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-600">
+                                {globalIndex + 1}
+                              </div>
+
+                              {doctor.photo && (
+                                <img
+                                  src={doctor.photo.url}
+                                  alt={doctor.name}
+                                  className="h-10 w-10 shrink-0 rounded-full object-cover"
+                                />
+                              )}
+
+                              <div className="min-w-0 flex-1">
+                                <h4 className="truncate font-semibold text-gray-900">
+                                  {doctor.name}
+                                </h4>
+                                <p className="truncate text-sm text-gray-500">
+                                  {doctor.role}
+                                </p>
+                              </div>
+
+                              {doctor.departmentName && (
+                                <Badge variant="secondary" className="shrink-0">
+                                  {doctor.departmentName}
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+
+              {/* Right Column */}
+              <Droppable droppableId="doctors-right">
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className={`space-y-2 rounded-lg ${
+                      snapshot.isDraggingOver ? "bg-blue-50" : ""
+                    }`}
+                  >
+                    {rightColumnDoctors.map((doctor, index) => {
+                      const globalIndex = midpoint + index;
+                      return (
+                        <Draggable
+                          key={doctor.id}
+                          draggableId={doctor.id.toString()}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className={`flex items-center gap-3 rounded-lg border bg-white p-3 transition-all ${
+                                snapshot.isDragging
+                                  ? "shadow-lg ring-2 ring-blue-500"
+                                  : "hover:bg-gray-50"
+                              }`}
+                            >
+                              <div
+                                {...provided.dragHandleProps}
+                                className="cursor-grab text-gray-400 hover:text-gray-600"
+                              >
+                                <GripVertical className="h-5 w-5" />
+                              </div>
+
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-600">
+                                {globalIndex + 1}
+                              </div>
+
+                              {doctor.photo && (
+                                <img
+                                  src={doctor.photo.url}
+                                  alt={doctor.name}
+                                  className="h-10 w-10 shrink-0 rounded-full object-cover"
+                                />
+                              )}
+
+                              <div className="min-w-0 flex-1">
+                                <h4 className="truncate font-semibold text-gray-900">
+                                  {doctor.name}
+                                </h4>
+                                <p className="truncate text-sm text-gray-500">
+                                  {doctor.role}
+                                </p>
+                              </div>
+
+                              {doctor.departmentName && (
+                                <Badge variant="secondary" className="shrink-0">
+                                  {doctor.departmentName}
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </div>
+          </DragDropContext>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export const Route = createFileRoute("/admin/")({
   component: RouteComponent,
   loader: async ({ context }: { context: { queryClient: QueryClient } }) => {
     context.queryClient.prefetchQuery(adminStatsOptions());
     context.queryClient.prefetchQuery(pinnedNoticesOptions());
+    context.queryClient.prefetchQuery(
+      allDoctorsOptions({
+        page: 1,
+        pageSize: 100,
+        sort: { displayOrder: "asc" },
+      }),
+    );
   },
 });
 
@@ -532,7 +847,9 @@ function RouteComponent() {
           </Card>
         </div>
 
-        {/* Pinned Notices */}
+        {/* Doctor Ordering Section - NEW */}
+        <DoctorOrderingSection />
+
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">

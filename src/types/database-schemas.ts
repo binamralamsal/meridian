@@ -87,6 +87,7 @@ export interface Doctor {
   createdAt: Generated<Timestamp>;
   departmentId: number | null;
   description: string;
+  displayOrder: number;
   email: string | null;
   id: Generated<number>;
   location: string | null;

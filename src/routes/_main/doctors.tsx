@@ -26,9 +26,13 @@ export const Route = createFileRoute("/_main/doctors")({
   }),
   loaderDeps: ({ search }) => search,
   loader: async ({ context: { queryClient }, deps: search }) => {
-    await queryClient.ensureQueryData(allDoctorsOptions(search));
     await queryClient.ensureQueryData(
-      allDepartmentsOptions({ values: { page: 1, pageSize: 12 } }),
+      allDoctorsOptions({ ...search, sort: { displayOrder: "asc" } }),
+    );
+    await queryClient.ensureQueryData(
+      allDepartmentsOptions({
+        values: { page: 1, pageSize: 12 },
+      }),
     );
   },
   head: () => ({
@@ -54,11 +58,15 @@ function RouteComponent() {
 
   const {
     data: { doctors },
-  } = useSuspenseQuery(allDoctorsOptions(searchParams));
+  } = useSuspenseQuery(
+    allDoctorsOptions({ ...searchParams, sort: { displayOrder: "asc" } }),
+  );
   const {
     data: { departments },
   } = useSuspenseQuery(
-    allDepartmentsOptions({ values: { page: 1, pageSize: 12 } }),
+    allDepartmentsOptions({
+      values: { page: 1, pageSize: 12 },
+    }),
   );
 
   function handleSearchSubmit(event: FormEvent) {
