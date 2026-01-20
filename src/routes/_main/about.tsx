@@ -275,7 +275,128 @@ function RouteComponent() {
           </div>
         </div>
       </section>
+      <section className="container py-14 md:py-20 lg:py-28">
+        <div className="mb-16 text-center">
+          <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-3 py-1 text-sm font-medium">
+            Leadership Messages
+          </span>
+          <h2 className="mb-6 text-3xl font-bold text-balance md:text-4xl">
+            Words from Our Leaders
+          </h2>
+          <p className="text-foreground/80 mx-auto max-w-3xl text-lg text-balance">
+            Personal reflections from the visionaries guiding our
+            institution&apos;s journey and commitment to excellence.
+          </p>
+        </div>
 
+        <div className="grid gap-8 lg:grid-cols-2">
+          <Card className="border-0">
+            <CardContent className="p-8">
+              <div className="mb-6 flex items-center gap-4">
+                <div className="bg-primary/10 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full">
+                  <UsersIcon className="text-primary h-8 w-8" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold">
+                    Message from the Patron
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Prof. Dr. Sashi Sharma
+                  </p>
+                </div>
+              </div>
+              <div className="text-foreground/80 space-y-4 leading-relaxed">
+                <p>
+                  It has been my privilege to be closely associated with
+                  Meridian Multi Speciality Polyclinic Pvt. Ltd. for over two
+                  decades, both as a patron and as a Senior Consultant,
+                  witnessing its journey from its early years to the trusted
+                  healthcare institution it is today.
+                </p>
+                <p>
+                  My association with Meridian has always been guided by the
+                  belief that quality healthcare must be ethical, accessible and
+                  patient-centered. As a clinician, academician and patron, I
+                  have endeavored to support the clinic through professional
+                  medical service, academic insight, mentorship and strategic
+                  guidance.
+                </p>
+                <p>
+                  The growth of Meridian is the result of collective
+                  effort—committed leadership, dedicated clinicians, hardworking
+                  staff and above all, the trust of countless patients. Despite
+                  facing many challenges over the years, the clinic has
+                  continued to move forward with resilience, integrity and an
+                  unwavering commitment to service.
+                </p>
+                <p className="font-medium">
+                  I remain confident that Meridian Multi Speciality Polyclinic
+                  Pvt. Ltd. will continue to grow while upholding the values
+                  upon which it was founded.
+                </p>
+              </div>
+              <div className="mt-6 border-t pt-6">
+                <p className="font-semibold">Prof. Dr. Sashi Sharma</p>
+                <p className="text-muted-foreground text-sm">
+                  Patron, Meridian Multi Speciality Polyclinic Pvt. Ltd.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0">
+            <CardContent className="p-8">
+              <div className="mb-6 flex items-center gap-4">
+                <div className="bg-secondary/10 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full">
+                  <TargetIcon className="text-secondary h-8 w-8" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold">
+                    Message from the Chairman
+                  </h3>
+                  <p className="text-muted-foreground">Mr. Dewan Rai</p>
+                </div>
+              </div>
+              <div className="text-foreground/80 space-y-4 leading-relaxed">
+                <p>
+                  It gives me immense pride and gratitude to address our
+                  community as the Chairman of Meridian Multi Speciality
+                  Polyclinic Pvt. Ltd. Since our establishment in 2002, Meridian
+                  has remained committed to one simple yet profound purpose: to
+                  serve the healthcare needs of our community with integrity,
+                  compassion, and dedication.
+                </p>
+                <p>
+                  This journey has not been easy. We have faced numerous
+                  challenges, limitations, and struggles along the way. However,
+                  every obstacle strengthened our resolve to move forward with
+                  greater determination. What we are today is the result of
+                  years of perseverance, learning, and unwavering commitment to
+                  patient care.
+                </p>
+                <p>
+                  I extend my heartfelt thanks to all our patients and
+                  well-wishers who have placed their trust in us over the years.
+                  Your confidence has been our greatest motivation and
+                  responsibility.
+                </p>
+                <p className="font-medium">
+                  As we continue to evolve, we remain dedicated to improving our
+                  services, embracing quality healthcare practices, and serving
+                  our community with the same sincerity that has guided us since
+                  the beginning.
+                </p>
+              </div>
+              <div className="mt-6 border-t pt-6">
+                <p className="font-semibold">Mr. Dewan Rai</p>
+                <p className="text-muted-foreground text-sm">
+                  Chairman, Meridian Multi Speciality Polyclinic Pvt. Ltd.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
       <section className="container py-14 md:py-20 lg:py-28">
         <div className="mb-16 text-center">
           <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-3 py-1 text-sm font-medium">
@@ -360,7 +481,7 @@ function RouteComponent() {
         </div>
       </section>
 
-      <section className="bg-muted py-14 md:py-20 lg:py-28" id="team">
+      {/* <section className="bg-muted py-14 md:py-20 lg:py-28" id="team">
         <div className="container">
           <div className="mb-16 text-center">
             <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-3 py-1 text-sm font-medium">
@@ -441,7 +562,7 @@ function RouteComponent() {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

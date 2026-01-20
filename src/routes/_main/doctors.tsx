@@ -1,4 +1,4 @@
-import { Award, ClockIcon, Search, Star, Users } from "lucide-react";
+import { Award, Search, Star, Users } from "lucide-react";
 import { z } from "zod";
 
 import { FormEvent, useEffect, useState } from "react";
@@ -157,7 +157,7 @@ function RouteComponent() {
                     className="h-full w-full rounded-2xl object-cover shadow-2xl"
                   />
 
-                  <div className="animate-float bg-background/95 absolute -top-4 -left-6 rounded-xl border p-3 shadow-xl backdrop-blur-sm lg:-left-8">
+                  {/* <div className="animate-float bg-background/95 absolute -top-4 -left-6 rounded-xl border p-3 shadow-xl backdrop-blur-sm lg:-left-8">
                     <div className="flex items-center gap-2">
                       <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-full">
                         <ClockIcon className="text-primary-foreground h-6 w-6" />
@@ -171,16 +171,16 @@ function RouteComponent() {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="animate-float-delayed bg-background/95 absolute -right-6 -bottom-4 rounded-xl border p-3 shadow-xl backdrop-blur-sm lg:-right-8">
+                  {/* <div className="animate-float-delayed bg-background/95 absolute -right-6 -bottom-4 rounded-xl border p-3 shadow-xl backdrop-blur-sm lg:-right-8">
                     <p className="text-secondary text-sm font-semibold">
                       95% Success Rate
                     </p>
                     <p className="text-muted-foreground text-xs">
                       Treatment Outcomes
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
