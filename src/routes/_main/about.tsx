@@ -308,10 +308,17 @@ function RouteComponent() {
               <div className="text-foreground/80 space-y-4 leading-relaxed">
                 <p>
                   It has been my privilege to be closely associated with
-                  Meridian Multi Speciality Polyclinic Pvt. Ltd. for over two
-                  decades, both as a patron and as a Senior Consultant,
-                  witnessing its journey from its early years to the trusted
-                  healthcare institution it is today.
+                  <strong>
+                    Meridian Multi Speciality Polyclinic Pvt. Ltd.
+                  </strong>{" "}
+                  rebranded on 2024 for over two decades which was formerly
+                  known as{" "}
+                  <strong>Meridian Health Care Center Pvt. Ltd.</strong>, both
+                  as a patron and as a Senior Consultant, witnessing its journey
+                  from its early years to the trusted healthcare institution it
+                  is today. Since its establishment in 2002, Meridian has stood
+                  as a symbol of dedication, perseverance and sincere service to
+                  the community.
                 </p>
                 <p>
                   My association with Meridian has always been guided by the
@@ -319,7 +326,21 @@ function RouteComponent() {
                   patient-centered. As a clinician, academician and patron, I
                   have endeavored to support the clinic through professional
                   medical service, academic insight, mentorship and strategic
-                  guidance.
+                  guidance to help strengthen its clinical standards and
+                  long-term vision. The clinic’s consistent focus on
+                  compassionate, OPD-based care has been one of its greatest
+                  strengths and I am proud to have contributed to nurturing this
+                  strong foundation.
+                </p>
+                <p>
+                  Over these years of professional and academic experience, I
+                  have also had the opportunity to mentor numerous medical
+                  students and young doctors, many of whom have gone on to
+                  become respected consultants and professors in their
+                  respective fields. Seeing this next generation of medical
+                  professionals grow and contribute to healthcare and medical
+                  education remains one of the most fulfilling aspects of my
+                  journey.
                 </p>
                 <p>
                   The growth of Meridian is the result of collective
@@ -327,12 +348,19 @@ function RouteComponent() {
                   staff and above all, the trust of countless patients. Despite
                   facing many challenges over the years, the clinic has
                   continued to move forward with resilience, integrity and an
-                  unwavering commitment to service.
+                  unwavering commitment to service, which is truly commendable.
                 </p>
                 <p className="font-medium">
-                  I remain confident that Meridian Multi Speciality Polyclinic
-                  Pvt. Ltd. will continue to grow while upholding the values
-                  upon which it was founded.
+                  I extend my sincere appreciation to the management team,
+                  doctors and all staff members for their continued dedication.
+                  Most importantly, I express my heartfelt gratitude to the
+                  patients and community who have placed their faith in Meridian
+                  over the years. I remain confident that{" "}
+                  <strong>
+                    Meridian Multi Speciality Polyclinic Pvt. Ltd.
+                  </strong>{" "}
+                  will continue to grow while upholding the values upon which it
+                  was founded.
                 </p>
               </div>
               <div className="mt-6 border-t pt-6">
@@ -361,10 +389,12 @@ function RouteComponent() {
                 <p>
                   It gives me immense pride and gratitude to address our
                   community as the Chairman of Meridian Multi Speciality
-                  Polyclinic Pvt. Ltd. Since our establishment in 2002, Meridian
-                  has remained committed to one simple yet profound purpose: to
-                  serve the healthcare needs of our community with integrity,
-                  compassion, and dedication.
+                  Polyclinic Pvt. Ltd. rebranded in 2024, formerly known as
+                  Meridian Health Care Center Pvt. Ltd. Since our establishment
+                  in 2002 as an OPD-based polyclinic, Meridian has remained
+                  committed to one simple yet profound purpose: to serve the
+                  healthcare needs of our community with integrity, compassion,
+                  and dedication.
                 </p>
                 <p>
                   This journey has not been easy. We have faced numerous
@@ -378,13 +408,22 @@ function RouteComponent() {
                   I extend my heartfelt thanks to all our patients and
                   well-wishers who have placed their trust in us over the years.
                   Your confidence has been our greatest motivation and
-                  responsibility.
+                  responsibility. I am equally grateful to our management team,
+                  doctors, nurses, paramedical staff, and every member of the
+                  Meridian family whose hard work, loyalty, and shared vision
+                  have been the backbone of our growth.
                 </p>
-                <p className="font-medium">
+                <p>
                   As we continue to evolve, we remain dedicated to improving our
                   services, embracing quality healthcare practices, and serving
                   our community with the same sincerity that has guided us since
-                  the beginning.
+                  the beginning. Thank you for choosing Meridian and placing
+                  your confidence in us. We remain dedicated to continually
+                  improving our services and upholding the trust you have shown
+                  in us.
+                </p>
+                <p className="font-medium">
+                  Thank you for being a part of our journey.
                 </p>
               </div>
               <div className="mt-6 border-t pt-6">
